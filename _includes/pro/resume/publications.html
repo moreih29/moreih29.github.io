@@ -13,15 +13,18 @@
           <time datetime="{{ pub.releaseDate | date_to_xmlschema }}">{{ pub.releaseDate | date:from_to_format }}</time>
         </p>
       {% endif %}
+
       <h3 class="h4 faded">
         {% capture name %}{% include components/link.html title=pub.name href=pub.website span_class="bc" %}{% endcapture %}
-        {% capture publisher %}<span class="bc">{{ pub.publisher }}</span>{% endcapture %}
-        {{ strings.resume.publications_title
-          | default:"<!--name--> by <!--publisher-->"
-          | replace:"<!--name-->", name
-          | replace:"<!--publisher-->", publisher
-        }}
+        {{ name }}
       </h3>
+      <p>
+        {% capture author %}<span>{{ pub.author }}</span>{% endcapture %}
+        {% capture publisher %}<i><span class="bc">{{ pub.publisher }}</span></i>{% endcapture %}
+        {{ author }} </br>
+        {{ publisher }}
+      </p>
+
     </header>
 
     {% include components/message.html class="note" text=pub.summary alt="" %}

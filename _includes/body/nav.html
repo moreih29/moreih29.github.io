@@ -3,6 +3,28 @@
   {% if site.menu %}
     {% for node in site.menu %}
       {% assign url = node.url | default: node.href %}
+      {% if node.submenu %}
+      <li class="{% if node.submenu %}sub-menu{% endif %}">
+        <a href="{{node.url}}" class="sidebar-nav-item">
+          {{ node.title }}
+        </a>
+        <a>
+          <div class="fa fa-caret-down right"></div>
+        </a>
+        <ul>
+          {% for subnode in node.submenu %}
+          <li>
+            <a 
+            href="/tag-{{subnode.url}}"
+            class="sidebar-nav-item"
+            >
+            {{subnode.title}}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% else %}
       <li>
         <a
           {% if forloop.first %}id="_drawer--opened"{% endif %}
@@ -13,6 +35,7 @@
           {{ node.name | default:node.title }}
         </a>
       </li>
+      {% endif %}
     {% endfor %}
   {% else %}
     {% assign pages = site.html_pages | where: "menu", true %}

@@ -1,0 +1,41 @@
+.sidebar-nav {
+    text-align: left;
+}
+
+.sidebar-nav-item {
+    display: inline;
+}
+
+.sidebar-sticky {
+    width: $sidebar-width;
+}
+
+nav ul li a .fa {
+	width: 3rem;
+	text-align: center;
+	margin-right: 5px;
+	float:right;
+    line-height: inherit;
+}
+
+nav ul li a .fa:hover {
+	color: #5ABEF5;
+}
+
+
+nav ul ul {
+	list-style: none;
+    margin-bottom: 0.5rem;
+}
+
+.utterances {
+    max-width: 100%;
+}
+
+.giscus, .giscus-frame {
+    width: 100%;
+}
+
+.giscus-frame {
+    border: none;
+}

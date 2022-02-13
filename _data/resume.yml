@@ -2,102 +2,137 @@
 # If you don't have a JSON Resume you can just edit this YAML file instead.
 # See also: <https://jsonresume.org/>.
 basics:
-  name: "Richard Hendricks"
-  label: "Programmer"
-  picture: "https://via.placeholder.com/240x240"
-  email: ""
-  phone: "(912) 555-4321"
-  website: "https://piedpiper.com"
+  name: "김인환 (Inhwan Kim)"
+  label: "Data Scientist / ML Engineer"
+  picture: "/assets/img/profile.jpg"
+  email: "moreih29@gmail.com"
+  phone: "(+82)10-3111-3734"
+  website: "https://moreih29.github.io"
   summary: >
-    Richard hails from Tulsa.
-    He has earned degrees from the University of Oklahoma and Stanford. (Go Sooners and Cardinals!)
-    Before starting Pied Piper, he worked for Hooli as a part time software developer.
-    While his work focuses on applied information theory,
-    mostly optimizing lossless compression schema of both the length-limited and adaptive variants,
-    his non-work interests range widely,
-    everything from quantum computing to chaos theory.
-    He could tell you about it, but THAT would NOT be a “length-limited” conversation!
-    Open `_data/resume.yml` to edit this text.
-  location:
-    address: "2712 Broadway St"
-    postalCode: "CA 94115"
-    city: "San Francisco"
-    countryCode: "US"
-    region: "California"
+    컴퓨터 과학을 전공했으며, 석사 과정의 연구 주제로 
+    질병과 관련된 공공 데이터/웹 데이터 분석 및 시계열 예측을 수행했습니다. 
+    현재는 다양한 공정 과정에서 발생하는 이미지 및 시계열 데이터로부터 이상/불량 탐지 문제를 
+    딥러닝 기술을 활용해 해결해 나가고 있습니다. 
+
+    또한, 데이터 수집 및 분석부터 딥러닝 모델 배포까지 이르는 MLOps 과정에 관심을 갖고 
+    공부하고 있습니다.
+  # location:
+  #   address: "2712 Broadway St"
+  #   postalCode: "CA 94115"
+  #   city: "San Francisco"
+  #   countryCode: "US"
+  #   region: "California"
   profiles:
-    - network: "Twitter"
-      username: "RHendricksCEO"
-      url: ""
-    - network: "LinkedIn"
-      username: "Richard Hendricks"
-      url: ""
+    - network: "Github"
+      username: "moreih29"
+      url: "https://github.com/moreih29"
+    # - network: "LinkedIn"
+    #   username: "Richard Hendricks"
+    #   url: ""
 work:
-  - company: "Pied Piper"
-    position: "CEO/President"
-    website: "https://piedpiper.com"
-    startDate: "2013-12-01"
+  - company: "RTM"
+    position: "Data Scientist"
+    website: "https://rtm.ai"
+    startDate: "2021-11-15"
     endDate: ""
     summary: >
-      Pied Piper is a multi-platform technology based on a proprietary universal compression algorithm that has
-      consistently fielded high Weisman Scores™ that are not merely competitive,
-      but approach the theoretical limit of lossless compression.
+      제조 공정을 효율화 하기 위해 공정에서 발생하는 비가공 데이터로부터 필요한 데이터를 찾아 내고, 
+      분석 및 모델링을 통해 공정 효율화를 달성
     highlights:
-      - "Built an algorithm for artist to detect if their music was violating copy right infringement laws"
-      - "Successfully won Techcrunch Disrupt"
-      - "Optimized an algorithm that holds the current world record for Weisman Scores"
-volunteer:
-  - organization: "CoderDojo"
-    position: "Teacher"
-    website: "https://coderdojo.com/"
-    startDate: "2012-01-01"
-    endDate: "2013-01-01"
-    summary: "Global movement of free coding clubs for young people."
-    highlights:
-      - "Awarded 'Teacher of the Month'"
+      - "공정 이미지에 존재하는 다양한 불량 유형을 검사하고 분류"
+      - "데이터 분석 및 모델링 과정의 모듈화"
+      - "데이터 수집부터 배포에 이르는 MLOps 정립"
+# volunteer:
+#   - organization: "CoderDojo"
+#     position: "Teacher"
+#     website: "https://coderdojo.com/"
+#     startDate: "2012-01-01"
+#     endDate: "2013-01-01"
+#     summary: "Global movement of free coding clubs for young people."
+#     highlights:
+#       - "Awarded 'Teacher of the Month'"
 education:
-  - institution: "University of Oklahoma"
-    area: "Information Technology"
-    studyType: "Bachelor"
-    startDate: "2011-06-01"
-    endDate: "2014-01-01"
-    gpa: "4.0"
-    courses:
-      - "DB1101 - Basic SQL"
-      - "CS2011 - Java Introduction"
-awards:
-  - title: "Digital Compression Pioneer Award"
-    date: "2014-11-01"
-    awarder: "Techcrunch"
-    summary: "There is no spoon."
+  - institution: "Sangmyung University, Seoul"
+    area: "Computer Science"
+    studyType: "M.S"
+    startDate: "2019-09-01"
+    endDate: "2021-08-01"
+    gpa: "4.5/4.5"
+    # courses:
+    #   - "DB1101 - Basic SQL"
+    #   - "CS2011 - Java Introduction"
+  - institution: "Sangmyung University, Seoul"
+    area: "Computer Science"
+    studyType: "B.S"
+    startDate: "2016-03-01"
+    endDate: "2019-08-01"
+    gpa: "3.86/4.5 (전공 4.07/4.5)"
+    # courses:
+    #   - "DB1101 - Basic SQL"
+    #   - "CS2011 - Java Introduction"
+
+# awards:
+#   - title: "Digital Compression Pioneer Award"
+#     date: "2014-11-01"
+#     awarder: "Techcrunch"
+#     summary: "There is no spoon."
 publications:
-  - name: "Video compression for 3d media"
-    publisher: "Hooli"
-    releaseDate: "2014-10-01"
-    website: "https://en.wikipedia.org/wiki/Silicon_Valley_(TV_series)"
-    summary: "Innovative middle-out compression algorithm that changes the way we store data."
+  - name: "Long-term Influenza Outbreak Forecast Using Time-precedence Correlation of Web Data"
+    author: "Jang, Beakcheol, Inhwan Kim, and Jong Wook Kim"
+    publisher: "IEEE Transactions on Neural Networks and Learning Systems (2021), IF:8.793"
+    releaseDate: "2021-09-01"
+    website: "https://doi.org/10.1109/TNNLS.2021.3106637"
+    summary: "웹 데이터의 시간 선행적 특성을 활용해 장기간 인플루엔자 발생을 예측하는 모델 제안"
+  - name: "Effective Training Data Extraction Method to Improve Influenza Outbreak Prediction from Online News Articles: Deep Learning Model Study"
+    author: "Jang, Beakcheol, Myeonghwi Kim, Inhwan Kim, and Jong Wook Kim"
+    publisher: "JMIR Medical Informatics 9.5 (2021): e23305., IF:2.96"
+    releaseDate: "2021-05-01"
+    website: "https://doi.org/10.2196/23305"
+    summary: "인플루엔자 예측 성능을 향상시키기 위해 뉴스 기사로부터 효과적인 학습 데이터 추출 방법을 소개"
+  - name: "Word2vec convolutional neural networks for classification of news articles and tweets"
+    author: "Jang, Beakcheol, Inhwan Kim, and Jong Wook Kim"
+    publisher: "PloS one 14.8 (2019): e0220976., IF:3.240"
+    releaseDate: "2019-08-01"
+    website: "https://doi.org/10.1371/journal.pone.0220976"
+    summary: "뉴스 및 트윗 분류에서 Wor2vec-CNN 모델의 학습 방식 및 파라미터 별 성능을 비교"
 skills:
-  - name: "Web Development"
-    level: "Master"
+  - name: "Data Analysis and Modeling"
+    level: "3/3"
     keywords:
-      - "HTML"
-      - "CSS"
-      - "Javascript"
-  - name: "Compression"
-    level: "Master"
+      - "Tensorflow"
+      - "Pytorch"
+      - "Scikit-learn"
+  - name: "Backend Development"
+    level: "2/3"
     keywords:
-      - "Mpeg"
-      - "MP4"
-      - "GIF"
+      - "Django"
+      - "Spring"
+      - "REST API"
+  - name: "Dev Tools"
+    level: "2/3"
+    keywords:
+      - "Git"
+      - "Jira"
+      - "AWS"
+      - "Docker"
+      - "Docker Compose"
+
 languages:
-  - language: "English"
-    fluency: "Native speaker"
+  - language: "한국어"
+    fluency: "원어민 수준"
+  - language: "영어"
+    fluency: "논문 읽고 쓰기 가능"
 interests:
-  - name: "Wildlife"
+  - name: "음악"
     keywords:
-      - "Ferrets"
-      - "Unicorns"
-references:
-  - name: "Erlich Bachman"
-    reference: >
-      It is my pleasure to recommend Richard, his performance working as a consultant for Main St.
-      Company proved that he will be a valuable addition to any company.
+      - "감상"
+      - "노래 부르기"
+  - name: "게임"
+    keywords:
+      - "LOL"
+      - "로스트아크"
+# references:
+#   - name: "Erlich Bachman"
+#     reference: >
+#       It is my pleasure to recommend Richard, his performance working as a consultant for Main St.
+#       Company proved that he will be a valuable addition to any company.

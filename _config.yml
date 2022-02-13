@@ -17,66 +17,70 @@
 
 # Language of your content in 2-letter code, e.g.: en, de.
 # You may also provide a location, e.g.: en-us, de_AT.
-lang:                  en
+lang:                  ko-KR
 
 # The title of your blog. Used in the sidebar and the browser tab.
-title:                 Hydejack
+title:                 moreih29
 
 # A short description (~150 chars) of the page used for the meta description tag.
 # Can use markdown, but no more than one paragraph (enforced by `>`)
 description:           >
-  Hydejack is a boutique Jekyll theme for hackers, nerds, and academics,
-  with a focus on personal sites that are meant to impress.
+  moreih29's blog
 
 # A shorter description for the sidebar.
-tagline:               Change `tagline` in `_config.yml`
+tagline:               >
+  어제보다 나은 내일
 
 # A list of keywords for your blog
-keywords:              []
+keywords:              [Machine Learning,
+                        Deep Learning,
+                        Nature Language Processing,
+                        Computer Vision,
+                        Time-series Forecasting,
+                        Anomaly Detection]
 
 # A (square) logo for your site.
 # If provided, it will be shown at the top of the sidebar.
 # It also used by the `jekyll-seo-tag` plugin.
-logo:                  /assets/img/logo.png
+logo:                  /assets/img/profile.jpg
 
 # This should be the same author as first entry in `_data/authors.yml`.
 author:
   # Used by `jekyll-feed`:
-  name:                <firstname> <lastname>
-  email:               <mail@domain.tld>
+  name:                Inhwan Kim
+  email:               moreih29@gmail.com
   # # Used by `jekyll-seo-tag`:
   # twitter:             <username>
 
 # Add links to the sidebar.
 menu:
-  - title:             Blog
-    url:               /blog/
+  - title:             Machine Learning
+    url:               /machine-learning/
+    submenu:           
+      - title:         Object Detection
+        url:           object-detection
   - title:             Projects
     url:               /projects/
   - title:             Résumé*
     url:               /resume/
-  - title:             Documentation
-    url:               /docs/
+  - title:             Tags
+    url:               /tags/
 
 # Add links to the footer.
 # Typically you'll want to link to your cookie- or privacy policy (if appliable), etc..
 legal:
   - title:             LICENSE
     url:               /LICENSE/
-  - title:             NOTICE
-    url:               /NOTICE/
-  - title:             CHANGELOG
-    url:               /CHANGELOG/
 
 # This text will appear in a `<small>` tag in the footer of every page.
-copyright:             © 2021. All rights reserved.
+copyright:             © 2022. All rights reserved.
 
 # Format of the permalinks
-permalink:             /blog/:categories/:year-:month-:day-:title/
+permalink:             /:categories/:year-:month-:day-:title/
 
 # Pagination configuration (used by the `blog` layout)
 paginate:              10
-paginate_path:         /blog/:num/
+paginate_path:         /:num/
 
 
 # Theme
@@ -90,7 +94,7 @@ paginate_path:         /blog/:num/
 # ----------------------------------------------------------------------------------------
  
 # Sidebar image and theme color of the site.
-accent_image:          /assets/img/sidebar-bg.jpg
+accent_image:          /assets/img/star-house.gif
 accent_color:          rgb(79,177,186)
 
 # This is used for the `theme-color` meta tag,
@@ -178,6 +182,34 @@ kramdown:
 # Setting a disqus shortname will enable the comment section on
 # pages with `comments: true` in the front matter.
 # disqus:                <username>
+
+# Set which comment system to use
+comments:
+  # 'disqus' or 'utterances' are available
+  provider:            giscus
+
+# You must install utterances github app before use.(https://github.com/apps/utterances)
+# Make sure all variables are set properly. Check below link for detail.
+# https://utteranc.es/
+utterances:
+  repo:                "moreih29/moreih29.github.io"
+  issue-term:          "pathname"
+  label:               "Comments"
+  theme:               "dark-blue"
+
+# You must install giscus github app before use.(https://github.com/apps/giscus)
+# Make sure all variables are set properly. Check below link for detail.
+# https://giscus.vercel.app/
+giscus:
+  repo:                "moreih29/moreih29.github.io"
+  repo-id:             "R_kgDOG1kNrg"
+  category:            "Comments"
+  category-id:         "DIC_kwDOG1kNrs4CBJGk"
+  mapping:             "pathname"
+  reaction-enabled:    "1"
+  theme:               "dark_dimmed"
+  lang:                "ko"
+  crossorigin:         "anonymous"
 
 # Setting a tinyletter username will enable the newsletter subscription box.
 # PRO version only!
@@ -294,7 +326,7 @@ hydejack:
 
 collections:
   featured_categories:
-    permalink:         /blog/:name/
+    permalink:         /:name/
     output:            true
 
   featured_tags:
