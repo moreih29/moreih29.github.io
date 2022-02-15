@@ -59,6 +59,10 @@ menu:
     submenu:           
       - title:         Object Detection
         url:           object-detection
+  - title:             Development
+    url:               /development/
+  - title:             Computer Tips
+    url:               /computer-tips/
   - title:             Projects
     url:               /projects/
   - title:             Résumé*
