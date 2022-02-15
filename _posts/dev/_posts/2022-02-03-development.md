@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Development
-categories: [development]
+categories: [dev]
 description: >
   Development!
 sitemap: false

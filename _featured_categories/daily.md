@@ -5,14 +5,14 @@ layout: list
 type: category
 
 # The title of the tag's page.
-title: Development
+title: Daily
 
 # The name of the tag, used in a post's front matter (e.g. tags: [<slug>]).
-slug: development
+slug: daily
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  This is development page
+  일상들을 작성하는 카테고리 입니다.
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false

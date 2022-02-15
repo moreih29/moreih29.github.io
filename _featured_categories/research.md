@@ -5,14 +5,14 @@ layout: list
 type: category
 
 # The title of the tag's page.
-title: Machine Learning
+title: Research
 
 # The name of the tag, used in a post's front matter (e.g. tags: [<slug>]).
-slug: machine-learning
+slug: research
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  This is machine learning page
+  This is research page
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false

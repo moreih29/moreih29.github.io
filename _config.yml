@@ -54,15 +54,17 @@ author:
 
 # Add links to the sidebar.
 menu:
-  - title:             Machine Learning
-    url:               /machine-learning/
+  - title:             Research
+    url:               /research/
     submenu:           
       - title:         Object Detection
         url:           object-detection
   - title:             Development
-    url:               /development/
+    url:               /dev/
   - title:             Computer Tips
-    url:               /computer-tips/
+    url:               /tips/
+  - title:             Daily
+    url:               /daily/
   - title:             Projects
     url:               /projects/
   - title:             Résumé*

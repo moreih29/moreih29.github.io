@@ -1,15 +1,13 @@
 ---
 layout: post
-title: Machine learning
-categories: [machine-learning]
+title: Computer Tips!
+categories: [tips]
 description: >
-  machine learning!
+  Computer Tips!
 sitemap: false
 hide_last_modified: true
 ---
 
 ![test_image](/assets/22-02-14/deep_brain.jpg)
 
-machine learning!
-
-deep learning!
+**Computer Tips!**

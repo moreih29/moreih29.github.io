@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Object detection
-categories: [machine-learning]
+categories: [research]
 tags: [object-detection]
 comments: true
 description: >
