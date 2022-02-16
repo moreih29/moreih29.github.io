@@ -12,7 +12,7 @@ slug: daily
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  일상들을 작성하는 카테고리 입니다.
+  소소한 일상 내용을 담고 있습니다.
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false

@@ -5,5 +5,5 @@ permalink: /tags/
 sidebar: true
 order: 4
 description: >
-  List of all categories & tags of blog.
+  블로그의 게시글들을 카테고리와 태그 별로 정리합니다.
 ---

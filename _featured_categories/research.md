@@ -12,7 +12,7 @@ slug: research
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  This is research page
+  새로운 연구들에 대한 동향을 파악하고 필요한 내용을 정리합니다.
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false

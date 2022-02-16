@@ -12,7 +12,7 @@ slug: dev
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  This is development page
+  개발과 관련된 기술들에 대한 내용을 정리합니다.
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false

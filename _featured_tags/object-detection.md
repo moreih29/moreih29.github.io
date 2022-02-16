@@ -14,7 +14,7 @@ slug: object-detection
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  This is object detection page
+  Computer vision 분야 중 object detection과 관련된 연구들을 정리합니다.
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false

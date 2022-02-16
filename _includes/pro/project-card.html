@@ -49,6 +49,11 @@
       {{ project.tagline | default:project.caption | default:project.description | markdownify | replace:'<p>','' | replace:'</p>','' }}
     </p>
   {% endif %}
+  {% if project.period %}
+    <p class="project-card-text fine" property="disambiguatingDescription">
+      기간: {{ project.period }}
+    </p>
+  {% endif %}
   {% assign text = site.data.strings.continue_reading | default:"Continue reading <!--post_title-->" %}
   <a class="fill-card no-hover" href="{{ project.url | relative_url }}" tabindex="-1"><span class="sr-only">{{ text | replace:"<!--post_title-->", project.title }}</span></a>
 </article>

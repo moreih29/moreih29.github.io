@@ -12,7 +12,7 @@ slug: tips
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  This is computer tips page
+  컴퓨터와 관련된 가볍고 유용한 정보들을 정리합니다.
 
 # (Optional) You can disable grouping posts by date.
 no_groups: false
