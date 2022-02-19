@@ -19,18 +19,27 @@
 {% endif %}
 
 {% if related_posts.size > 0 %}
-<aside class="other-projects related mb0" role="complementary">
+<!-- <aside class="other-projects related mb0" role="complementary">
   <h2>{{ site.data.strings.related_posts | default:"Related Posts" }}</h2>
   <div class="columns">
     {% for post in related_posts limit:2 %}
       <div class="column column-1-2">
         {% if post %}
-          {% include_cached pro/post-card.html post=post %}
+          {% include_cached components/post-list-item.html post=post %}
         {% else %}
           Post with path <code>{{ post_path }}</code> not found.
         {% endif %}
       </div>
     {% endfor %}
   </div>
+</aside> -->
+
+<aside class="related mb4" role="complementary">
+  <h2 class="hr-bottom">{{ site.data.strings.related_posts | default:"Related Posts" }}</h2>
+  <ul class="related-posts">
+    {% for post in related_posts limit:3 %}
+      {% include_cached components/post-list-item.html post=post %}
+    {% endfor %}
+  </ul>
 </aside>
 {% endif %}

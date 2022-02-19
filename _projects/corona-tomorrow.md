@@ -1,6 +1,7 @@
 ---
 layout: project
 title: '코로나 내일'
+comments: true
 caption: 국내 코로나 예측 및 현황 정보 제공 시스템
 description: >
   2019년 처음 발생한 이후로 현재까지 코로나는 사회적으로 큰 문제를 야기하고 있습니다. 

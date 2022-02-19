@@ -76,7 +76,7 @@ layout: base
   {{ content }}
 </article>
 
-{% include components/dingbat.html %}
+<!-- {% include components/dingbat.html %} -->
 
 {% assign addons = page.addons | default:site.hydejack.project_addons %}
 {% unless addons %}{% assign addons = "about,newsletter,other" | split:"," %}{% endunless %}

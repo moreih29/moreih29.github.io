@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 결정 트리(Decision Tree)
+comments: true
 categories: [research]
 tags: [machine-learning]
 description: >
@@ -11,17 +12,13 @@ hide_last_modified: true
 
 # 결정 트리(Decision Tree)
 
-## 1. 소개 
----
-
-
 결정 트리는 분류와 회귀 문제에서 널리 사용되는 머신러닝 방법입니다. 
 스무고개 게임은 어릴 때 다들 많이 해보셨을 것 같은데요. 
 혹시나 모르시는 분들을 위해 간단히 설명하자면, 게임 주최자는 자신이 생각하는 정답을 정하고 숨깁니다.
 그러면 게임 참여자들은 주최자에게 예/아니오로 대답할 수 있는 질문을 20번 이하로 해서 주최자가 생각한 정답을 맞추면 승리하는 게임입니다.
 결정 트리는 스무고개와 비슷하게 최종 결정에 다다르기 위해서 그림과 같이 예/아니오 질문을 던집니다.
 이러한 결정 방식은 질문의 내용을 명확하게 확인할 수 있기 때문에 모델의 결정을 설명하기 쉽습니다.
-{: .first}
+{: .first} 
 
 ![](https://tensorflowkorea.files.wordpress.com/2017/06/2-22.png?w=768&h=546)
 {: .lead}
@@ -29,7 +26,11 @@ hide_last_modified: true
 나무의 가지처럼 질문을 하며 답을 찾아 가는 과정
 {: .figcaption}
 
-## 2. 동작 방식
+* toc
+{:toc}
+
+
+## 동작 방식
 ---
 ![](https://tensorflowkorea.files.wordpress.com/2017/06/2-23.png?w=768)
 {: .lead}
@@ -41,7 +42,7 @@ hide_last_modified: true
 데이터는 두 개의 클래스를 가지고 있고 각 클래스는 반대되는 반달 모양의 분포를 갖고 있습니다.
 이럴 때 결정 트리는 어떻게 동작하는지 설명하겠습니다.
 
-### 2-1. Step 1
+### Step 1
 
 ![](https://tensorflowkorea.files.wordpress.com/2017/06/2-24.png?w=768){: .wb}
 {: .lead}
@@ -52,14 +53,14 @@ hide_last_modified: true
 여기서 X[0]는 가로 축을 의미하고 X[1]은 세로 축을 의미합니다.
 결정 트리는 첫 번째 질문(분기)를 통해서 전체 데이터를 두 개의 영역으로 나눴고 질문에 yes라고 대답할 수 있는 영역은 2개의 파란색 클래스와 32개의 붉은색 클래스를 포함하고 있으며, no라고 대답할 수 있는 영역은 48개의 파란색 클래스와 18개의 붉은색 클래스를 포함하고 있습니다.
 
-### 2-2. Step 2
+### Step 2
 ![](https://tensorflowkorea.files.wordpress.com/2017/06/2-25.png?w=768){: .wb}
 {: .lead}
 
 Step 1과 같이 질문을 던져, 두 개의 클래스를 구분합니다.
 이 때, 질문은 두 개의 클래스를 더 명확하게 구분 할수록 (구분된 영역에 하나의 클래스만 더 많이 포함될 수 있도록) 좋은 질문이 되며, 모델은 그러한 질문을 찾기 위해 학습합니다.
 
-### 2-3. Step k
+### Step k
 ![](https://tensorflowkorea.files.wordpress.com/2017/06/2-26.png?w=768){: .wb}
 {: .lead}
 

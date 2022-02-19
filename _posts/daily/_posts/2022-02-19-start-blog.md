@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 블로그 시작
-image: /assets/posts/daily/start.jpg
+comments: true
 categories: [daily]
 description: >
   연구/개발 내용을 담은 블로그 시작
