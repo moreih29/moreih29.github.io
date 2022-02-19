@@ -46,3 +46,12 @@ img + em {
     font-size: .8rem;
     color: light-grey;
 }
+
+p.first::first-letter {
+    font-size: 250%;
+    line-height: 100%;
+}
+
+img.wb {
+    background-color: white;
+}

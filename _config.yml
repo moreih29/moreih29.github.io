@@ -59,6 +59,8 @@ menu:
     submenu:           
       - title:         Object Detection
         url:           object-detection
+      - title:         Machine Learning
+        url:           machine-learning
   - title:             Development
     url:               /dev/
   - title:             Computer Tips
