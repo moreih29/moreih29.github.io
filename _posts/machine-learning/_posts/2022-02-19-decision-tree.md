@@ -8,6 +8,12 @@ description: >
   회귀나 분류 문제를 해결하기 위해 널리 사용되는 기법인 결정 트리를 알아봅니다.
 sitemap: false
 hide_last_modified: true
+image: 
+  path: /assets/img/projects/corona-tomorrow/thumbnail.png
+  srcset: 
+    1920w: /assets/img/projects/corona-tomorrow/thumbnail.png
+    960w:  /assets/img/projects/corona-tomorrow/thumbnail.png
+    480w:  /assets/img/projects/corona-tomorrow/thumbnail.png
 ---
 
 # 결정 트리(Decision Tree)

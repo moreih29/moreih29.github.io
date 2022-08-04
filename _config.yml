@@ -57,16 +57,8 @@ menu:
   - title:             Research
     url:               /research/
     submenu:           
-      - title:         Object Detection
-        url:           object-detection
       - title:         Machine Learning
         url:           machine-learning
-  - title:             Development
-    url:               /dev/
-  - title:             Computer Tips
-    url:               /tips/
-  - title:             Daily
-    url:               /daily/
   - title:             Projects
     url:               /projects/
   - title:             Résumé*
