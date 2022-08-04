@@ -6,7 +6,6 @@ categories: [research]
 tags: [machine-learning]
 description: >
   나무를 모아 숲을 만든 랜덤 포레스트를 살펴봅니다.
-sitemap: false
 hide_last_modified: true
 ---
 

@@ -16,7 +16,6 @@ image:
 links:
   - title: Link
     url: http://epidemic.co.kr/worldwide/news/
-sitemap: false
 ---
 
 # 웹 데이터 기반 전 세계 질병 정보 제공 시스템

@@ -17,7 +17,6 @@ image:
 links:
   - title: Link
     url: https://coronatomorrow.co.kr/
-sitemap: false
 ---
 
 # 코로나 내일
