@@ -8,18 +8,23 @@ description: >
   회귀나 분류 문제를 해결하기 위해 널리 사용되는 기법인 결정 트리를 알아봅니다.
 hide_last_modified: true
 image: 
-  path: /assets/img/projects/corona-tomorrow/thumbnail.png
+  path: /assets/img/research/ml/525px-CART_tree_titanic_survivors_KOR.png
   srcset: 
-    1920w: /assets/img/projects/corona-tomorrow/thumbnail.png
-    960w:  /assets/img/projects/corona-tomorrow/thumbnail.png
-    480w:  /assets/img/projects/corona-tomorrow/thumbnail.png
+    1920w: /assets/img/research/ml/525px-CART_tree_titanic_survivors_KOR.png
+    960w: /assets/img/research/ml/525px-CART_tree_titanic_survivors_KOR.png
+    480w: /assets/img/research/ml/525px-CART_tree_titanic_survivors_KOR.png
 ---
 
 # 결정 트리(Decision Tree)
 
+* toc
+{:toc}
+
+## 개요
+
 결정 트리는 분류와 회귀 문제에서 널리 사용되는 머신러닝 방법입니다. 
-스무고개 게임은 어릴 때 다들 많이 해보셨을 것 같은데요. 
-혹시나 모르시는 분들을 위해 간단히 설명하자면, 게임 주최자는 자신이 생각하는 정답을 정하고 숨깁니다.
+용어를 처음들어보시는 분들이라도 스무 고개 게임은 많이 해보셨을 것 같은데요. 
+스무 고개 게임에 대해서 혹시나 모르시는 분들을 위해 간단히 설명하자면, 게임 주최자는 자신이 생각하는 정답을 정하고 숨깁니다.
 그러면 게임 참여자들은 주최자에게 예/아니오로 대답할 수 있는 질문을 20번 이하로 해서 주최자가 생각한 정답을 맞추면 승리하는 게임입니다.
 결정 트리는 스무고개와 비슷하게 최종 결정에 다다르기 위해서 그림과 같이 예/아니오 질문을 던집니다.
 이러한 결정 방식은 질문의 내용을 명확하게 확인할 수 있기 때문에 모델의 결정을 설명하기 쉽습니다.
@@ -30,9 +35,6 @@ image:
 
 나무의 가지처럼 질문을 하며 답을 찾아 가는 과정
 {: .figcaption}
-
-* toc
-{:toc}
 
 
 ## 동작 방식
