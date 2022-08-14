@@ -3,7 +3,7 @@ layout: post
 title: 랜덤 포레스트(Random Forest)
 comments: true
 categories: [research]
-tags: [machine-learning]
+tags: [machine-learning, classification, regression]
 description: >
   나무를 모아 숲을 만든 랜덤 포레스트를 살펴봅니다.
 hide_last_modified: true

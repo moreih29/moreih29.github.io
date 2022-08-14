@@ -1,0 +1,33 @@
+---
+layout: post
+title: Sample title
+comments: true
+categories: [research]
+tags: []
+description: >
+  sample description
+hide_last_modified: true
+# hide_image: true
+image: 
+  path: 
+  srcset: 
+    1920w: 
+    960w: 
+    480w: 
+---
+
+# Sample title
+
+sample
+{: .first} 
+
+* toc
+{:toc}
+
+## Head2
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Wikipedia-logo-v2-ko.svg/1200px-Wikipedia-logo-v2-ko.svg.png)
+{: .lead}
+
+이미지 캡션
+{: .figcaption}
