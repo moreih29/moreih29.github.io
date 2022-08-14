@@ -60,6 +60,8 @@ menu:
     submenu:           
       - title:         Machine Learning
         url:           machine-learning
+      - title:         Computer Vision
+        url:           computer-vision
   - title:             Projects
     url:               /projects/
   - title:             Résumé*
