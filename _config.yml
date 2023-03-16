@@ -62,6 +62,8 @@ menu:
         url:           machine-learning
       - title:         Computer Vision
         url:           computer-vision
+      - title:         Math
+        url:           math 
   - title:             Projects
     url:               /projects/
   - title:             Résumé*
