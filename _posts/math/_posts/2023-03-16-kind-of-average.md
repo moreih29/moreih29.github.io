@@ -29,7 +29,7 @@ image:
 - 일반적으로 접하는 평균 값이 산술 평균
 - 두 과목 시험 점수의 평균, 월 별 평균 소비 금액 등 다양하게 사용
 - a와 b의 산술평균은 다음과 같이 나타낼 수 있음
-  - $$산술평균 = {a + b \over 2}$$
+  - \$$산술평균 = {a + b \over 2}$$
 
 
 ## 기하 평균
@@ -41,7 +41,7 @@ image:
 - 산술평균을 적용하면 2년 동안의 평균 수익률은 $${2 + 4 \over 2} = 3$$
 - 2년 동안 매 년 3배로 금액이 증가했다고 생각하면, 1년 후, 30만원, 2년 후 90만원으로 맞지 않음
 - 기하평균은 n개의 값의 곱을 n제곱근으로 나누는 것이며 a와 b의 기하평균은 다음과 같이 나타낼 수 있음
-  - $$기하평균 = \sqrt{ab}$$
+  - \$$기하평균 = \sqrt{ab}$$
 - 이것을 위 예제에 적용하면 수익률의 기하평균은 $$\sqrt{2 \times 4} = \sqrt{8}$$
 - 적용하면, 1년 후 $$10\sqrt{8}$$만원, 2년 후 $$10\sqrt{8}\times\sqrt{8} = 10 \times 8 = 80$$만원
 - 비율의 평균을 구할 때 사용
@@ -51,14 +51,14 @@ image:
 - 시간에 따라 변화하는 값의 평균을 알기 위해 사용
 - 역수들의 산술평균을 구하고, 다시 역수로 나타낸 것
 - a와 b의 조화평균은 다음과 같이 나타낼 수 있음
-  - $$조화평균 = {1 \over { {1 \over a} + {1 \over b} \over 2}} = {2 \over { {a + b} \over ab}} = { {2ab} \over {a+b}}$$
+  - \$$조화평균 = {1 \over { {1 \over a} + {1 \over b} \over 2}} = {2 \over { {a + b} \over ab}} = { {2ab} \over {a+b}}$$
 - 속력의 평균을 구할 때 사용
   - 예를 들어, "A와 B사이의 거리 $$l$$을 A에서 B로 이동할 때 시속 80km, B에서 A로 이동할 때 120km로 이동하여 왕복에 2시간이 소요되었다면, 평균 속력은 얼마인가?" 라는 질문에 대해,
-  - $${ {80+120} \over 2} = 100$$ 산술평균을 통해 얻어진 100km/h는 정답이 아님
-  - $$거리=속도 \times 시간$$이므로
+  - 산술평균을 통해 얻어진 $${ {80+120} \over 2} = 100$$ km/h는 정답이 아님
   - 평균 속력 $$v = { {2l} \over t_a + t_b}$$ ($$t_a$$와 $$t_b$$는 각각 A>B, B>A로 이동한 시간)
-  - $$t_a = {l \over {v_a}}$$, $$t_b = {l \over {v_b}}$$ 이므로,
-  - $$v = { {2l} \over t_a + t_b} = { {2l} \over { {l \over v_a} + {l \over v_b}}} = { {2v_av_b} \over {v_a + v_b}}$$
+    - \$$속도 = {거리 \over 시간}$$
+  - 여기서 $$t_a = {l \over {v_a}}$$, $$t_b = {l \over {v_b}}$$ 이므로,
+  - 따라서, $$v = { {2l} \over t_a + t_b} = { {2l} \over { {l \over v_a} + {l \over v_b}}} = { {2v_av_b} \over {v_a + v_b}}$$
     - 조화평균 수식과 같음
 
 ## 세 평균의 기하학적 표현
@@ -71,5 +71,5 @@ image:
 
 ## References
 ---
-- https://blog.naver.com/PostView.naver?blogId=yskim004&logNo=222321099131
-- https://2stndard.tistory.com/138
+- [https://blog.naver.com/PostView.naver?blogId=yskim004&logNo=222321099131](https://blog.naver.com/PostView.naver?blogId=yskim004&logNo=222321099131)
+- [https://2stndard.tistory.com/138](https://2stndard.tistory.com/138)
