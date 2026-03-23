@@ -1,12 +1,43 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Pretendard", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --color-primary: #3b82f6;
   --color-background: #ffffff;
   --color-foreground: #171717;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-card: #ffffff;
+  --color-card-hover: #f9fafb;
+  --color-tag-bg: #f3f4f6;
+  --color-tag-text: #4b5563;
+}
+
+.dark {
+  --color-primary: #60a5fa;
+  --color-background: #0f0f0f;
+  --color-foreground: #e5e5e5;
+  --color-muted: #9ca3af;
+  --color-border: #262626;
+  --color-card: #171717;
+  --color-card-hover: #1f1f1f;
+  --color-tag-bg: #262626;
+  --color-tag-text: #d1d5db;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.category-tab-active {
+  color: var(--color-foreground);
+  border-bottom: 2px solid var(--color-primary);
 }
 
 code[data-theme*=" "],
@@ -15,10 +46,16 @@ code[data-theme*=" "] span {
   background-color: var(--shiki-light-bg);
 }
 
-@media (prefers-color-scheme: dark) {
-  code[data-theme*=" "],
-  code[data-theme*=" "] span {
-    color: var(--shiki-dark);
-    background-color: var(--shiki-dark-bg);
-  }
+.dark code[data-theme*=" "],
+.dark code[data-theme*=" "] span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+
+pre > code {
+  display: grid;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
 }

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export const metadata: Metadata = {
   title: 'moreih29 blog',
@@ -12,13 +14,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko">
-      <body className="min-h-screen bg-background text-foreground antialiased">
-        <div className="mx-auto max-w-3xl px-4 py-8">
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </div>
+    <html lang="ko" suppressHydrationWarning>
+      <body className="min-h-screen antialiased">
+        <ThemeProvider>
+          <div className="mx-auto max-w-5xl px-4 py-8">
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )
@@ -26,9 +30,14 @@ export default function RootLayout({
 
 function Header() {
   return (
-    <header className="mb-12">
+    <header className="mb-12 border-b border-border pb-4">
       <nav className="flex items-center justify-between">
-        <a href="/" className="text-xl font-bold">moreih29</a>
+        <div className="flex items-center gap-6">
+          <a href="/" className="text-xl font-bold">moreih29</a>
+          <a href="/" className="text-sm text-muted hover:text-foreground transition-colors">Posts</a>
+          <a href="/series" className="text-sm text-muted hover:text-foreground transition-colors">Series</a>
+        </div>
+        <ThemeToggle />
       </nav>
     </header>
   )
@@ -36,8 +45,13 @@ function Header() {
 
 function Footer() {
   return (
-    <footer className="mt-16 border-t pt-8 text-sm text-gray-500">
-      <p>© 2026 moreih29. All rights reserved.</p>
+    <footer className="mt-16 border-t border-border pt-8 text-sm text-muted">
+      <div className="flex items-center justify-between">
+        <p>&copy; 2026 moreih29. All rights reserved.</p>
+        <a href="https://github.com/moreih29" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+          GitHub
+        </a>
+      </div>
     </footer>
   )
 }

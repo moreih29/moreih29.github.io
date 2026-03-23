@@ -1,0 +1,44 @@
+---
+title: "React Hooks 핵심 정리 (1) - useState"
+slug: react-hooks-1-usestate
+date: 2026-03-23
+description: "React의 가장 기본적인 Hook인 useState의 동작 원리와 활용법을 정리합니다."
+tags: ["react", "hooks", "useState"]
+published: true
+series: "React Hooks 핵심 정리"
+seriesOrder: 1
+category: "Frontend"
+---
+
+## useState란?
+
+`useState`는 함수형 컴포넌트에서 상태를 관리할 수 있게 해주는 가장 기본적인 Hook입니다.
+
+```tsx
+const [count, setCount] = useState(0)
+```
+
+## 기본 사용법
+
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      클릭 횟수: {count}
+    </button>
+  )
+}
+```
+
+## 함수형 업데이트
+
+이전 상태를 기반으로 업데이트할 때는 **함수형 업데이트**를 사용하는 것이 안전합니다.
+
+```tsx
+// 이전 상태에 의존하는 업데이트
+setCount(prev => prev + 1)
+```
+
+> 다음 편에서는 `useEffect`를 다룹니다.
