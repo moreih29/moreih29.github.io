@@ -17,6 +17,7 @@ export default defineConfig({
         series: s.string().optional(),
         seriesOrder: s.number().optional(),
         category: s.string().default('General'),
+        cover: s.string().optional(),
         metadata: s.metadata(),
         excerpt: s.excerpt(),
         body: s.mdx(),
