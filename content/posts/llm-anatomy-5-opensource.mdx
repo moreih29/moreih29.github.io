@@ -1,0 +1,232 @@
+---
+title: "오픈소스 생태계 — LLM의 민주화"
+slug: llm-anatomy-5-opensource
+date: 2026-03-24
+description: "LLaMA에서 DeepSeek까지, LoRA와 양자화 — 거대 모델을 누구나 쓸 수 있게 만든 기술과 생태계입니다."
+tags: ["llm", "ai", "open-source", "llama", "lora", "quantization", "deepseek", "mixtral"]
+published: true
+series: "LLM 해부학"
+seriesOrder: 5
+category: "AI"
+---
+
+*이 글은 2026년 3월 기준으로 작성됐습니다.*
+
+앞선 편들에서 현대 LLM의 핵심 기술들을 살펴봤다. Flash Attention, RoPE, GQA, KV Cache, MoE, RLHF, RAG. 강력한 기술들이다.
+
+그런데 이것들은 대부분 대형 연구소가 수백만 달러를 들여 만든 모델 위에서 작동했다. 일반 연구자, 스타트업, 개인이 접근하려면 API를 통해서만 가능했다.
+
+2023년부터 이 구도가 바뀌기 시작했다.
+
+이번 편은 그 이야기다. 가중치가 공개된 모델들이 어떻게 생태계를 형성했는가. 수백억 파라미터 모델을 소비자 GPU에서 돌릴 수 있게 만든 기술들. 그리고 그 과정에서 생긴 새로운 질문들.
+
+---
+
+## 계보 ① — LLaMA: 첫 번째 빅뱅
+
+### 충격적인 숫자
+
+2023년 2월 24일, Meta AI의 Hugo Touvron 팀이 **LLaMA**를 발표했다 (arXiv:2302.13971).
+
+결과 하나가 모든 것을 바꿨다. **LLaMA-13B가 GPT-3(175B)를 대부분의 벤치마크에서 능가했다.** 파라미터 수는 13배 적었다.
+
+왜 가능했는가? LLaMA는 6편에서 다룬 Chinchilla의 교훈을 직접 적용했다. "큰 모델을 짧게 학습"하는 대신 "적당한 크기의 모델을 오래 학습"했다. 7B 모델도 1조 토큰, 13B는 1.4조 토큰을 학습했다. 당시 일반적인 학습량의 몇 배였다.
+
+게다가 **가중치를 공개했다**. 처음에는 연구용으로만, 하지만 파급 효과는 즉각적이었다. Hugging Face에 LLaMA 기반 파생 모델이 수천 개 올라왔다.
+
+### 이후의 발전
+
+| 버전 | 시기 | 핵심 변화 |
+|------|------|----------|
+| LLaMA 1 | 2023년 2월 | 7B~65B, 공개 데이터만 사용. 가중치 공개 (연구용) |
+| LLaMA 2 | 2023년 7월 | 7B/13B/70B, 상업적 허용 라이선스, RLHF Chat 버전 추가 |
+| LLaMA 3 | 2024년 4월 | 8B/70B, 128K 컨텍스트, 멀티언어 강화 |
+| LLaMA 3.1 | 2024년 | 8B/70B/405B. 405B는 첫 frontier급 오픈소스 모델 주장 |
+| LLaMA 4 Scout/Maverick | 2025년 | Scout: 109B MoE, Maverick: 약 400B MoE, 네이티브 멀티모달 Early Fusion |
+
+한 가지 짚고 넘어가야 할 점이 있다. Meta는 이 모델들을 "오픈"이라고 부르지만, 훈련 데이터와 코드는 비공개다. 2024년 Nature 기사는 이를 "openwashing"으로 비판했다. 가중치를 공개한다는 것이 곧 완전한 오픈소스를 의미하지는 않는다. 그럼에도 가중치 공개 자체의 영향은 실질적으로 컸다.
+
+---
+
+## 계보 ② — Mistral & Mixtral: MoE의 실증
+
+### Mistral 7B
+
+2023년 9월, 설립한 지 몇 달 안 된 프랑스 스타트업 Mistral AI가 **Mistral 7B**를 공개했다. DeepMind와 Meta 출신 연구자들이 만든 팀이었다.
+
+핵심은 아키텍처 선택이었다. Grouped Query Attention(GQA)과 Sliding Window Attention(SWA)을 결합해 7B 크기에서 LLaMA-2 13B 수준의 성능을 냈다. 더 큰 모델 없이도 충분히 경쟁력 있는 모델을 효율적으로 만들 수 있다는 증명이었다.
+
+### Mixtral 8x7B — MoE의 실제 구현
+
+2023년 12월, Mistral이 **Mixtral 8x7B**를 발표했다 (arXiv:2401.04088). 1편에서 개념으로 소개한 MoE(Mixture of Experts)를 실제로 구현한 모델이다.
+
+구조를 구체적으로 보면: FFN(Feed-Forward Network) 레이어를 8개의 expert로 교체한다. 각 토큰이 이 레이어를 통과할 때마다 router network가 8개 expert 중 2개를 선택한다. 선택된 2개 expert의 출력이 가중 합산된다.
+
+```
+토큰 입력 → Router → expert 2, expert 5 선택
+           → expert 2 출력 × 0.6 + expert 5 출력 × 0.4
+           → 최종 출력
+```
+
+결과적으로 전체 파라미터는 약 47B지만, 한 토큰을 처리할 때 활성화되는 파라미터는 약 13B다. 추론 비용은 13B 모델 수준이다.
+
+성능은 LLaMA-2 70B 및 GPT-3.5와 경쟁하는 수준이었다. **"전체 파라미터 대비 5배 효율"**이 오픈소스로 검증됐다. Apache 2.0 라이선스로 완전 상업적 사용이 가능했다.
+
+---
+
+## 계보 ③ — Qwen과 DeepSeek: 새로운 경쟁자들
+
+### Qwen (Alibaba)
+
+Alibaba Cloud의 **Qwen** 시리즈는 중국어-영어 이중 언어에서 강점을 가진 오픈소스 모델 계열이다.
+
+**Qwen2 (2024년 6월, arXiv:2407.10671)**: 0.5B부터 72B까지 다양한 크기, 30개 이상 언어 지원. 수학, 코딩, 다국어 벤치마크에서 당시 오픈소스 최고 수준이었다.
+
+**Qwen2.5 (2024년 9월, arXiv:2412.15115)**: 사전훈련 데이터를 7조에서 18조 토큰으로 2.5배 이상 늘렸다. Coder, Math 등 특화 모델 라인업도 추가됐다. 4편에서 소개한 YaRN을 활용한 Qwen2.5-1M은 100만 토큰 컨텍스트를 지원한다.
+
+### DeepSeek
+
+DeepSeek-AI는 비용 효율성에서 업계의 주목을 받았다. 동등한 성능을 더 적은 훈련 비용으로 달성했기 때문이다.
+
+**DeepSeek-V3 (2024년 12월, arXiv:2412.19437)**: 671B 전체 파라미터, 토큰당 37B 활성. 두 가지 핵심 기술을 도입했다.
+
+- **MLA(Multi-head Latent Attention)**: Key-Value 캐시를 저차원 잠재 공간으로 압축한다. 추론 시 메모리를 크게 줄인다.
+- **DeepSeekMoE**: 세분화된 expert와 공유 expert를 결합해 expert 활용의 전문성을 높인다.
+
+공식 기술 보고서에 따르면 전체 훈련에 278만 H800 GPU-hours가 소요됐다. 동급 규모 모델 대비 훨씬 적은 비용이었다. 이것이 업계에 던진 메시지는 분명했다: **비용 효율성이 경쟁 구도를 바꿀 수 있다**.
+
+**DeepSeek-R1 (2025년 1월, arXiv:2501.12948)**: 3편에서 다룬 RLHF와 다른 접근이다. 지도학습(SFT) 없이 **순수 강화학습(RL)만으로** 수학과 코딩 추론 능력을 개발했다. OpenAI o1 수준의 추론 성능을 달성했고, 이 결과가 Nature에 게재됐다(2025). LLaMA/Qwen 기반 소형 증류 모델 6종(1.5B~70B)도 오픈소스로 공개했다.
+
+---
+
+## 효율화 기법 ① — LoRA: 파라미터의 1.6%로
+
+### 문제: 파인튜닝의 비용
+
+GPT-3 규모(175B)의 모델을 전체 fine-tuning하려면 수백 GB의 GPU 메모리가 필요하다. Adam optimizer의 momentum과 variance 상태까지 저장하면 가중치 크기의 3~4배다. 대부분의 조직이 불가능한 규모다.
+
+2022년 ICLR에서 발표된 Hu et al.의 **LoRA(Low-Rank Adaptation)** (arXiv:2106.09685)는 이 문제를 수학적으로 접근했다.
+
+### 핵심 아이디어
+
+가설: **파인튜닝으로 일어나는 가중치 변화 ΔW는 내재적으로 저차원이다**. 즉, 전체 d×k 행렬이 변하는 것처럼 보여도, 실제 "의미 있는 변화"는 훨씬 낮은 차원의 부분 공간에서 일어난다.
+
+이 가설 아래에서, ΔW를 두 개의 저차원 행렬 곱으로 분해한다.
+
+```
+ΔW = B × A
+```
+
+- A: r×k 행렬 (r << k)
+- B: d×r 행렬
+
+원래 행렬 W₀은 얼린다(freeze). A와 B만 학습한다. 순전파는 `y = (W₀ + BA)x`가 된다. 초기화는 A는 랜덤 Gaussian, B는 0으로 해서 훈련 초기 ΔW = 0을 보장한다.
+
+파라미터 절감 규모를 수치로 보면: r=8, d=1024 기준으로 ΔW는 2 × 1024 × 8 = 16,384개 파라미터다. 원본 행렬(1,048,576개) 대비 **1.6%**다.
+
+### 결과
+
+실제로 원본 모델 수준의 fine-tuning 품질을 유지하면서 GPU 메모리를 90% 이상 절감했다. 추론 시에는 BA를 W₀에 병합하므로 레이턴시 추가가 없다. 이 논문 이후 DoRA, LoRA-GA, AdaLoRA 등 수백 개의 변형이 파생됐다.
+
+---
+
+## 효율화 기법 ② — QLoRA: 소비자 GPU 혁명
+
+LoRA로도 65B 모델 fine-tuning은 여전히 A100 여러 장이 필요했다. 2023년 NeurIPS에서 Dettmers et al.이 발표한 **QLoRA** (arXiv:2305.14314)는 여기서 한 걸음 더 나갔다.
+
+세 가지 혁신을 LoRA에 더했다.
+
+**4-bit NormalFloat (NF4) 양자화**: 사전훈련 가중치를 4비트로 압축한다. NF4는 LLM 가중치가 정규분포를 따른다는 관찰에서 나온 양자화 방식으로, 정보 손실을 최소화하도록 설계됐다.
+
+**Double Quantization**: 양자화에 사용하는 스케일 상수 자체를 다시 양자화한다. 파라미터당 약 0.37bit를 추가로 절감한다.
+
+**Paged Optimizers**: GPU 메모리가 부족해지는 순간 optimizer 상태를 CPU RAM으로 페이징한다. OOM(Out of Memory) 없이 긴 시퀀스도 학습할 수 있다.
+
+결과: **65B 모델을 단일 48GB GPU에서 fine-tuning할 수 있게 됐다.** QLoRA로 학습한 Guanaco-65B는 ChatGPT 수준의 성능을 보였다. 48GB GPU는 당시 A6000 또는 RTX 4090 수준이다.
+
+---
+
+## 효율화 기법 ③ — 양자화: 실행의 민주화
+
+fine-tuning이 아니라 **실행**의 문제도 있다. FP16으로 저장된 70B 모델은 140GB다. 일반 PC에는 없는 메모리다.
+
+양자화(Quantization)는 가중치를 더 적은 비트로 표현해 모델 크기를 줄인다. 현재 가장 널리 쓰이는 방식은 셋이다.
+
+| 방법 | 접근 | 주 환경 | 특징 |
+|------|------|---------|------|
+| **GPTQ** (2022) | 레이어별 Hessian 기반 오차 최소화 | GPU | 최초 4-bit 대규모 압축 성공 |
+| **AWQ** (2023) | 중요한 1% 가중치를 보호하고 나머지를 공격적으로 압축 | GPU | 역전파 불필요, 빠른 양자화 |
+| **GGUF** (2023, llama.cpp) | CPU+GPU 혼합 오프로드 | CPU+GPU 혼합 | GPU 없어도 실행 가능 |
+
+2024~2025년 vLLM 기반 벤치마크:
+- Marlin-AWQ: 741 tok/s (최고 처리량)
+- Marlin-GPTQ: 712 tok/s
+- GGUF Q4_K_M: CPU 실행 가능, perplexity 6.74로 품질도 우수
+
+어느 쪽을 선택할지는 환경에 따라 다르다. GPU가 충분하면 AWQ나 GPTQ가 빠르다. GPU가 부족하거나 없으면 GGUF가 현실적인 선택이다.
+
+---
+
+## 합성 데이터: 질이 양을 이긴다
+
+큰 모델로 작은 모델을 가르치는 접근이 2023년부터 본격화됐다.
+
+### Stanford Alpaca
+
+2023년 3월, Stanford가 **Alpaca**를 공개했다. LLaMA 7B를 GPT(text-davinci-003)가 생성한 52K 지시-응답 쌍으로 fine-tuning한 모델이다. Self-Instruct 방법론을 따랐다. 데이터 생성 API 비용은 약 500달러였다 (fine-tuning 비용은 별도). 결과: ChatGPT에 근사하는 지시 따르기 능력.
+
+"대형 모델이 생성한 합성 데이터로 소형 모델을 훈련한다"는 패러다임이 확산되는 출발점이었다.
+
+### Microsoft Phi
+
+Alpaca가 지시 튜닝에 합성 데이터를 쓴 것과 달리, Microsoft의 **Phi** 시리즈는 **사전훈련 단계부터** 합성 데이터에 집중했다.
+
+핵심 가설: "교과서급 고품질 데이터로 훈련된 소형 모델이 대형 모델을 능가할 수 있다."
+
+- **Phi-1 (2023)**: 1.3B 파라미터, Python 코딩 특화. 합성 교과서 코드 데이터.
+- **Phi-2 (2023)**: 2.7B 파라미터, 1.4조 토큰 (합성 + 웹 데이터). 상식 추론, 과학, Theory of Mind를 다루는 합성 데이터 포함. 당시 13B 미만 모델 중 최고 추론 성능.
+
+공통 메시지: 데이터의 **크기**가 아니라 **질**이 중요하다.
+
+---
+
+## 멀티모달로의 확장: 현황과 방향
+
+텍스트만 처리하던 LLM이 이미지, 비디오, 오디오로 확장되고 있다. 오픈소스 진영에서도 빠르게 따라가고 있다.
+
+**LLaVA (2023, NeurIPS Oral)**: Microsoft Research에서 발표한 비전-언어 모델. CLIP 시각 인코더와 LLM을 연결해 GPT-4V 수준을 목표로 했다. 훈련은 두 단계다: 시각 인코더 출력을 LLM 임베딩 공간에 정렬하는 단계, GPT 생성 멀티모달 지시 데이터로 fine-tuning하는 단계. 이후 LLaVA-NeXT(2024)에서 다중 이미지, 비디오, 3D로 확장됐다.
+
+**InternVL2.5 (2024, Shanghai AI Lab)**: 6B 파라미터 시각 인코더를 사용하는 대형 VLM. MMMU 벤치마크 70% 이상을 달성한 첫 오픈소스 멀티모달 모델 중 하나다.
+
+**Llama 4 Scout/Maverick (2025)**: LLaMA의 멀티모달 전환. 텍스트와 비전 토큰을 Early Fusion으로 처음부터 함께 처리한다. 200개 언어 사전훈련을 포함했다.
+
+오픈소스 VLM은 폐쇄형 모델 대비 1~2세대 뒤처진다는 평가가 있었지만, 2024년부터 그 격차가 빠르게 좁혀지고 있다. 단, 비디오 이해, 멀티모달 추론, 훈련 비용 등에서 아직 해결되지 않은 과제들이 남아 있다.
+
+---
+
+## 전체 그림: 무엇이 바뀌었는가
+
+2023년 이전에는 대형 LLM에 접근하려면 API가 유일한 방법이었다. 지금은 다르다.
+
+LLaMA가 가중치를 공개하면서 개인 연구자와 소규모 팀이 직접 모델을 가지고 실험할 수 있게 됐다. LoRA와 QLoRA는 수백억 파라미터 모델을 소비자 GPU에서 fine-tuning하는 것을 현실로 만들었다. 양자화는 실행의 문턱을 낮췄다. 합성 데이터는 작은 모델이 큰 모델을 따라잡는 경로를 열었다. Mixtral은 MoE가 오픈소스에서도 작동한다는 것을 증명했다. DeepSeek은 비용 효율성으로 경쟁 구도를 바꿨다.
+
+여전히 최상위 성능을 위해서는 대규모 인프라가 필요하다. 하지만 그 거리는 계속 좁혀지고 있다.
+
+다음 편(6편)은 이 시리즈의 마지막이다. 지금 가장 활발하게 연구되고 있는 영역들 — 추론 모델, 에이전트, 멀티모달의 수렴, 그리고 아직 해결되지 않은 질문들을 다룬다.
+
+---
+
+## 참고 자료
+
+- Touvron et al. (2023). LLaMA: Open and Efficient Foundation Language Models. [arXiv:2302.13971](https://arxiv.org/abs/2302.13971)
+- Jiang et al. (2024). Mixtral of Experts. [arXiv:2401.04088](https://arxiv.org/abs/2401.04088)
+- Hui et al. (2024). Qwen2 Technical Report. [arXiv:2407.10671](https://arxiv.org/abs/2407.10671)
+- Qwen Team (2024). Qwen2.5 Technical Report. [arXiv:2412.15115](https://arxiv.org/abs/2412.15115)
+- DeepSeek-AI (2024). DeepSeek-V3 Technical Report. [arXiv:2412.19437](https://arxiv.org/abs/2412.19437)
+- DeepSeek-AI (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948). Nature 2025
+- Hu et al. (2022). LoRA: Low-Rank Adaptation of Large Language Models. [arXiv:2106.09685](https://arxiv.org/abs/2106.09685). ICLR 2022
+- Dettmers et al. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. [arXiv:2305.14314](https://arxiv.org/abs/2305.14314). NeurIPS 2023
+- Taori et al. (2023). Stanford Alpaca: An Instruction-following LLaMA Model. [https://crfm.stanford.edu/2023/03/13/alpaca.html](https://crfm.stanford.edu/2023/03/13/alpaca.html)
+- Li et al. (2023). Textbooks Are All You Need (Phi-1). [arXiv:2306.11644](https://arxiv.org/abs/2306.11644)
+- Liu et al. (2023). Visual Instruction Tuning (LLaVA). NeurIPS 2023 Oral. [arXiv:2304.08485](https://arxiv.org/abs/2304.08485)
+- InternVL2.5 Technical Blog. [https://internvl.github.io/blog/2024-12-05-InternVL-2.5/](https://internvl.github.io/blog/2024-12-05-InternVL-2.5/)

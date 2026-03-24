@@ -43,6 +43,7 @@ function Header() {
           <a href="/" className="text-xl font-bold">moreih29</a>
           <a href="/" className="text-sm text-muted hover:text-foreground transition-colors">Posts</a>
           <a href="/series" className="text-sm text-muted hover:text-foreground transition-colors">Series</a>
+          <a href="/tags" className="text-sm text-muted hover:text-foreground transition-colors">Tags</a>
         </div>
         <ThemeToggle />
       </nav>

@@ -1,0 +1,233 @@
+---
+title: "긴 문맥과 지식 — RAG, Long Context, 그리고 그 한계"
+slug: llm-anatomy-4-context
+date: 2026-03-24
+description: "RoPE 확장, Ring Attention, RAG 파이프라인 — LLM이 더 많은 정보를 다루는 방법과 그 한계입니다."
+tags: ["llm", "ai", "rag", "long-context", "rope", "hallucination", "ring-attention"]
+published: true
+series: "LLM 해부학"
+seriesOrder: 4
+category: "AI"
+---
+
+*이 글은 2026년 3월 기준으로 작성됐습니다.*
+
+1편에서 RoPE(Rotary Position Embedding)를 다뤘다. 위치 정보를 회전 행렬로 인코딩하는 방식. 우아하고 효과적인 방법이었다.
+
+그런데 한 가지 문제가 있었다. RoPE는 **훈련 때 본 길이 이상으로 일반화하지 못한다**. LLaMA-2는 4K 토큰, LLaMA-3는 8K 토큰이 한계였다. 하지만 실제 사용 환경에서는 수십만, 때로는 수백만 토큰이 필요하다. 긴 문서, 코드베이스, 쌓인 대화 이력.
+
+이번 편은 두 가지 질문을 다룬다.
+
+**"훈련 길이의 벽을 어떻게 넘는가?"** — RoPE를 확장하고, 물리적 메모리 한계를 분산으로 돌파하는 방법들.
+
+**"모델의 지식은 어떻게 최신 상태로 유지하는가?"** — 훈련 컷오프 이후의 세계를 어떻게 다루는가. 그리고 그 방법들의 진짜 한계는 무엇인가.
+
+---
+
+## 핵심 기술 ① — RoPE 확장: 훈련 길이의 벽 넘기
+
+### 왜 벽이 존재하는가
+
+RoPE는 각 위치에 해당하는 회전 주파수를 사용한다. 이 주파수는 차원마다 다르다. 고주파 차원은 짧은 거리 관계를, 저주파 차원은 긴 거리 관계를 포착한다.
+
+모델이 훈련 길이 L을 넘어서면, 그 위치들에서의 RoPE 값은 모델이 훈련 중 한 번도 보지 못한 범위에 있다. 외삽(extrapolation)이 필요한데, RoPE는 그냥 망가진다.
+
+### 1단계: Position Interpolation (PI)
+
+가장 직관적인 해법이 **Position Interpolation(PI)**이다 (Chen et al., 2023). 위치 인덱스를 선형으로 스케일 다운한다. 목표 길이 L'에 맞게 모든 위치를 L/L' 비율로 압축하는 것.
+
+```
+원래: 위치 0, 1, 2, ..., 8191 → 0부터 8191까지 사용
+PI:   위치 0, 0.5, 1, ..., 8191 → 절반 간격으로 압축
+```
+
+효과는 있었다. 하지만 문제가 있었다. 선형 압축은 **고주파 성분을 뭉개버린다**. 원래 잘 구분되던 가까운 위치들이 비슷하게 보이기 시작한다. 미세한 지역 패턴을 포착하는 고주파 차원이 손상된다.
+
+### 2단계: NTK-Aware Interpolation
+
+2023년, Neural Tangent Kernel(NTK) 이론에서 영감을 받은 익명의 연구자가 온라인에서 핵심 아이디어를 제안했다. **주파수마다 다르게 처리하자.**
+
+모든 차원을 똑같이 압축하는 대신, 고주파 차원은 거의 건드리지 않고 저주파 차원을 더 많이 압축한다. Base 주파수를 다음과 같이 변경하면 이 효과가 나타난다.
+
+```
+b' = b × s^(|D| / (|D| - 2))
+```
+
+여기서 `s = L' / L` (목표 길이 / 훈련 길이), `b`는 원래 RoPE base(보통 10,000). 이 변환을 거치면 고주파 차원은 PI보다 훨씬 덜 왜곡된다.
+
+직관적으로: 근거리 정밀도는 지키면서 원거리 범위를 늘린다.
+
+### 3단계: YaRN — 지금의 표준
+
+2023년 Peng et al.이 발표한 **YaRN(Yet Another RoPE ExtensioN)**은 NTK-Aware의 아이디어를 완성형으로 가져왔다 (arXiv:2309.00071, ICLR 2024).
+
+두 가지 핵심 혁신이 있다.
+
+**NTK-by-parts**: 차원을 "고주파 구간(변경 없음)", "저주파 구간(PI 방식)", "중간 구간(혼합)"으로 나누고, ramp 함수로 구간마다 다른 비율을 적용한다. PI와 NTK-Aware를 각 차원에 맞게 섞는 것이다.
+
+**Attention temperature scaling**: 컨텍스트가 길어지면 attention 분포가 지나치게 넓어져 모든 토큰에 고르게 attention하는 현상이 생긴다. YaRN은 softmax의 온도를 스케일에 따라 조정해 이 왜곡을 보정한다.
+
+결과: 기존 방법 대비 **10배 적은 토큰, 2.5배 적은 학습 스텝**으로 동등한 성능. 원본 사전훈련 데이터의 약 0.1% 미만으로 fine-tuning하면 된다.
+
+현재 Qwen, DeepSeek, LLaMA 계열을 포함한 대부분의 현대 오픈소스 모델이 YaRN 방식을 채택하고 있다. Llama 기반 모델의 컨텍스트를 4K에서 128K로 확장하는 데 이 방법이 사용됐다.
+
+---
+
+## 핵심 기술 ② — Ring Attention: 물리적 한계를 분산으로
+
+RoPE 확장은 "모델이 긴 컨텍스트를 이해할 수 있게" 하는 방법이다. 하지만 다른 병목이 있다. **메모리**.
+
+Attention의 메모리 복잡도는 O(n²)이다. 시퀀스가 두 배 길어지면 메모리는 네 배 필요하다. 단일 GPU에서 수백만 토큰을 처리하는 건 물리적으로 불가능하다.
+
+Liu et al. (2023)이 발표한 **Ring Attention** (arXiv:2310.01889, ICLR 2024)은 이 문제를 분산으로 해결한다.
+
+아이디어는 이렇다. 여러 GPU를 **링(ring) 형태**로 연결한다. 각 GPU는 시퀀스의 일부(자신의 청크)만 가지고 있다. 그리고 Attention 계산 중에 Key-Value 블록을 링을 따라 순서대로 전달한다.
+
+```
+GPU 0 → GPU 1 → GPU 2 → GPU 3 → GPU 0 (링)
+  ↑__________________________|
+```
+
+핵심은 **통신과 계산의 완전 오버랩**이다. GPU 0이 자신의 Q와 GPU 1에서 받은 KV로 부분 attention을 계산하는 동안, 동시에 그 KV를 GPU 2로 보낸다. 전송이 계산보다 빠르기만 하면, 추가 오버헤드 없이 GPU 수에 비례해 처리 가능한 시퀀스 길이가 늘어난다.
+
+Blockwise Transformer와 결합하면 메모리 효율이 극대화된다. 이론상 GPU 수를 계속 늘리면 무한에 가까운 시퀀스도 처리할 수 있다. 실제 실험에서도 수백만 토큰 컨텍스트 처리가 검증됐다.
+
+---
+
+## 핵심 기술 ③ — RAG: 지식을 추론 시점에 주입하다
+
+긴 컨텍스트로 더 많은 정보를 처리할 수 있게 됐다. 하지만 다른 문제가 남아 있다. 모델의 **지식 자체의 한계**.
+
+LLM의 지식은 훈련 시점(컷오프)에 고정된다. 2024년 초에 훈련이 끝난 모델은 그 이후에 일어난 일을 모른다. 사내 문서, 개인 데이터, 실시간 정보는 애초에 훈련 데이터에 없다. 그때마다 fine-tuning을 다시 하는 건 비용이 너무 크다.
+
+**RAG(Retrieval-Augmented Generation)**는 이 문제를 다른 방식으로 해결한다. 모델 가중치를 바꾸는 게 아니라, **추론 시점에 외부 지식을 컨텍스트로 주입**한다.
+
+### 기본 파이프라인
+
+RAG는 세 단계로 이루어진다.
+
+**1단계 — Indexing (오프라인)**
+문서를 청크(chunk)로 분할한다. 각 청크를 임베딩 모델로 벡터화한다. 그 벡터를 벡터 DB에 저장해둔다.
+
+**2단계 — Retrieval (쿼리 시점)**
+사용자 쿼리를 같은 임베딩 모델로 벡터화한다. 벡터 DB에서 ANN(Approximate Nearest Neighbor) 검색으로 의미적으로 유사한 청크들을 가져온다.
+
+**3단계 — Generation**
+검색된 청크들을 컨텍스트로 LLM에 전달한다. LLM은 그 정보를 바탕으로 답변을 생성한다.
+
+```
+[사용자 질문] → 임베딩 → 벡터 DB 검색 → 관련 문서 청크 반환
+                                               ↓
+                                    LLM에 컨텍스트로 전달 → 답변
+```
+
+### 고급 RAG 기법 (2024)
+
+기본 파이프라인은 단순하다. 하지만 실제 시스템에서는 여러 한계가 드러났고, 그것을 보완하는 기법들이 등장했다.
+
+**Hybrid Search**: 벡터 검색(의미)과 BM25(키워드)를 결합한다. 둘 중 하나만 쓰는 것보다 일관되게 더 좋은 성능을 보인다. 의미적으로 유사하지만 단어가 다른 경우와, 정확한 키워드 매칭이 필요한 경우를 모두 처리한다.
+
+**HyDE(Hypothetical Document Embeddings)**: 쿼리와 그 답변의 임베딩 유사도는 낮지만, 두 개의 답변-형식 텍스트끼리의 유사도는 높다. HyDE는 LLM에게 먼저 가상의 답변을 생성하게 하고, 그 가상 답변의 임베딩으로 검색한다. 쿼리와 문서 사이의 어휘 격차(vocabulary gap)를 줄이는 효과가 있다.
+
+**Re-ranking**: 빠른 벡터 검색으로 넓은 후보 풀을 만들고, Cross-encoder로 정밀하게 재정렬한다. 초기 검색의 재현율(recall)과 최종 정밀도(precision)를 분리해서 최적화한다.
+
+**Semantic Chunking**: 고정 크기로 자르는 대신, 문장 간 의미 유사도를 계산해 유사도가 급격히 떨어지는 지점에서 청크를 나눈다. 의미 단위가 청크 경계에 걸쳐 잘리는 문제를 줄인다.
+
+---
+
+## RAG vs. Long Context — 어느 쪽을 써야 하는가
+
+컨텍스트 창이 수십만 토큰으로 늘어나면서 자연스러운 질문이 생겼다. 굳이 RAG가 필요한가? 그냥 긴 문서를 통째로 넣으면 안 되는가?
+
+An et al. (2024, EMNLP)이 이 질문을 직접 연구했다 (arXiv:2407.16833).
+
+| 기준 | Long Context LLM | RAG |
+|------|-----------------|-----|
+| 평균 성능 | 충분한 리소스 시 우세 | 약간 낮지만 근사 |
+| 처리 비용 | 높음 (입력 토큰 전체 처리) | 낮음 (관련 청크만 입력) |
+| 최신 정보 | 훈련 컷오프 고정 | 실시간 업데이트 가능 |
+| 동적/다양한 데이터 | 취약 | 강점 |
+| 정적인 긴 문서 | 강점 | 청킹 손실 가능성 |
+
+흥미로운 발견도 있었다. **쿼리의 60% 이상에서 두 방법의 예측이 동일했다**. 이 관찰에서 나온 제안이 **Self-Route**: 모델이 먼저 스스로 쿼리에 답할 수 있는지 자기 평가(self-reflection)를 하고, 확신이 없을 때만 RAG로 라우팅한다. 결과: Long Context 수준 성능을 유지하면서 비용을 크게 절감한다.
+
+2025년 후속 연구(arXiv:2501.01880)는 태스크별로 더 세밀한 그림을 그렸다. Long Context는 질문답변(특히 Wikipedia 기반)에서 우세했고, 대화형 질의에서는 RAG가 앞섰다. 청킹 방식에 따라 요약 태스크에서는 비슷한 성능을 보였다.
+
+결론: 어느 쪽이 항상 옳은 답은 없다. 데이터가 얼마나 자주 바뀌는가, 비용 허용치는 어느 수준인가, 어떤 태스크인가에 따라 달라진다.
+
+---
+
+## 한계 ① — Lost in the Middle
+
+긴 컨텍스트 모델에는 잘 알려지지 않은 치명적인 약점이 있다.
+
+Liu et al. (2023/2024, TACL)이 연구한 현상이다 (arXiv:2307.03172). 제목이 직관적으로 말해준다: **"Lost in the Middle(중간에서 길을 잃다)"**.
+
+핵심 발견: **관련 정보가 컨텍스트의 앞이나 뒤에 있을 때 성능이 가장 좋다. 중간에 있으면 성능이 급락한다.** 그리고 이 U자형 곡선은 "긴 컨텍스트를 지원한다"는 모델에서도 동일하게 나타난다.
+
+원인은 RoPE의 장거리 감쇠(long-term decay) 효과다. 트랜스포머는 구조적으로 시퀀스의 양 끝에 더 높은 attention을 주는 경향이 있다.
+
+2024년 "Found in the Middle" 연구(arXiv:2406.16008, ACL Findings)는 positional attention bias를 직접 보정하는 메커니즘을 제안했다. multi-document QA 등 일부 태스크에서 기존 방법 대비 최대 +15%p 성능 향상을 보였다.
+
+실용적 전략도 있다: 가장 중요한 문서를 컨텍스트의 앞이나 뒤에 배치하고, 덜 중요한 것을 중간에 넣는다. 모델의 편향을 없애는 대신 그것을 활용하는 방법이다.
+
+여기서 중요한 함의가 있다. "컨텍스트 창을 충분히 키우면 모든 문서를 넣어도 된다"는 생각은 틀렸다. 모델이 긴 컨텍스트를 받는다고 해서 균등하게 주의를 기울이지 않는다.
+
+---
+
+## 한계 ② — Hallucination
+
+LLM이 그럴듯한 거짓말을 생성하는 현상. **Hallucination**이라고 부른다.
+
+정확한 정의: 문법적으로 유창하고 자신있게 쓰였지만, 실제로는 틀렸거나 근거 없는 내용을 생성하는 것.
+
+### 왜 일어나는가
+
+원인은 크게 세 층위에서 온다.
+
+**데이터 층위**: 훈련 데이터에 오류, 편향, 허위 정보가 섞여 있다. 모델은 그것도 학습한다.
+
+**훈련 층위**: 언어 모델의 훈련 목표는 "다음 토큰을 예측한다"는 것이지, "사실만 말한다"는 게 아니다. 자신있게 틀리는 것도 자연스러운 텍스트처럼 보이면 보상을 받을 수 있다.
+
+**추론 층위**: 디코딩의 확률적 특성. temperature가 높으면 더 창의적이지만 더 틀릴 수 있다.
+
+### 현재 접근법들
+
+**RAG + Span-level Verification**: 생성된 주장을 검색된 근거와 하나씩 대조한다. 현재 가장 효과적인 방법으로 꼽힌다. 단, RAG 자체가 hallucination을 완전히 막지는 못한다. 잘 정제된 검색 파이프라인도 없는 인용을 생성할 수 있다. Span-level 검증이 반드시 필요하다.
+
+**Calibration-aware Training**: 모델이 모르는 것을 모른다고 말하도록 보상 함수를 재설계한다. "불확실성 표현이 가능한" 모델을 만드는 방향이다.
+
+**Chain-of-Thought + Self-Consistency**: 추론 과정을 명시화하고, 같은 쿼리를 여러 번 샘플링해 다수결로 답을 낸다. 내부 일관성을 높이는 방법이다.
+
+**Targeted Fine-tuning**: 특정 도메인에서 hallucination을 일으키는 하드 케이스를 합성해 훈련한다. 번역 분야에서 2025년 연구에 따르면 hallucination 비율을 90~96% 줄였다는 결과가 있다.
+
+### 해결됐는가
+
+솔직하게 말하면: 아직 해결되지 않았다. 위의 방법들이 모두 hallucination을 줄이지만, 각각 한계가 있다. 검증은 검증 자체의 비용이 들고, 보정은 창의성을 제한하고, Chain-of-Thought는 더 긴 추론이 필요하다.
+
+Ji et al. (2023, ACM Computing Surveys, arXiv:2311.05232)과 Huang et al. (2023, EMNLP Findings)의 서베이는 이 문제가 단일 해법으로 해결되기 어렵다고 결론 내린다. 데이터, 훈련 목표, 추론 방식 모두에 걸친 복합적 접근이 필요하다는 것이 현재 컨센서스다.
+
+---
+
+## 전체 그림
+
+이번 편에서 다룬 기술들은 모두 같은 방향을 향해 있다. LLM이 더 많은 정보를 더 잘 처리하게 만드는 것.
+
+RoPE 확장은 훈련 길이의 벽을 낮췄다. Ring Attention은 물리적 메모리 한계를 분산으로 돌파했다. RAG는 모델이 모르는 정보를 실시간으로 주입하는 통로를 열었다.
+
+하지만 한계도 드러났다. 긴 컨텍스트를 줘도 모델은 균등하게 주의를 기울이지 않는다. RAG가 hallucination을 줄이지만 없애지는 못한다. Hallucination은 단순히 잘못된 정보를 출력하는 것을 넘어, 모델의 훈련 목표와 구조 자체에 뿌리를 둔 문제다.
+
+다음 편에서는 오픈소스 생태계를 다룬다. 이 모든 기술이 어떻게 더 많은 사람들의 손에 들어갔는가. LLaMA에서 DeepSeek까지, LoRA에서 양자화까지 — 대형 모델을 더 작고 더 싸게, 하지만 성능은 유지하는 방법들.
+
+---
+
+## 참고 자료
+
+- Peng et al. (2023). YaRN: Efficient Context Window Extension of Large Language Models. [arXiv:2309.00071](https://arxiv.org/abs/2309.00071). ICLR 2024
+- Liu et al. (2023). Ring Attention with Blockwise Transformers for Near-Infinite Context. [arXiv:2310.01889](https://arxiv.org/abs/2310.01889). ICLR 2024
+- An et al. (2024). Retrieval Augmented Generation or Long-Context LLMs? A Comprehensive Study and Hybrid Approach. [arXiv:2407.16833](https://arxiv.org/abs/2407.16833). EMNLP 2024
+- Jin et al. (2025). Long Context vs. RAG for LLMs: An Evaluation and Revisits. [arXiv:2501.01880](https://arxiv.org/abs/2501.01880)
+- Liu et al. (2024). Lost in the Middle: How Language Models Use Long Contexts. [arXiv:2307.03172](https://arxiv.org/abs/2307.03172). TACL 2024
+- He et al. (2024). Found in the Middle: Calibrating Positional Attention Bias Improves Long Context Utilization. [arXiv:2406.16008](https://arxiv.org/abs/2406.16008). ACL Findings 2024
+- Ji et al. (2023). Survey of Hallucination in Natural Language Generation. [arXiv:2202.03629](https://arxiv.org/abs/2202.03629). ACM Computing Surveys
+- Huang et al. (2023). A Survey on Hallucination in Large Language Models. [arXiv:2311.05232](https://arxiv.org/abs/2311.05232). EMNLP Findings

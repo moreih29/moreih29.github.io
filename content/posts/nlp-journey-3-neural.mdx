@@ -1,0 +1,184 @@
+---
+title: "언어를 이해하는 기계의 여정 (3) — 단어를 벡터로: 임베딩과 신경망 NLP"
+slug: nlp-journey-3-neural
+date: 2026-03-24
+description: "Word2Vec, GloVe, LSTM, Seq2Seq, Attention까지. 2013-2017년 딥러닝이 NLP를 어떻게 바꿨는지, 그리고 흔히 알려진 신화들의 진실을 살펴봅니다."
+tags: ["nlp", "ai", "word2vec", "lstm", "seq2seq", "attention", "deep-learning"]
+published: true
+series: "언어를 이해하는 기계의 여정"
+seriesOrder: 3
+category: "AI"
+---
+
+## 10년의 잠복기
+
+이야기는 2013년이 아니라 2003년에 시작됩니다.
+
+Yoshua Bengio는 2003년 "신경망 기반 언어 모델"을 발표했습니다. 기존 n-gram 모델을 크게 앞서는 성능이었고, 단어를 밀집 벡터로 표현한다는 아이디어도 이미 담겨 있었습니다. 기술적으로는 충분히 앞서 있었습니다.
+
+그런데 아무도 주목하지 않았습니다.
+
+이유는 하나였습니다. 너무 느렸습니다. 당시 1,400만 단어짜리 데이터셋을 40개 CPU로 3주 동안 돌려야 했습니다. 2000년대 NLP 학계는 SVM, CRF, HMM 같은 통계적 방법론이 주류였고, 그 방법들이 충분히 잘 작동하고 있었습니다. "굳이 이 속도로 신경망을 써야 할 이유가 있는가?"라는 질문에 선뜻 그렇다고 대답하기 어려웠죠.
+
+좋은 아이디어가 묻혔습니다. 약 10년 동안.
+
+---
+
+그 10년 사이에 세상이 바뀌었습니다.
+
+2012년 ImageNet 이미지 인식 대회. 토론토 대학의 Alex Krizhevsky, Ilya Sutskever, Geoffrey Hinton 팀이 만든 AlexNet이 top-5 오류율 15.3%로 우승했습니다. 2위(26.2%)와의 격차가 무려 10.8%p. 그 전 해까지 수년간 조금씩 개선되던 오류율이 한 번에 절반 수준으로 떨어진 겁니다.
+
+비결은 세 가지 조합이었습니다: 깊은 합성곱 신경망(CNN), Fei-Fei Li가 2009년에 구축한 1,400만 장짜리 ImageNet 데이터셋, 그리고 Nvidia GTX 580 GPU 두 장. 그래픽 카드가 행렬 연산에 탁월하다는 점을 활용해 신경망 학습을 수십 배 빠르게 만든 것이죠.
+
+결론이 분명해졌습니다. 계산 비용 문제는 GPU로 해결할 수 있다.
+
+NLP 연구자들은 이 결과를 보고 직감했습니다. _"이미지에서 됐으면 텍스트에서도 된다."_
+
+Bengio(2003)의 아이디어가 틀린 게 아니었습니다. 그저 10년 일찍 나왔을 뿐이었습니다. 좋은 아이디어는 하드웨어가 따라올 때까지 기다립니다.
+
+---
+
+## Word2Vec — 혁명의 본질은 속도였다
+
+2013년 Google의 Tomas Mikolov 팀이 Word2Vec를 발표했습니다. 흔히 "단어를 벡터로 표현한 최초의 방법"이라 소개되지만, 실제로는 그렇지 않습니다.
+
+1980년대에 LSA(잠재 의미 분석)가 이미 단어를 벡터 공간에 표현했고, 2003년 Bengio가 신경망 기반 분산 표현을 제안했으며, 2008년 Collobert & Weston은 품사 태깅·개체명 인식 등 4개 NLP 태스크에 사전 학습 임베딩을 적용해 유용성을 입증했습니다(이 논문은 나중에 ICML 2018 Test of Time Award를 받습니다). Word2Vec는 이 흐름의 최종 폭발이었지, 출발점이 아니었습니다.
+
+Word2Vec의 진짜 공헌은 **속도**입니다. 1.6억 단어를 하루 안에 처리했습니다. Bengio(2003)의 모델과 같은 아이디어를 약 1,000배 빠르게 실행한 것이죠. 거기에 공개 툴킷으로 배포해 누구나 내려받아 쓸 수 있게 했습니다.
+
+두 가지 아키텍처가 제안되었습니다:
+
+- **Skip-gram**: 중심 단어를 보고 주변 단어를 예측
+- **CBOW**: 주변 단어들을 보고 중심 단어를 예측
+
+핵심 아이디어는 단순합니다. "비슷한 맥락에서 등장하는 단어는 비슷한 벡터를 가진다." 이 원리로 학습된 벡터는 의미와 문법 관계를 포착합니다.
+
+### king - man + woman = ?
+
+Word2Vec 하면 빠지지 않는 예시입니다. 벡터 연산으로 queen이 나온다는 것. 실제로 작동하기는 합니다. 단, 알려지지 않은 조건이 있습니다.
+
+입력 단어(king, man, woman)를 결과 후보에서 제외하지 않으면 연산 결과는 queen이 아니라 **king 자신**입니다. 논문과 강의에서 흔히 보여주는 예시는 질의 단어를 결과에서 제외하는 트릭을 씁니다.
+
+그리고 실제 정확도는 유추 유형에 따라 크게 달라집니다. 국가-수도 유추(Paris:France = Tokyo:?)는 약 95.4%로 매우 잘 작동하지만, 국가-통화 유추(USA:dollar = Japan:?)는 9.2%에 그칩니다. 성별 유추가 잘 작동하는 건 예외적인 경우에 가깝습니다. 전체 벤치마크 평균은 Word2Vec 68%, GloVe 75.6%입니다.
+
+그렇다고 Word2Vec의 가치가 줄어드는 건 아닙니다. 당시 기준으로 수억 단어에서 하루 안에 고품질 벡터를 얻을 수 있게 된 것, 그리고 그 벡터가 의미 관계를 포착한다는 것 자체가 패러다임 전환이었습니다.
+
+---
+
+## GloVe — 전역 통계를 더하다
+
+2014년 Stanford의 Jeffrey Pennington, Richard Socher, Christopher Manning이 GloVe(Global Vectors for Word Representation)를 EMNLP에서 발표했습니다.
+
+Word2Vec의 접근법을 다시 생각해봅시다. Word2Vec는 문장을 훑으며 주변 단어 쌍만 봅니다. 말뭉치 전체에서 "ice"와 "cold"가 몇 번 함께 등장하는지 같은 전역 통계는 활용하지 않습니다.
+
+GloVe는 전역 단어-단어 공기(co-occurrence) 행렬을 먼저 만든 뒤, 이 통계를 직접 학습에 활용하는 로그-이중선형 회귀 모델입니다. Word2Vec(지역 문맥)의 유연함과 LSA(전역 통계)의 장점을 결합한 것이죠.
+
+결과: 표준 유추 벤치마크에서 GloVe 75.6% vs Word2Vec 68%. Word2Vec를 명확하게 앞섰습니다.
+
+---
+
+## RNN → LSTM → GRU — 순서가 있는 데이터의 도전
+
+임베딩이 단어 하나를 벡터로 만든다면, 문장 전체를 처리하려면 어떻게 해야 할까요? 여기서 등장하는 게 순환 신경망(RNN)입니다.
+
+RNN의 아이디어는 직관적입니다. 단어를 순서대로 읽으면서 이전 상태를 다음 단계로 넘겨줍니다. 문장을 읽듯이요.
+
+그런데 심각한 문제가 있었습니다. **기울기 소실(vanishing gradient)** 문제입니다.
+
+역전파 학습에서 기울기는 시간 축을 거슬러 전파됩니다. 각 타임스텝마다 기울기에 가중치가 곱해지는데, 이 값이 1보다 작으면 점점 작아집니다. 20~30 타임스텝만 거슬러가도 기울기가 10^7 수준으로 감소해버립니다. "100번째 단어"와 관련된 정보를 "1번째 단어" 시점의 파라미터가 학습하는 건 사실상 불가능해집니다.
+
+### LSTM — 게이트로 기억을 제어하다
+
+1997년 Hochreiter & Schmidhuber가 제안한 LSTM(Long Short-Term Memory)은 기울기 소실을 해결하기 위해 게이트 메커니즘을 도입했습니다:
+
+- **입력 게이트**: 새로운 정보를 얼마나 받아들일지
+- **망각 게이트**: 기존 기억을 얼마나 지울지
+- **출력 게이트**: 현재 기억을 얼마나 내보낼지
+
+별도의 **셀 상태(cell state)**라는 고속도로를 두어 기울기가 오래 보존될 수 있는 경로를 만들었습니다.
+
+다만 LSTM도 완전한 해결책은 아닙니다. 매우 긴 시퀀스(수백 토큰 이상)에서는 여전히 성능이 저하되며, 이 한계가 나중에 Attention 메커니즘 개발의 동기가 됩니다.
+
+### GRU — 더 단순하게, 거의 같은 성능으로
+
+2014년 Kyunghyun Cho et al.은 GRU(Gated Recurrent Unit)를 제안했습니다. LSTM의 3개 게이트를 2개(업데이트, 리셋)로 통합해 구조를 단순화했습니다.
+
+| 비교 항목 | LSTM | GRU |
+|-----------|------|-----|
+| 게이트 수 | 3개 | 2개 |
+| 파라미터 수 | 기준 | ~25% 감소 |
+| 학습 속도 | 기준 | 10-30% 빠름 |
+| 짧은 시퀀스 (< 300토큰) | 좋음 | 대등하거나 우월 |
+| 긴 시퀀스 (> 500토큰) | 우세 | 열세 |
+
+GRU는 단순히 "가벼운 LSTM"이 아닙니다. 리소스가 제한된 환경이나 짧은 시퀀스 태스크에서는 종종 더 나은 선택입니다.
+
+---
+
+## Seq2Seq — 가변 길이 시퀀스를 다루다
+
+2014년 Google의 Ilya Sutskever, Oriol Vinyals, Quoc V. Le가 Seq2Seq(Sequence to Sequence) 아키텍처를 NeurIPS에서 발표했습니다.
+
+이전 모델들은 입력과 출력의 길이가 같아야 한다는 제약이 있었습니다. 번역에서 "I love you"(3단어)를 "나는 너를 사랑해"(5형태소)로 변환하는 건 기존 방식으로 직접 다루기 어려웠죠.
+
+Seq2Seq의 해법은 **인코더-디코더** 아키텍처입니다:
+
+1. **인코더**: 입력 문장 전체를 읽어 하나의 고정 크기 벡터(context vector)로 압축
+2. **디코더**: 이 벡터에서 시작해 출력 시퀀스를 하나씩 생성
+
+WMT'14 영어-프랑스어 번역에서 34.81 BLEU(5개 앙상블)를 기록하며 당시 신경망 번역 최고 성능을 달성했습니다.
+
+흥미로운 점 하나: 논문에서 입력 문장을 **역순으로 뒤집어** 넣는 트릭을 씁니다. 입력 A, B, C를 C, B, A 순서로 넣으면, 첫 번째 입력 단어 A가 첫 번째 출력 단어와 가장 가까운 위치에 놓입니다. 단기 의존성이 강화되어 최적화가 훨씬 쉬워지는 원리입니다.
+
+### 병목 문제
+
+하지만 한 가지 근본적인 한계가 있었습니다. 아무리 긴 문장이라도 하나의 고정 크기 벡터로 압축해야 한다는 점입니다. 10단어짜리 문장과 100단어짜리 문장을 같은 크기의 벡터에 욱여넣어야 합니다. 긴 문장에서 성능이 급격히 떨어지는 이유입니다.
+
+이 병목이 다음 혁신의 씨앗이 됩니다.
+
+---
+
+## Attention — 번역가처럼 생각하기
+
+2014년 제출, 2015년 ICLR에 발표된 Bahdanau, Cho, Bengio(Université de Montréal)의 논문 "Neural Machine Translation by Jointly Learning to Align and Translate"가 이 문제를 해결했습니다.
+
+핵심 직관은 단순합니다. 사람이 번역할 때 원문 전체를 머릿속에 통째로 외우고 번역하지 않습니다. 번역하면서 원문의 해당 부분을 다시 봅니다.
+
+Attention은 이 행동을 수학적으로 구현했습니다.
+
+인코더는 각 입력 단어마다 하나의 은닉 상태(hidden state)를 만들어 저장해 둡니다. 디코더가 i번째 출력 단어를 생성할 때, 저장된 모든 은닉 상태를 참조해 각각에 가중치 α를 부여합니다. 이 가중치가 바로 "지금 이 단어를 번역할 때 원문의 어느 부분에 집중하는가"를 나타냅니다.
+
+```
+context_i = Σ α_ij × h_j
+```
+
+α_ij: i번째 출력을 만들 때 j번째 입력 단어에 대한 집중 정도
+
+논문에서 학습된 정렬 행렬을 시각화해보면, 영어-프랑스어 번역에서 대응하는 단어 쌍이 정확하게 연결되는 것을 확인할 수 있습니다. 사람의 언어학적 직관과 일치하는 결과입니다.
+
+고정 벡터 병목이 사라졌고, 번역 품질은 크게 향상되었습니다. 그리고 이 Attention이라는 아이디어는 곧 훨씬 더 큰 혁명의 기반이 됩니다.
+
+---
+
+## 이 시대의 한계와 전환점
+
+2013~2017년은 NLP의 딥러닝 전환기였습니다. Word2Vec은 임베딩을 실용화했고, LSTM/GRU는 긴 시퀀스를 처리하는 방법을 제공했고, Seq2Seq+Attention은 기계 번역을 실용 수준으로 끌어올렸습니다.
+
+하지만 한 가지 근본적인 제약이 남아있었습니다. **순차 처리(sequential computation)**입니다.
+
+LSTM이 됐든 GRU가 됐든, RNN 계열 모델은 타임스텝 t의 결과가 나와야 t+1을 처리할 수 있습니다. 병렬화가 불가능합니다. GPU가 아무리 많아도 시퀀스를 병렬로 처리할 수가 없었죠.
+
+이 병목이 다음 편의 주인공을 불러냅니다.
+
+---
+
+## 참고 자료
+
+- [Mikolov et al. (2013) — Efficient Estimation of Word Representations in Vector Space](https://arxiv.org/abs/1301.3781)
+- [Mikolov et al. (2013) — Distributed Representations of Words and Phrases (NeurIPS)](https://proceedings.neurips.cc/paper/2013/file/9aa42b31882ec039965f3c4923ce901b-Paper.pdf)
+- [Pennington, Socher, Manning (2014) — GloVe (EMNLP)](https://aclanthology.org/D14-1162/)
+- [Sutskever, Vinyals, Le (2014) — Sequence to Sequence Learning with Neural Networks](https://arxiv.org/abs/1409.3215)
+- [Bahdanau, Cho, Bengio (2015) — Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473)
+- [Cho et al. (2014) — Empirical Evaluation of Gated Recurrent Neural Networks](https://arxiv.org/abs/1412.3555)
+- [Kawine (2019) — Word Embedding Analogies: Understanding King - Man + Woman = Queen](https://kawine.github.io/blog/nlp/2019/06/21/word-analogies.html)
+- [Ruder — On Word Embeddings Part 1](https://www.ruder.io/word-embeddings-1/)

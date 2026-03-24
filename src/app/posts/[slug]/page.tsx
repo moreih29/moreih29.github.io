@@ -1,5 +1,6 @@
 import { posts } from '#content'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { MDXContent } from '@/components/mdx-content'
 import { categoryColors } from '@/lib/constants'
 import { SeriesToc, SeriesPrevNext } from '@/components/series-nav'
@@ -43,9 +44,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {post.tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
-              <span key={tag} className="rounded-md bg-tag-bg px-2 py-0.5 text-xs text-tag-text">
+              <Link key={tag} href={`/tags/${encodeURIComponent(tag)}`} className="rounded-md bg-tag-bg px-2 py-0.5 text-xs text-tag-text hover:bg-primary/10 hover:text-primary transition-colors">
                 {tag}
-              </span>
+              </Link>
             ))}
           </div>
         )}

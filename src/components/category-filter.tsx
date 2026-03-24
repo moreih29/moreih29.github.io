@@ -9,7 +9,7 @@ import { Pagination } from '@/components/pagination'
 
 export { categoryColors }
 
-function PostCard({ post, seriesTotal }: { post: Post; seriesTotal?: number }) {
+export function PostCard({ post, seriesTotal }: { post: Post; seriesTotal?: number }) {
   const color = getCategoryColor(post.category)
   const displayTags = post.tags.slice(0, 2)
   return (
@@ -61,55 +61,119 @@ function PostCard({ post, seriesTotal }: { post: Post; seriesTotal?: number }) {
 const POSTS_PER_PAGE = 9
 
 export function CategoryFilter({ posts }: { posts: Post[] }) {
-  const [selected, setSelected] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [showAllTags, setShowAllTags] = useState(false)
   const [page, setPage] = useState(1)
 
   const categories = Array.from(new Set(posts.map((p) => p.category))).sort()
 
-  const filtered = selected.length === 0 ? posts : posts.filter((p) => selected.includes(p.category))
+  const categoryFiltered =
+    selectedCategories.length === 0
+      ? posts
+      : posts.filter((p) => selectedCategories.includes(p.category))
+
+  const TAG_LIMIT = 10
+  const tagCounts = new Map<string, number>()
+  for (const p of categoryFiltered) {
+    for (const t of p.tags) {
+      tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1)
+    }
+  }
+  const availableTags = Array.from(tagCounts.entries())
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([tag]) => tag)
+  const topTags = availableTags.slice(0, TAG_LIMIT)
+  const visibleTags = showAllTags
+    ? availableTags
+    : Array.from(new Set([...topTags, ...selectedTags.filter((t) => availableTags.includes(t))]))
+  const hasMoreTags = availableTags.length > TAG_LIMIT
+
+  const filtered =
+    selectedTags.length === 0
+      ? categoryFiltered
+      : categoryFiltered.filter((p) => selectedTags.some((t) => p.tags.includes(t)))
 
   const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE)
   const paged = filtered.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE)
 
+  function toggleCategory(cat: string) {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    )
+    setSelectedTags([])
+    setPage(1)
+  }
+
+  function toggleTag(tag: string) {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    )
+    setPage(1)
+  }
+
   return (
     <div>
-      <div className="mb-8 flex flex-wrap gap-3">
+      <div className="mb-4 flex flex-wrap gap-3">
         {categories.map((cat) => (
           <label
             key={cat}
             className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors ${
-              selected.includes(cat)
+              selectedCategories.includes(cat)
                 ? 'border-primary bg-primary/10 text-primary'
                 : 'border-border text-muted hover:border-foreground hover:text-foreground'
             }`}
           >
             <input
               type="checkbox"
-              checked={selected.includes(cat)}
-              onChange={() => {
-                setSelected(prev =>
-                  prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
-                )
-                setPage(1)
-              }}
+              checked={selectedCategories.includes(cat)}
+              onChange={() => toggleCategory(cat)}
               className="hidden"
             />
             {cat}
           </label>
         ))}
       </div>
+      {availableTags.length > 0 && (
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          {visibleTags.map((tag) => (
+            <label
+              key={tag}
+              className={`flex cursor-pointer items-center rounded-md border px-2 py-0.5 text-xs transition-colors ${
+                selectedTags.includes(tag)
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border text-muted hover:border-foreground hover:text-foreground'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={selectedTags.includes(tag)}
+                onChange={() => toggleTag(tag)}
+                className="hidden"
+              />
+              {tag}
+            </label>
+          ))}
+          {hasMoreTags && (
+            <button
+              onClick={() => setShowAllTags((prev) => !prev)}
+              className="rounded-md px-2 py-0.5 text-xs text-primary hover:bg-primary/10 transition-colors"
+            >
+              {showAllTags ? '접기' : `+${availableTags.length - TAG_LIMIT}개 더보기`}
+            </button>
+          )}
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {paged.map((post) => {
           const seriesCount = post.series
-            ? posts.filter(p => p.series === post.series).length
+            ? posts.filter((p) => p.series === post.series).length
             : undefined
-          return (
-            <PostCard key={post.slug} post={post} seriesTotal={seriesCount} />
-          )
+          return <PostCard key={post.slug} post={post} seriesTotal={seriesCount} />
         })}
       </div>
       {filtered.length === 0 && (
-        <p className="py-12 text-center text-muted">해당 카테고리에 글이 없습니다.</p>
+        <p className="py-12 text-center text-muted">해당 조건에 맞는 글이 없습니다.</p>
       )}
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
     </div>

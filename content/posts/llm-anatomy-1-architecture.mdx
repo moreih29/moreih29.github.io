@@ -1,0 +1,203 @@
+---
+title: "아키텍처의 지도 — Transformer 이후의 혁신들"
+slug: llm-anatomy-1-architecture
+date: 2026-03-24
+description: "Flash Attention, RoPE, GQA, KV Cache, MoE — 현대 LLM을 구성하는 핵심 기술들을 해부합니다."
+tags: ["llm", "ai", "flash-attention", "rope", "moe", "gqa", "kv-cache", "transformer"]
+published: true
+series: "LLM 해부학"
+seriesOrder: 1
+category: "AI"
+---
+
+GPT-3가 175B 파라미터로 등장했을 때, 사람들은 "왜 가능했나"보다 "무엇을 할 수 있나"에 먼저 주목했다. 그 이후 LLaMA-13B가 GPT-3를 능가했을 때도 숫자가 먼저 화제가 됐다.
+
+하지만 숫자 뒤에는 구체적인 공학적 선택들이 있다. 수천억 개의 행렬 곱셈을 GPU 메모리 안에 어떻게 우겨넣는가. Attention의 제곱 복잡도를 어떻게 다루는가. 긴 문맥에서 위치 정보는 어떻게 인코딩하는가. 모델 크기와 추론 비용은 어떻게 분리하는가.
+
+이 시리즈는 그 공학적 선택들을 해부한다.
+
+1편은 지도를 그린다. 2025년 3월 기준, 현대 LLM을 구성하는 핵심 아키텍처 혁신 다섯 가지 — Flash Attention, RoPE, MQA/GQA, KV Cache, Mixture of Experts — 를 각각 "왜 필요한가 → 핵심 아이디어 → 결과"로 간결하게 정리한다. 이 기술들은 독립적이지 않다. 하나가 다른 하나의 전제가 되고, 조합이 현대 LLM을 만든다. 그 연결을 마지막에 다룬다.
+
+---
+
+## Flash Attention — 계산을 줄인 게 아니라 이동을 줄였다
+
+### 왜 필요한가
+
+표준 Attention의 문제는 계산량이 아니다. **메모리 이동**이다.
+
+Self-attention은 시퀀스 길이 N에 대해 N×N 크기의 attention matrix를 만든다. 이 행렬 전체를 GPU의 HBM(High Bandwidth Memory, 주 비디오 메모리)에 기록하고 다시 읽어야 한다. HBM은 용량은 크지만 느리다. 온칩 SRAM보다 수십 배 느린 대역폭이 실제 학습 속도의 병목이 됐다.
+
+결과: GPU 이론 최대 연산 성능의 25~40%밖에 활용하지 못했다. 나머지는 메모리를 기다리는 시간이었다.
+
+### 핵심 아이디어
+
+Tri Dao 팀이 2022년 제안한 FlashAttention의 핵심은 **IO-Awareness** — 알고리즘이 메모리 계층 구조를 인식하도록 설계하는 것이다.
+
+아이디어: N×N attention matrix를 HBM에 **쓰지 않는다**. 대신 Q, K, V를 타일(tile) 단위로 쪼개어 빠른 온칩 SRAM에서 전부 계산한다. 타일 단위로 계산하려면 softmax를 점진적으로 올바르게 계산하는 "online softmax" 기법이 필요하다 — 전체 행을 보지 않고도 수치적으로 안정적인 softmax를 계산할 수 있다는 수학적 성질을 이용한다.
+
+HBM 접근 횟수 비교:
+
+$$\text{표준 Attention: } O(Nd + N^2)$$
+
+$$\text{FlashAttention: } O\!\left(\frac{N^2 d^2}{M}\right)$$
+
+여기서 N은 시퀀스 길이, d는 head 차원, M은 SRAM 크기다. SRAM이 충분할 때 — 실무에서는 대부분 성립하는 조건 — N² 항이 사라진다.
+
+### 결과 (Dao et al., 2022; NeurIPS 2022)
+
+- Attention 연산 자체 **7.6× 속도 향상** (A100 기준)
+- GPT-2 전체 학습 Hugging Face 구현 대비 최대 **3× 속도 향상**
+- 메모리: O(N²) → **O(N)** (N×N matrix를 HBM에 쓰지 않으므로)
+- **근사(approximate) 아님** — 결과는 표준 attention과 수학적으로 동일
+
+**FlashAttention-2** (Dao, 2023; ICLR 2024)는 GPU thread block과 warp 간 작업 분배를 재설계해 FA-1 대비 약 2× 추가 향상을 달성했다. A100에서 이론 최대 FLOPs/s의 **50~73%** 달성 (FA-1: 25~40%). GPT 2.7B 모델, A100-80GB, bf16 기준 측정에서 A100 당 225 TFLOPs/s(72% MFU)를 기록했다.
+
+---
+
+## RoPE — 회전으로 위치를 기억하다
+
+### 왜 필요한가
+
+Transformer는 본질적으로 순서를 모른다. "나는 밥을 먹었다"와 "밥은 나를 먹었다"를 구분하려면 위치 정보를 별도로 주입해야 한다.
+
+원래 Transformer(Vaswani 2017)는 토큰 임베딩에 sinusoidal 위치 인코딩을 **더하는(add)** 방식을 썼다. 문제는 두 가지였다. 첫째, attention score($QK^T$)에서 두 토큰의 **상대적 거리**가 자연스럽게 반영되지 않는다. 둘째, 학습 시퀀스보다 긴 입력에서의 외삽(extrapolation)이 불안정하다.
+
+### 핵심 아이디어
+
+Su et al.(2021)의 RoPE(Rotary Position Embedding)는 위치 정보를 **회전(rotation)** 으로 인코딩한다. 더하는 게 아니라 돌린다.
+
+d차원 벡터를 d/2개의 2D 평면으로 본다. 각 평면을 위치에 비례하는 각도로 회전시킨다:
+
+$$q_m = R(m\theta) \cdot q, \quad k_n = R(n\theta) \cdot k$$
+
+이렇게 하면 내적 $q_m \cdot k_n$은 자동으로 상대 위치 차이 $(m-n)$의 함수만이 된다. 절대 위치는 회전 행렬 안에, 상대 위치는 내적에 암묵적으로 인코딩된다. 수식 한 줄이 두 가지를 동시에 달성한다.
+
+직관: Q와 K에 나침반을 달아주는 것이다. 두 벡터가 얼마나 같은 방향을 가리키는지(내적)가 곧 얼마나 가까이 있는지를 말해준다.
+
+### 결과
+
+- 절대 위치와 상대 위치를 **하나의 기법으로 통합**
+- 상대 거리가 멀수록 의존도가 자연적으로 감소 (decay 특성)
+- LLaMA, Mistral, Gemma, Qwen 등 주요 오픈소스 LLM의 **사실상 표준**
+- 학습 길이를 넘는 외삽을 위한 YaRN, LongRoPE 등 파생 연구의 기반
+
+---
+
+## MQA / GQA — KV는 공유해도 충분했다
+
+### 왜 필요한가
+
+Multi-Head Attention(MHA)은 각 attention head마다 독립적인 K, V 행렬을 가진다. 추론(inference) 시 이전에 계산한 K, V를 재사용하기 위해 KV cache에 **모든 head의 K, V를 저장**해야 한다.
+
+모델이 크고 시퀀스가 길수록 KV cache 크기가 커지고, 이를 읽는 메모리 대역폭이 토큰 생성 속도의 병목이 된다. 학습 시에는 큰 배치를 병렬 처리하지만, 추론 시에는 토큰을 하나씩 생성하면서 매 스텝 KV cache를 전부 읽어야 한다.
+
+### MQA — 극단적 단순화 (Shazeer, 2019)
+
+K, V head를 단 **하나**로 줄인다. 모든 Q head가 동일한 K, V를 공유한다. H개의 head가 있다면 KV cache 크기는 H배 줄어든다. 추론 속도는 크게 향상된다. 단, 표현력 감소로 품질이 저하될 수 있다.
+
+### GQA — 절충점 (Ainslie et al., 2023)
+
+MHA와 MQA 사이의 중간 지점. Q head를 G개의 그룹으로 묶고, 그룹당 하나의 K, V head를 공유한다.
+
+| 설정 | K/V head 수 | 특성 |
+|------|-------------|------|
+| MHA | H개 (모두 독립) | 품질 최대, 캐시 최대 |
+| GQA | G개 (G < H) | 절충 |
+| MQA | 1개 | 캐시 최소, 품질 저하 가능 |
+
+G=H/4가 실용적 절충점으로 자주 쓰인다. GQA는 MHA 수준의 품질을 유지하면서 MQA에 근접하는 추론 속도를 달성했다. LLaMA 2(34B, 70B), Mistral, Gemma 등 현대 LLM에 표준으로 채택됐다.
+
+---
+
+## KV Cache — 같은 계산을 반복하지 않는다
+
+### 왜 필요한가
+
+LLM은 토큰을 하나씩 생성한다(autoregressive decoding). "안녕하세요"를 생성한 후 "안녕하세요, 저는"을 생성할 때, "안녕하세요"에 대한 K, V는 이미 계산했다. 그런데 매 스텝 처음부터 다시 계산하면 O(L²) 번의 중복 계산이 발생한다 (L: 현재까지 생성한 시퀀스 길이).
+
+### 핵심 아이디어
+
+단순하다. 이미 계산한 K, V 텐서를 GPU 메모리에 **저장(캐싱)**해둔다. 다음 스텝에서는 새 토큰의 K, V만 추가 계산하고 캐시에 append한다. 토큰 생성 횟수 기준 복잡도가 O(L²) → **O(L)** 로 줄어든다.
+
+### 메모리 트레이드오프
+
+속도를 메모리로 산다. 캐시 크기는 상당하다.
+
+> Llama-2-13B, 컨텍스트 4096 토큰, 배치 크기 8 기준 KV cache 약 **25GB** — 모델 파라미터 자체(26GB)와 맞먹는 규모.[^kv-mem]
+
+[^kv-mem]: Llama-2 공개 아키텍처 스펙(레이어 수, head 수, 차원) 기반 계산치. 실제 구현에 따라 다를 수 있다.
+
+이 메모리 압박이 실제 서빙에서 배치 크기와 컨텍스트 길이를 제한하는 주요 요인이다. KV cache 최적화가 LLM 인프라의 핵심 과제가 된 이유다.
+
+### 주요 최적화 기법들
+
+- **PagedAttention** (Kwon et al., 2023): OS의 가상 메모리에서 착안. 캐시를 고정 크기 page로 관리해 단편화를 없앤다. 메모리 낭비 4% 미만, 처리량 대폭 향상. vLLM의 핵심 기술.
+- **Sliding Window** (Mistral 7B): 최근 W개 토큰만 캐싱. 캐시 크기를 고정한 채 긴 컨텍스트를 처리한다.
+- **KV Cache Offloading**: 자주 쓰이지 않는 캐시를 CPU 메모리나 스토리지로 오프로드. NVIDIA 보고 기준 특정 입력 조건에서 최대 14× TTFT 향상.
+- **GQA/MQA**: head 수 자체를 줄여 캐시 크기를 근본적으로 감소.
+
+---
+
+## Mixture of Experts — "크다"와 "비싸다"를 분리하다
+
+### 왜 필요한가
+
+Dense 모델은 파라미터 수와 연산 비용이 정비례한다. 1T 파라미터 모델을 쓰려면 토큰 하나를 생성할 때도 1T 파라미터 전부를 계산해야 한다.
+
+질문: 모델 **용량(파라미터 수)**과 토큰당 **연산량(FLOPs)**을 분리할 수 없을까?
+
+### 핵심 아이디어
+
+FFN(Feed-Forward Network) 레이어를 E개의 "전문가(expert)" FFN으로 대체한다. 각 토큰은 작은 router network가 점수를 매겨 **상위 k개 전문가에게만** 보낸다. 나머지 전문가는 이 토큰에 대해 계산하지 않는다.
+
+```
+토큰 → router → [전문가 1, 전문가 3] → 결과 (E개 중 k개만 활성화)
+```
+
+- 전체 파라미터: E × (expert 크기)
+- 토큰당 계산: k × (expert 크기) — **E가 아닌 k에 비례**
+
+k=2, E=8이면 8배 더 많은 파라미터를 가지면서도 dense 모델 대비 2배의 계산만 한다.
+
+### 역사: Shazeer(2017) → Switch Transformer(Fedus et al., 2022)
+
+Shazeer et al.(2017)은 LSTM 기반 언어 모델과 기계 번역에 MoE를 처음 적용해, 같은 계산 비용으로 성능 향상을 증명하고 top-k routing의 기본 구조를 확립했다.
+
+Switch Transformer(Fedus et al., 2022; JMLR)는 이를 현대 Transformer decoder에 통합했다. 핵심 단순화는 **k=1** — 각 토큰은 단 하나의 전문가에게만 간다. "Switch"라는 이름의 이유다. 1조 파라미터까지 스케일링했고, 동일 compute 예산 기준 T5-XXL 대비 **4~7× 학습 속도 향상**을 달성했다[^switch-note].
+
+[^switch-note]: Switch Transformer의 총 파라미터는 sparse로 T5-XXL보다 훨씬 많다. 속도 비교는 동일 compute(FLOPs) 예산 기준이다.
+
+### 실용상 도전
+
+- **로드 불균형**: 일부 전문가에 토큰이 몰리는 문제. Auxiliary loss로 완화.
+- **학습 불안정**: fp16에서 심각. bf16 사용으로 상당 부분 해결됐다.
+- **통신 비용**: 분산 환경에서 expert routing에 따른 all-to-all 통신이 필요하다.
+
+공개된 아키텍처 기준, MoE를 채택한 대표적 모델로는 **Mixtral 8×7B** (Mistral AI, 2024)가 있다. 8개 전문가 중 토큰당 2개를 활성화하는 구조다.
+
+---
+
+## 다섯 기술의 연결
+
+이 기술들은 독립적으로 발전했지만, 조합이 현대 LLM을 만든다.
+
+**Flash Attention**이 긴 시퀀스를 메모리 효율적으로 처리할 수 있게 했다. **RoPE**가 그 긴 시퀀스에서 위치 정보를 정확하게 인코딩한다. **KV Cache**가 autoregressive 추론을 실용적으로 만들었고, **GQA**가 그 캐시 크기를 줄여 더 많은 요청을 동시에 처리할 수 있게 했다. **MoE**가 파라미터 용량과 연산 비용을 분리해 더 큰 용량을 더 낮은 비용으로 달성했다.
+
+현대 오픈소스 LLM 대부분은 이 기술들을 동시에 사용한다. LLaMA 계열은 RoPE + GQA + KV Cache, Mixtral은 여기에 MoE를 추가한다. Flash Attention은 학습과 추론 모두에서 사실상 표준이 됐다.
+
+다음 편에서는 이 중 하나를 골라 더 깊이 들어간다.
+
+---
+
+## 참고 자료
+
+- Dao et al. (2022). FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. [arXiv:2205.14135](https://arxiv.org/abs/2205.14135) (NeurIPS 2022)
+- Dao (2023). FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning. [arXiv:2307.08691](https://arxiv.org/abs/2307.08691) (ICLR 2024)
+- Su et al. (2021). RoFormer: Enhanced Transformer with Rotary Position Embedding. [arXiv:2104.09864](https://arxiv.org/abs/2104.09864)
+- Shazeer (2019). Fast Transformer Decoding: One Write-Head is All You Need. [arXiv:1911.02150](https://arxiv.org/abs/1911.02150)
+- Ainslie et al. (2023). GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints. [arXiv:2305.13245](https://arxiv.org/abs/2305.13245) (EMNLP 2023)
+- Shazeer et al. (2017). Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer. [arXiv:1701.06538](https://arxiv.org/abs/1701.06538) (ICLR 2017)
+- Fedus et al. (2022). Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity. [arXiv:2101.03961](https://arxiv.org/abs/2101.03961) (JMLR 2022)
+- Kwon et al. (2023). Efficient Memory Management for Large Language Model Serving with PagedAttention. [arXiv:2309.06180](https://arxiv.org/abs/2309.06180)
+- Jiang et al. (2024). Mixtral of Experts. [arXiv:2401.04088](https://arxiv.org/abs/2401.04088)

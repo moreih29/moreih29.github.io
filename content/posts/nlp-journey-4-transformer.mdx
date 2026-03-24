@@ -1,0 +1,220 @@
+---
+title: "언어를 이해하는 기계의 여정 (4) — Attention Is All You Need: Transformer의 등장"
+slug: nlp-journey-4-transformer
+date: 2026-03-24
+description: "2017년 Google의 8명이 발표한 논문 하나가 AI 전체를 바꿨습니다. RNN 없이 Attention만으로 가능한 이유, Self-Attention·Multi-Head·Positional Encoding의 직관, 그리고 'Transformer가 RNN을 모두 대체했다'는 신화의 진실."
+tags: ["nlp", "ai", "transformer", "attention", "self-attention", "deep-learning"]
+published: true
+series: "언어를 이해하는 기계의 여정"
+seriesOrder: 4
+category: "AI"
+---
+
+## 한 문장의 선언
+
+2017년 6월. Google Brain과 Google Research 소속 8명의 연구자가 arXiv에 논문 하나를 올렸습니다.
+
+제목: **"Attention Is All You Need"**
+
+제목 자체가 선언이었습니다. 당시 NLP 최강자였던 LSTM, GRU, RNN 계열 모델들을 향해 "당신들은 필요 없다"고 말하는 것이나 다름없었으니까요. 저자 중 한 명인 Jakob Uszkoreit이 이 제목을 제안했을 때, 전산 언어학계의 저명한 학자인 그의 아버지 Hans Uszkoreit조차 처음에는 회의적이었다고 합니다.
+
+결과부터 말하면: 그들이 옳았습니다.
+
+NeurIPS 2017에서 발표된 이 논문은 현재 92,000회 이상 인용되며 AI/ML 분야 역대 최다 인용 논문 중 하나가 되었습니다. 그리고 8명 중 7명이 Google을 떠나 각자 새로운 AI 회사를 창업했습니다.
+
+---
+
+## 왜 RNN이 한계에 달했나
+
+3편에서 살펴본 RNN 계열 모델들의 공통 약점을 다시 짚어봅시다.
+
+RNN은 순차적(sequential)으로 처리합니다. 타임스텝 1이 끝나야 타임스텝 2를 시작할 수 있습니다. GPU를 100개 준다고 해서 병렬화가 되지 않습니다. 시퀀스가 길어질수록 학습 시간이 선형적으로 늘어납니다.
+
+Attention(Bahdanau 2015)이 긴 시퀀스 문제를 어느 정도 해결했지만, RNN의 순차 처리 자체를 바꾸지는 못했습니다.
+
+Transformer의 핵심 질문은 이겁니다: **"RNN을 아예 없애고 Attention만으로 할 수 있을까?"**
+
+---
+
+## Self-Attention — 문장이 스스로를 바라보다
+
+Bahdanau Attention은 인코더와 디코더 사이에서 작동했습니다. 디코더가 인코더의 어느 부분을 봐야 할지 결정하는 방식이었죠.
+
+Transformer는 한 발 더 나아갑니다. **Self-Attention**은 입력 시퀀스 내부에서 작동합니다. 문장 안의 각 단어가 같은 문장 안의 다른 모든 단어와의 관계를 직접 계산하는 것입니다.
+
+예를 들어 "The animal didn't cross the street because **it** was too tired."라는 문장에서 "it"이 "animal"을 가리킨다는 것을 이해하려면, "it"이 "animal"과 "street" 중 어느 쪽과 더 강하게 연결되는지 파악해야 합니다. Self-Attention은 이걸 한 번에 계산합니다.
+
+### Q, K, V — 도서관에서 책을 찾는 방법
+
+Self-Attention을 이해하는 핵심은 Query, Key, Value 세 벡터입니다.
+
+비유하자면:
+
+- **Query (Q)**: 내가 찾는 것. "이 단어와 관련된 정보를 주세요."
+- **Key (K)**: 각 단어가 붙인 라벨. "나는 이런 정보를 가지고 있습니다."
+- **Value (V)**: 실제로 가져올 내용.
+
+도서관 검색과 같습니다. 내 Query(검색어)가 각 책의 Key(제목/태그)와 얼마나 일치하는지 점수를 매기고, 그 점수에 따라 각 책의 Value(내용)를 가중 합산해 가져옵니다.
+
+수식으로 표현하면:
+
+```
+Attention(Q, K, V) = softmax(QKᵀ / √dk) × V
+```
+
+`√dk`로 나누는 이유가 있습니다. dk(차원수)가 크면 내적값이 커져서 softmax가 극단적으로 몰리고 기울기가 거의 0이 됩니다. 스케일링으로 이 문제를 안정화합니다.
+
+### 왜 병렬화가 가능한가
+
+RNN과의 결정적 차이입니다.
+
+- **RNN**: 타임스텝 1 → 2 → 3 → ... 순서대로 처리 (이전 결과 없이 다음 진행 불가)
+- **Self-Attention**: 모든 단어 쌍의 attention score를 **동시에** 계산 (순서 의존성 없음)
+
+영상회의를 생각해보세요. RNN 방식은 한 명이 말하고, 다음 사람이 그걸 듣고 말하고, 또 다음 사람이... 순서가 강제됩니다. Self-Attention은 모든 참가자가 동시에 서로의 말을 듣고 각자 연관성을 판단합니다.
+
+장거리 의존성도 O(1) 연산으로 직접 연결됩니다. RNN이 100 스텝 거리의 단어를 연결하려면 중간 99단계를 거쳐야 하지만, Self-Attention은 거리에 무관하게 직접 연결합니다.
+
+**단, 이 설계에는 트레이드오프가 있습니다.** 시퀀스 길이 n에 대해 모든 토큰 쌍을 계산해야 하므로 O(n²) 복잡도가 발생합니다. 이것이 Transformer의 근본적인 약점입니다. 수천 개 이상의 토큰을 다루면 메모리와 연산 비용이 폭발적으로 증가합니다.
+
+---
+
+## Multi-Head Attention — 여러 관점에서 동시에
+
+Self-Attention이 하나의 "렌즈"로 문장을 본다면, Multi-Head Attention은 여러 렌즈를 동시에 씁니다.
+
+원본 논문은 8개의 attention head를 사용합니다. 각 head는 독립적인 Q, K, V 가중치 행렬을 가집니다. 각 head의 차원은 전체 모델 차원의 1/8(= 64)입니다.
+
+한 head는 문법적 의존성을(동사-목적어 관계), 다른 head는 의미론적 유사성을, 또 다른 head는 지시 관계를 포착할 수 있습니다. 8개 head의 결과를 이어 붙인(concatenate) 뒤 선형 변환을 적용해 최종 출력을 만듭니다.
+
+동일한 문장을 8명의 전문가가 각자 다른 언어적 측면에 집중해 동시에 분석하고 결과를 합산하는 것과 같습니다.
+
+---
+
+## Positional Encoding — 순서를 기억하는 방법
+
+Self-Attention에는 한 가지 결정적인 맹점이 있습니다. **순서에 무관(permutation-invariant)** 하다는 것입니다.
+
+"고양이가 개를 쫓는다"와 "개가 고양이를 쫓는다"는 단어 구성이 같습니다. Self-Attention만으로는 이 둘을 구분할 수 없습니다.
+
+Transformer는 각 단어의 임베딩에 위치 정보를 더해줍니다. 원본 논문에서는 사인/코사인 함수로 고정된 위치 인코딩을 사용합니다:
+
+```
+PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```
+
+이 방식의 장점:
+- 학습이 필요 없어 파라미터를 추가하지 않음
+- 값이 [-1, 1]에 정규화되어 모델 학습이 안정적
+- 훈련 데이터보다 긴 시퀀스에도 외삽(extrapolation) 가능
+- 상대 위치 관계를 선형 변환으로 표현 가능
+
+이후 BERT는 학습 가능한 절대 위치 임베딩을, 최신 모델들은 RoPE(2021), ALiBi(2022) 등 더 정교한 방법을 사용합니다. 위치 인코딩은 지금도 활발히 연구되는 분야입니다.
+
+---
+
+## Encoder-Decoder — 전체 그림
+
+Transformer의 전체 구조는 인코더 스택과 디코더 스택으로 이루어집니다.
+
+### 인코더 (6개 동일한 레이어)
+
+각 레이어는 두 개의 서브레이어를 가집니다:
+1. **Multi-Head Self-Attention** — 입력 시퀀스 내 단어 간 관계 포착
+2. **Position-wise Feed-Forward Network** — 각 위치 독립적으로 동일한 MLP 적용
+
+### 디코더 (6개 동일한 레이어)
+
+각 레이어는 세 개의 서브레이어를 가집니다:
+1. **Masked Multi-Head Self-Attention** — 아직 생성되지 않은 미래 토큰은 가려둠(마스킹). 번역 시 미래 정답을 보고 치팅하지 못하도록.
+2. **Multi-Head Cross-Attention** — 인코더 출력을 참조. "원문의 어느 부분에 집중할지" 결정
+3. **Position-wise Feed-Forward Network**
+
+모든 서브레이어 뒤에는 두 가지 안전장치가 붙습니다:
+- **Residual Connection**: 입력을 출력에 더하기. `output = x + Sublayer(x)`. 기울기 소실 방지
+- **Layer Normalization**: 특성 차원으로 정규화. 학습 안정화
+
+### Feed-Forward Layer는 무엇을 하는가
+
+Attention이 "어디를 볼지" 결정한다면, Feed-Forward는 "무엇을 알고 있는지"를 기여합니다. 2021년 Geva et al. 연구(EMNLP)에 따르면 Feed-Forward 레이어는 key-value 메모리처럼 작동합니다. Transformer 전체 파라미터의 약 2/3를 차지하며, 하위 레이어는 얕은 패턴을, 상위 레이어는 의미론적 지식을 저장하는 것으로 보입니다.
+
+> **참고** (기술적 각주): 원본 논문은 각 서브레이어 뒤에 Layer Normalization을 적용하는 Post-LN 방식을 씁니다. 이후 연구(Xiong et al., 2020 ICML)에서 서브레이어 앞에 적용하는 Pre-LN이 훈련 안정성이 더 높고 warm-up 없이도 수렴함을 이론적으로 증명했습니다. GPT-2, GPT-3, ViT 등 현대 대형 모델들은 대부분 Pre-LN을 씁니다. 논문이 완벽하지 않아도 이후 연구가 이를 개선하는 과학의 자기 수정적 속성을 잘 보여주는 사례입니다.
+
+---
+
+## 성능과 영향
+
+WMT 2014 기계 번역 결과:
+
+| 과제 | BLEU | 비고 |
+|------|------|------|
+| 영어 → 독어 | 28.4 | 기존 최고 대비 2+ BLEU 향상 |
+| 영어 → 프랑스어 | 41.8 | 신기록 |
+
+학습 시간: 8개 GPU에서 3.5일. 당시 RNN 기반 모델들보다 훨씬 빠릅니다.
+
+이 논문 이후 AI가 어떻게 변했는지:
+
+- **2018**: BERT(인코더만), GPT-1(디코더만) — Transformer 변형의 시작
+- **2020**: GPT-3, 1,750억 파라미터 — 규모의 시대
+- **2020 이후**: Vision Transformer(이미지), Whisper(음성), Stable Diffusion(이미지 생성) — NLP를 넘어 AI 전 분야로 확산
+
+---
+
+## 신화 파괴 — "Transformer가 RNN을 완전히 대체했다"
+
+이건 과장입니다. 정확하게 말하면 반은 맞고 반은 틀립니다.
+
+**맞는 부분**: BERT, GPT 시리즈 등 대규모 언어 모델은 모두 Transformer 기반입니다. NLP 연구의 주류가 Transformer로 이동한 것은 사실입니다.
+
+**틀린 부분 — Transformer의 한계들:**
+
+1. **O(n²) 복잡도**: 이것은 근본적인 한계입니다. 최근 연구(arXiv:2209.04881)에서 Strong Exponential Time Hypothesis가 틀리지 않는 한 Self-Attention의 2차 복잡도는 수학적으로 피할 수 없음이 증명되었습니다.
+
+2. **짧은 시퀀스**: GRU/LSTM은 200-300 토큰 이하 시퀀스에서 Transformer와 대등하거나 더 나은 경우가 있습니다.
+
+3. **스트리밍 처리**: RNN은 토큰을 하나씩 처리하는 게 자연스럽지만, Transformer는 원칙적으로 전체 시퀀스가 필요합니다.
+
+4. **자원 제약 환경**: RNN은 Transformer보다 훨씬 적은 메모리와 연산이 필요합니다.
+
+**현실 사례**: 2020년 Google Translate는 인코더를 Transformer로 교체했습니다. 하지만 디코더는 RNN을 그대로 유지했습니다. Transformer 디코더로 바꿔도 품질 향상이 크지 않은 반면, RNN 디코더가 더 빠르다는 이유에서였습니다.
+
+**2023-2024 RNN의 부활**: Mamba, RWKV 같은 새로운 RNN 변형들이 Transformer의 O(n²) 한계를 극복하며 다시 주목받고 있습니다. RNN이 완전히 사라졌다는 이야기는 아직 이릅니다.
+
+---
+
+## 논문을 쓴 8명의 이후
+
+저자 8명은 모두 동등하게 기여했다고 명시했고, 이름 순서도 무작위입니다.
+
+| 저자 | 이후 행보 |
+|------|-----------|
+| Noam Shazeer | 2021년 Character.AI 공동 창업 |
+| Aidan Gomez | 2019년 Cohere 창업 (기업용 LLM, 2024 기업가치 55억 달러) |
+| Ashish Vaswani + Niki Parmar | Adept AI Labs → Essential AI 공동 창업 |
+| Jakob Uszkoreit | 2020년 Inceptive 공동 창업 (mRNA 의약품 AI) |
+| Illia Polosukhin | 2018년 NEAR Protocol 공동 창업 (블록체인) |
+| Llion Jones | AI 연구소 공동 창업 (LLM 효율화) |
+| Łukasz Kaiser | 2021년 OpenAI 이직 (8인 중 유일하게 창업 안 함) |
+
+8명 중 7명이 Google을 떠났습니다. 그리고 가장 이례적인 행보는 Illia Polosukhin — AI 논문을 쓴 연구자가 블록체인 회사를 창업한 경우입니다.
+
+---
+
+## 전환점
+
+이 논문 하나로 AI의 지형이 바뀌었습니다. 하지만 Transformer는 시작이었습니다. BERT, GPT, 그 이후로 이어지는 대규모 언어 모델의 시대는 다음 편에서 다룹니다.
+
+---
+
+## 참고 자료
+
+- [Vaswani et al. (2017) — Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [NeurIPS 2017 공식 심사 리뷰](https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Reviews.html)
+- [Jay Alammar — The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- [d2l.ai — Transformer Architecture](https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html)
+- [Xiong et al. (2020) — On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745)
+- [Geva et al. (2021) — Transformer Feed-Forward Layers Are Key-Value Memories](https://arxiv.org/abs/2012.14913)
+- [Duman Keles et al. (2022) — On The Computational Complexity of Self-Attention](https://arxiv.org/abs/2209.04881)
+- [Transformer (deep learning) — Wikipedia](https://en.wikipedia.org/wiki/Attention_Is_All_You_Need)

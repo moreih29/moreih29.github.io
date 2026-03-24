@@ -1,0 +1,247 @@
+---
+title: "언어를 이해하는 기계의 여정 (6) — 거대 언어 모델의 시대"
+slug: nlp-journey-6-llm
+date: 2026-03-24
+description: "GPT-3가 열고, Scaling Laws가 설명하고, RLHF가 길들인 LLM의 시대. 규모가 만들어낸 새로운 패러다임과 아직 해결되지 않은 질문들을 살펴본다."
+tags: ["nlp", "ai", "gpt-3", "llm", "scaling-laws", "rlhf", "bert"]
+published: true
+series: "언어를 이해하는 기계의 여정"
+seriesOrder: 6
+category: "AI"
+---
+
+5편은 두 질문을 남기며 끝났다.
+
+**"얼마나 크게 만들어야 하는가?"** 모델이 커질수록 성능이 오르는 건 분명했다. 하지만 크기, 데이터, 연산의 비율을 어떻게 잡아야 최적인지는 아무도 수식으로 정리하지 못했다.
+
+**"크기만으로 충분한가?"** 더 크게 만들면 더 좋은 AI가 나오는 것처럼 보였다. 하지만 크게 만든 모델이 거짓말을 더 유창하게 하고, 위험한 내용을 더 자연스럽게 생성한다면?
+
+이번 편은 그 두 질문에 대한 답이다. 그리고 그 과정에서 단방향 설계(GPT 계열)가 어떻게 LLM 시대의 주류로 자리잡게 됐는지도 함께 이야기한다.
+
+결론부터: 단순한 "다음 토큰 예측"에 규모를 더하면, 예측하지 못한 일들이 벌어졌다.
+
+---
+
+## 시대적 맥락 — 규모가 달라지면 무엇이 달라지는가
+
+2020년은 GPT-3가 등장한 해다. 175B(1,750억) 개의 파라미터. 당시 두 번째로 큰 비희소(non-sparse) 언어 모델보다 10배 컸다.
+
+그 전까지 "큰 모델"은 수십억 파라미터 수준이었다. GPT-3는 그 한계를 한 번에 뛰어넘었다. 그리고 사람들이 예상하지 못했던 능력들이 나타나기 시작했다.
+
+중요한 맥락이 있다. GPT-3의 학습에 들어간 비용은 외부에서의 추산으로 수백만 달러 수준으로 알려져 있다 (Lambda Labs의 계산에 따르면 V100 기준 약 $4.6M 수준이라는 추정이 있지만, 이는 OpenAI 공식 수치가 아니라 외부 추산치다). 그래서 GPT-3는 오픈소스로 공개되지 않고 API로만 제공됐다. 이것이 "Foundation Model + API" 경제 구조의 시작이었다.
+
+---
+
+## 핵심 기술 ① — GPT-3와 In-Context Learning
+
+GPT-3의 공식 논문 제목은 "Language Models are Few-Shot Learners"다. 여기서 "few-shot"의 의미를 정확히 이해하는 게 중요하다.
+
+일반적인 머신러닝에서 few-shot learning은 소량의 레이블 데이터로 모델을 **파인튜닝**하는 것을 뜻한다. 가중치가 업데이트된다.
+
+GPT-3의 few-shot은 다르다. **가중치 업데이트가 전혀 없다**. 프롬프트에 예시를 넣어주면 모델이 알아서 패턴을 파악하고 새 입력에 적용한다.
+
+```
+예시 1: "한국어: 안녕하세요 → 영어: Hello"
+예시 2: "한국어: 감사합니다 → 영어: Thank you"
+새 입력: "한국어: 잘 자요 → 영어: "
+```
+
+이것이 **In-Context Learning**이다. 모델은 이 문맥(context)에서 "번역 태스크구나"를 추론하고, 가중치를 건드리지 않고도 수행한다.
+
+GPT-3는 세 가지 모드를 지원했다.
+
+| 모드 | 예시 수 | 설명 |
+|------|---------|------|
+| Zero-shot | 0 | 태스크 설명만 제공 |
+| One-shot | 1 | 예시 1개 제공 |
+| Few-shot | 10~100 | 여러 예시 제공 |
+
+"모델이 크면 클수록 프롬프트만으로 새 태스크를 해결할 수 있다"는 이 발견은 충격적이었다. 파인튜닝 없이 범용 사용이 가능하다는 가능성을 열었다.
+
+---
+
+## 핵심 기술 ② — Scaling Laws: 성능을 예측하는 방정식
+
+GPT-3가 등장하기 5개월 전인 2020년 1월, OpenAI의 Jared Kaplan 팀이 중요한 논문을 냈다. "Scaling Laws for Neural Language Models."
+
+이 논문이 밝힌 것: **언어 모델의 성능(손실)은 세 가지 요소와 멱함수(power-law) 관계를 이룬다.**
+
+1. 모델 크기 (파라미터 수)
+2. 학습 데이터 크기 (토큰 수)
+3. 연산량 (compute, FLOPs)
+
+그리고 이 관계는 7 orders of magnitude(1천만 배의 범위)에 걸쳐 깨지지 않았다. 즉, 규칙이 성립하는 범위가 믿기 어려울 만큼 넓었다.
+
+실용적 결론은 이것이었다: 고정된 compute 예산이 있다면, **모델은 크게, 데이터는 상대적으로 적게** 학습하는 게 최적이다. 큰 모델을 수렴 전에 멈추는 전략.
+
+GPT-3는 이 원칙을 따라 설계됐다. Scaling Laws는 LLM 개발을 "과학"으로 만든 논문이었다.
+
+### Chinchilla: 2년 뒤에 뒤집힌 통념
+
+2022년 3월, Google DeepMind의 Jordan Hoffmann 팀이 "Training Compute-Optimal Large Language Models"를 발표했다. 모델 이름은 **Chinchilla**였다.
+
+결론은 Kaplan과 달랐다.
+
+| 항목 | Kaplan (2020) | Chinchilla (2022) |
+|------|--------------|------------------|
+| 최적 스케일링 | 모델 크기 우선 | 모델:데이터 동등 비율 |
+| 파라미터당 권장 토큰 | 약 1.7배 | 약 20배 |
+| GPT-3 평가 | 올바른 방향 | 심각하게 undertrained |
+
+Chinchilla의 주장: 모델 크기와 학습 토큰 수는 **동등하게** 늘려야 한다. 모델을 2배 키우면 학습 데이터도 2배 늘려야 compute-optimal이다.
+
+검증 방법도 직접적이었다. Gopher(280B)와 같은 compute 예산으로, 70B 파라미터에 1.3조 토큰으로 학습한 Chinchilla를 만들었다. 결과: Chinchilla가 GPT-3(175B), Gopher(280B) 모두를 능가했다.
+
+즉, GPT-3는 "너무 큰 모델에 너무 적은 데이터"였다는 것이다.
+
+**왜 Kaplan과 달랐는가?** 실험 규모의 차이, 학습률 스케줄 미최적화, 파라미터 카운팅 방식의 차이가 복합적으로 작용한 것으로 분석된다.
+
+Chinchilla 이후, 더 큰 모델이 아니라 더 많은 데이터로 학습한 적당한 크기의 모델이 주목받기 시작했다. LLaMA가 그 대표적 예다.
+
+---
+
+## 핵심 기술 ③ — RLHF와 InstructGPT: 길들이기
+
+GPT-3는 강력했지만, 원하는 대로 동작하지 않았다. 사실을 꾸며내고, 편향된 내용을 생성하고, 때로는 위험한 텍스트를 출력했다. 크기가 클수록 더 유창하게 틀렸다.
+
+이 문제를 **정렬(Alignment)**이라고 부른다. 모델이 우리가 원하는 방향으로 행동하게 만드는 것.
+
+2022년 3월, OpenAI의 Long Ouyang 팀이 "Training language models to follow instructions with human feedback"을 발표했다. **InstructGPT**다.
+
+핵심 방법은 **RLHF(Reinforcement Learning from Human Feedback)**였다. 이 아이디어의 뿌리는 2017년 Christiano et al.이 쓴 "Deep Reinforcement Learning from Human Preferences"까지 거슬러 올라간다. 당시엔 로봇 시뮬레이션에서 900번의 인간 비교만으로 백플립을 학습시키는 데 쓰였다.
+
+InstructGPT는 이 방법을 언어 모델에 적용했다. 3단계로 이루어진다.
+
+```
+1단계 (SFT): 인간이 직접 작성한 고품질 응답으로 GPT-3 파인튜닝
+2단계 (RM): 모델 출력들에 인간이 순위를 매기면 그 순위로 보상 모델 학습
+3단계 (PPO): 보상 모델을 최대화하도록 강화학습으로 정책 업데이트
+```
+
+결과가 놀라웠다. **1.3B 파라미터 InstructGPT가 175B GPT-3보다 인간 평가에서 높은 점수를 받았다.** 크기가 100배 작은 모델이 이긴 것이다. "정렬이 크기보다 중요하다"는 메시지였다.
+
+InstructGPT의 방법론(RLHF)은 이후 ChatGPT를 비롯한 현대 대화형 AI 시스템들의 학습 방법론으로 자리잡았다.
+
+### DPO: RLHF를 단순화하다
+
+RLHF의 한계는 복잡성이었다. 보상 모델을 따로 학습하고, PPO라는 불안정한 강화학습 알고리즘을 사용해야 했다.
+
+2023년 5월, Stanford의 Rafael Rafailov 팀이 **DPO(Direct Preference Optimization)**를 발표했다. 수학적으로 RLHF의 최적화 목표가 언어 모델 파라미터로 직접 표현될 수 있음을 증명했다. 별도의 보상 모델이 필요 없다. 선호도 데이터 (A 응답이 B 응답보다 낫다는 쌍)만 있으면, 표준 분류 손실로 직접 언어 모델을 최적화할 수 있다.
+
+성능은 PPO 기반 RLHF와 동등하거나 더 나았다. 구현 복잡도는 크게 낮아졌다. DPO와 그 변형들은 현재 LLM 정렬의 주요 방법론으로 쓰이고 있다.
+
+---
+
+## Foundation Model 개념
+
+2021년 8월, Stanford CRFM(Center for Research on Foundation Models)의 Rishi Bommasani 외 100명 이상이 공동 저술한 "On the Opportunities and Risks of Foundation Models"가 발표됐다.
+
+이 논문은 새로운 용어를 공식화했다: **Foundation Model**.
+
+정의는 이렇다: "대규모 데이터로 자기지도학습(self-supervision)을 통해 사전학습된 후, 다양한 다운스트림 태스크에 적응(adapt)될 수 있는 모델." BERT, GPT-3, DALL-E가 모두 여기에 해당한다.
+
+"Foundation(기반)"이라는 단어를 선택한 이유가 의미심장하다. 기반은 중요하면서도 그 자체로 완성품이 아니다. 잘못 만든 기반은 위에 세우는 모든 것을 위태롭게 하고, 잘 만든 기반은 다양한 응용의 토대가 된다.
+
+이 개념화는 "태스크마다 모델을 새로 만들던 시대"에서 "하나의 기반 모델을 다양한 태스크에 적응시키는 시대"로의 전환을 명확히 정의했다.
+
+---
+
+## LLaMA: 오픈소스 혁명
+
+2023년 2월 24일, Meta AI의 Hugo Touvron 팀이 **LLaMA**를 발표했다. "Open and Efficient Foundation Language Models"라는 부제가 핵심이었다.
+
+LLaMA는 Chinchilla의 교훈을 직접 적용했다. 크기보다 데이터가 중요하다. 그리고 실용적인 이유에서 Chinchilla optimal보다 더 오래 학습(over-train)했다. 추론 비용을 줄이기 위해서였다. 배포 후 수백만 번 추론할 것을 생각하면, 학습 비용을 조금 더 써서 더 작고 유능한 모델을 만드는 게 경제적으로 맞다.
+
+결과: **LLaMA-13B가 GPT-3(175B)를 대부분의 벤치마크에서 능가했다.** 파라미터 수는 13배 적었다.
+
+모든 학습 데이터는 공개 데이터였다 (Common Crawl, GitHub, Wikipedia, Books, ArXiv 등).
+
+그리고 무엇보다, **가중치를 공개했다**.
+
+파급 효과는 즉각적이었다. Hugging Face에 LLaMA 기반 파생 모델이 7,000개 이상 올라왔다. Alpaca, Vicuna, WizardLM — 소규모 파인튜닝으로 특화된 능력을 가진 모델들이 쏟아졌다. 대규모 LLM 연구가 빅테크의 전유물에서 학계와 개인 개발자에게도 열렸다.
+
+LLaMA 2(2023년 7월)에서는 상업적 사용 허가와 RLHF 적용 채팅 버전이 추가됐다.
+
+---
+
+## 한계와 논쟁 — 창발적 능력은 진짜인가
+
+LLM 시대의 가장 흥미로운 학술 논쟁 중 하나가 **창발적 능력(Emergent Abilities)**을 둘러싼 논쟁이다.
+
+### Wei et al. (2022): "새로운 능력이 갑자기 나타난다"
+
+2022년 6월, Google의 Jason Wei 팀이 "Emergent Abilities of Large Language Models"를 발표했다. 핵심 주장:
+
+> 소규모 모델에는 전혀 없지만, 특정 규모 임계값을 넘으면 갑자기 나타나는 능력이 있다.
+
+예시:
+- 3자리 산술 연산: 약 10²² FLOPs(~13B 파라미터) 수준에서 갑자기 정확도 급등
+- Chain-of-Thought(단계적 추론): 약 10²³ FLOPs(~100B 파라미터) 수준에서 출현
+
+Wei는 이런 능력을 137개 이상 문서화했다. 이 발견의 함의는 명확했다: "모델을 계속 키워야 한다. 어떤 능력이 나타날지 모르니까."
+
+### Schaeffer et al. (2023): "그것은 측정의 착각이다"
+
+2023년 4월, Stanford의 Rylan Schaeffer 팀이 "Are Emergent Abilities of Large Language Models a Mirage?"를 발표했다. NeurIPS 2023 Outstanding Paper를 수상했다.
+
+핵심 주장:
+
+> 창발적 능력은 모델의 근본적 변화가 아니라, 연구자가 선택한 **측정 방법의 인공물(artifact)**이다.
+
+근거:
+- BIG-Bench 태스크의 창발적 능력 중 92% 이상이 "Multiple Choice Grade" 또는 "Exact String Match" 두 가지 불연속 메트릭 하에서만 나타난다.
+- Cross-entropy나 Token Edit Distance 같은 **연속형 메트릭**으로 측정하면, 같은 데이터에서 급격한 상전이가 사라지고 부드러운 성능 향상이 관찰된다.
+- 소규모 모델 데이터가 적어서 추정 오류도 발생한다.
+
+즉, "정답/오답"처럼 불연속적으로 측정하면 임계값 직전까지 0점이다가 갑자기 점수가 오르는 것처럼 보인다. 하지만 "얼마나 아깝게 틀렸나"를 측정하면 처음부터 서서히 좋아지고 있었다는 것이다.
+
+### 논쟁의 현재 상태
+
+이 논쟁은 아직 해결되지 않았다.
+
+Wei는 Schaeffer의 메트릭 비판을 부분적으로 인정하면서도, 모델 크기가 충분히 촘촘하게 존재하지 않아 중간 지점을 관찰하지 못했을 가능성도 지적했다. 창발의 정의도 "급격한 상전이"에서 "선형보다 빠른 성능 향상"으로 완화되는 추세다.
+
+중요한 것은, 창발이 메트릭 아티팩트라는 Schaeffer의 주장이 사실이더라도 — 대규모 모델이 소규모 모델에는 없는 능력을 갖는다는 관찰 자체가 틀린 것은 아니라는 점이다. 그것이 "갑작스럽게" 나타나는지가 논쟁의 대상이다.
+
+---
+
+## 한 가지 더 — 비공개 모델에 대해
+
+2023년부터 주요 LLM들(GPT-4, Claude, Gemini 등)의 내부 아키텍처는 공개되지 않고 있다. 파라미터 수조차 공식 발표가 없는 경우가 많다.
+
+이 포스트에서는 공개된 사실만 다루었다. "GPT-4는 ~개의 전문가 혼합(MoE) 구조다"와 같은 추측은 검증되지 않은 것이다. 미공개 모델에 대해서는 검증된 성능 결과나 공식 발표만을 기준으로 이야기해야 한다.
+
+---
+
+## 마무리 — 여정의 끝에서
+
+이 시리즈는 1950년대 튜링 테스트의 질문에서 출발했다. "기계가 언어를 이해할 수 있는가?"
+
+지금 우리가 가진 대형 언어 모델들은 그 질문에 어떤 의미에서는 놀라운 방식으로 답하고 있다. 하지만 새로운 질문들을 쏟아내기도 한다.
+
+창발적 능력은 진짜 이해인가 패턴 매칭인가? 정렬된 모델은 진정으로 안전한가? 수백만 달러의 학습 비용 없이도 이 능력에 접근할 수 있는가? LLaMA와 오픈소스 생태계는 그 마지막 질문에 적어도 부분적으로 답하기 시작했다.
+
+역사는 계속된다.
+
+그런데 이 여정 어딘가에서 중요한 것들을 지나쳤다. GPT-3가 175B 파라미터로 가능했던 이유, LLaMA가 더 적은 파라미터로 더 나은 성능을 낸 이유. 숫자 뒤에는 구체적인 공학적 선택들이 있다.
+
+어떻게 수천억 개의 행렬 곱셈을 GPU 메모리 안에 우겨넣는가. Attention의 $O(n^2)$ 복잡도를 어떻게 줄이는가. 긴 문맥을 처리할 때 위치 정보는 어떻게 인코딩하는가. 모델이 커질수록 추론 비용은 어떻게 분산시키는가.
+
+이 질문들은 다음 시리즈에서 다룬다.
+
+**[LLM 해부학: 현대 언어 모델의 엔지니어링]** — Transformer 이후 핵심 아키텍처 혁신들을 하나씩 해부한다. Flash Attention, RoPE, GQA, KV Cache, Mixture of Experts. 각 기술이 왜 필요했고, 어떻게 작동하며, 무엇을 바꿨는지.
+
+---
+
+## 참고 자료
+
+- Brown et al. (2020). Language Models are Few-Shot Learners. [arXiv:2005.14165](https://arxiv.org/abs/2005.14165)
+- Kaplan et al. (2020). Scaling Laws for Neural Language Models. [arXiv:2001.08361](https://arxiv.org/abs/2001.08361)
+- Bommasani et al. (2021). On the Opportunities and Risks of Foundation Models. [arXiv:2108.07258](https://arxiv.org/abs/2108.07258)
+- Hoffmann et al. (2022). Training Compute-Optimal Large Language Models (Chinchilla). [arXiv:2203.15556](https://arxiv.org/abs/2203.15556)
+- Ouyang et al. (2022). Training language models to follow instructions with human feedback. [arXiv:2203.02155](https://arxiv.org/abs/2203.02155)
+- Wei et al. (2022). Emergent Abilities of Large Language Models. [arXiv:2206.07682](https://arxiv.org/abs/2206.07682)
+- Touvron et al. (2023). LLaMA: Open and Efficient Foundation Language Models. [arXiv:2302.13971](https://arxiv.org/abs/2302.13971)
+- Schaeffer et al. (2023). Are Emergent Abilities of Large Language Models a Mirage? [arXiv:2304.15004](https://arxiv.org/abs/2304.15004)
+- Rafailov et al. (2023). Direct Preference Optimization. [arXiv:2305.18290](https://arxiv.org/abs/2305.18290)
+- Christiano et al. (2017). Deep Reinforcement Learning from Human Preferences. [arXiv:1706.03741](https://arxiv.org/abs/1706.03741)

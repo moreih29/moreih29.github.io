@@ -1,0 +1,175 @@
+---
+title: "언어를 이해하는 기계의 여정 (5) — 사전학습의 시대: ELMo, GPT, BERT"
+slug: nlp-journey-5-pretrained
+date: 2026-03-24
+description: "2018년, 단 한 해에 ULMFiT·ELMo·GPT·BERT가 연달아 등장하며 NLP의 지형이 바뀌었다. 사전학습+파인튜닝이 표준이 된 이유와 양방향 vs 단방향 설계 철학의 갈림길을 살펴본다."
+tags: ["nlp", "ai", "bert", "gpt", "elmo", "transformer", "pretrained-models"]
+published: true
+series: "언어를 이해하는 기계의 여정"
+seriesOrder: 5
+category: "AI"
+---
+
+4편에서 살펴본 Transformer는 "아키텍처"였다. 2018년은 그 아키텍처를 *어떻게 학습시킬 것인가*라는 질문에 답한 해였다. 그 답은 "먼저 크게 학습시키고, 나중에 튜닝한다"는 사전학습(pre-training)이었다.
+
+그리고 이 질문에 대한 답이 단 한 해에 네 번이나 나왔다.
+
+## 시대적 맥락 — NLP의 ImageNet 모멘트
+
+컴퓨터 비전 분야에서는 오래전부터 정착된 패턴이 있었다. ImageNet으로 사전학습한 모델을 받아서, 내 데이터로 파인튜닝한다. 코드 몇 줄이면 최첨단 이미지 분류기를 만들 수 있었다.
+
+NLP는 달랐다. 태스크마다 모델을 처음부터 새로 학습했다. 레이블된 데이터가 충분히 있어야 했고, 학습된 지식은 다른 태스크로 이전되지 않았다.
+
+2018년, Sebastian Ruder는 "NLP's ImageNet moment has arrived"라는 글에서 이 균형추가 드디어 기울기 시작했음을 선언했다. 세 모델이 그 신호탄이었다: ELMo, ULMFiT, GPT.
+
+---
+
+## 핵심 기술 ① — ULMFiT: 잊혀진 선구자
+
+많은 NLP 역사 서술이 이 모델을 건너뛴다. ELMo → GPT → BERT로 바로 넘어간다. 하지만 시간순으로 보면 2018년의 첫 번째 사전학습 전이학습 모델은 **ULMFiT**이었다.
+
+**Jeremy Howard**(fast.ai)와 **Sebastian Ruder**(Google Brain)가 2018년 1월에 arXiv에 올린 이 논문은 "Universal Language Model Fine-tuning for Text Classification"이라는 이름으로 NLP 전이학습의 3단계 프레임워크를 처음으로 체계화했다.
+
+```
+1단계: 일반 도메인 언어 모델 사전학습 (WikiText-103)
+2단계: 태스크 도메인에 맞게 언어 모델 파인튜닝
+3단계: 태스크별 분류기 파인튜닝
+```
+
+결과는 놀라웠다. 6개 텍스트 분류 태스크에서 오류율이 18-24% 감소했고, 레이블 데이터 100개만으로 100배 더 많은 데이터로 학습한 모델과 동등한 성능을 냈다.
+
+아키텍처는 Transformer가 아니라 **AWD-LSTM**이었다. 화려하지는 않았다. 하지만 "사전학습 → 도메인 파인튜닝 → 태스크 파인튜닝"이라는 3단계 사고방식은 이후 GPT와 BERT가 그대로 계승했다.
+
+ULMFiT이 잘 언급되지 않는 이유는 fast.ai라는 실용적 커뮤니티에서 나왔기 때문이다. 학술 커뮤니티는 이 논문을 상대적으로 낮게 평가하는 경향이 있었다. 하지만 아이디어의 선구성만큼은 인정받아야 한다.
+
+---
+
+## 핵심 기술 ② — ELMo: 문맥을 아는 단어 표현
+
+2018년 2월, Allen Institute for AI의 **Matthew Peters** 팀이 발표한 ELMo는 "Embeddings from Language Models"의 약자다. NAACL 2018 Best Paper를 수상했다.
+
+ELMo가 해결하려 한 문제는 이것이었다: **단어의 의미는 문맥에 따라 달라진다.**
+
+이전의 Word2Vec이나 GloVe는 단어 하나에 벡터 하나를 고정으로 배정했다. "bank"가 은행을 뜻하든, 강둑을 뜻하든 같은 벡터였다. ELMo는 이를 바꿨다. 같은 "bank"라도 "I went to the **bank** to deposit money"와 "We fished by the river **bank**"에서 서로 다른 벡터를 갖는다.
+
+ELMo는 대규모 코퍼스로 사전학습한 언어 모델의 내부 레이어 상태들을 조합해서 단어 임베딩을 만들었다. 이 과정에서 흥미로운 발견도 있었다.
+
+> 하위 레이어는 문법 정보(품사, 구문)를 담고, 상위 레이어는 의미 정보(다의성, 의미적 유사성)를 담는다.
+
+그래서 태스크에 따라 어떤 레이어를 더 많이 사용할지 조합하는 게 핵심이었다.
+
+여기서 정밀하게 짚고 넘어갈 게 있다. ELMo의 "biLM"은 흔히 양방향 모델로 소개되지만, 실제로는 순방향 LSTM과 역방향 LSTM을 **각각 독립적으로 학습한 뒤 출력을 연결**한 구조다. 왼쪽 문맥만 보는 모델과 오른쪽 문맥만 보는 모델이 따로 학습하고, 그 결과를 이어붙이는 것이다. 두 방향이 서로를 참고하며 동시에 학습하는 게 아니다. 이 차이가 중요한 이유는, 나중에 BERT가 바로 이 지점을 핵심 차별화 포인트로 삼기 때문이다.
+
+성과는 인상적이었다. 6개 NLP 벤치마크에서 최대 20%의 상대적 오류 감소를 달성했다.
+
+---
+
+## 핵심 기술 ③ — GPT-1: 먼저 나온 쪽
+
+"BERT가 GPT보다 먼저 나왔다"는 말을 종종 듣는다. 틀렸다.
+
+**GPT-1은 2018년 6월 11일**, OpenAI 기술 보고서로 공개됐다. BERT는 2018년 10월 11일이었다. GPT-1이 4개월 앞섰다. (BERT가 학술 컨퍼런스 NAACL에 게재된 건 2019년이라서 혼동이 생긴다.)
+
+Alec Radford, Karthik Narasimhan, Tim Salimans, Ilya Sutskever가 쓴 "Improving Language Understanding by Generative Pre-Training"은 Transformer의 **decoder** 구조를 사전학습에 활용했다.
+
+구조는 단순했다.
+
+- 12층 decoder-only Transformer
+- 768차원, 12개 attention head
+- BooksCorpus로 학습 (7,000권 이상의 미출판 소설)
+
+핵심은 학습 목표였다. **Causal Language Modeling(CLM)** — 왼쪽에서 오른쪽으로, 이전 토큰들만 보고 다음 토큰을 예측한다. 단방향이다.
+
+왜 단방향을 선택했을까? 생성(generation) 태스크와 자연스럽게 맞기 때문이다. 텍스트를 생성할 때도 왼쪽에서 오른쪽으로 토큰을 하나씩 만들어내니까.
+
+GPT-1은 12개 NLP 태스크 중 9개에서 SOTA를 달성했다. 성공이었다.
+
+---
+
+## 핵심 기술 ④ — BERT: 더 큰 파장
+
+GPT-1이 4개월 먼저 나왔음에도 불구하고, NLP 커뮤니티에 더 큰 충격을 준 것은 BERT였다.
+
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova — Google AI Language 팀이 2018년 10월 발표한 "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"은 두 가지 혁신을 담고 있었다.
+
+**첫 번째**: 진정한 양방향(bidirectional). GPT는 왼쪽→오른쪽만 봤다. ELMo는 독립된 두 방향을 합쳤다. BERT는 Transformer의 **encoder** 구조를 활용해 모든 토큰이 동시에 양쪽 문맥을 볼 수 있게 했다.
+
+이를 가능하게 한 것이 **MLM(Masked Language Modeling)**이었다. 문장에서 15%의 토큰을 무작위로 마스킹하고, 모델이 그 마스킹된 토큰을 예측하도록 학습한다. 왼쪽도 보고, 오른쪽도 보면서.
+
+**두 번째**: NSP(Next Sentence Prediction). 두 문장이 실제로 연속적인지 예측하는 태스크를 추가했다. (단, 이 NSP 목표는 나중에 RoBERTa에서 불필요하다고 밝혀진다.)
+
+결과는 GLUE, MultiNLI, SQuAD 등 11개 NLP 태스크 SOTA였다.
+
+BERT가 더 큰 파장을 만든 이유는 **이해 태스크에서의 압도적 성능** 때문이었다. 문장 분류, 감정 분석, 질의응답 — 언어를 "이해"하는 영역에서 BERT는 한 번에 업계 표준을 재설정했다.
+
+단점도 있었다. 마스킹 기반 학습 방식 때문에 자유로운 텍스트 생성이 구조적으로 불가능했다.
+
+---
+
+## 왜 작동했는가 — 사전학습+파인튜닝이 표준이 된 이유
+
+2018년 이 모델들의 성공이 하나의 패러다임을 굳혔다: **사전학습 → 파인튜닝**.
+
+이것이 작동한 이유를 네 가지로 정리할 수 있다.
+
+1. **데이터 효율성**: 레이블 없는 방대한 텍스트로 언어 지식을 먼저 쌓고, 소량의 레이블 데이터로 특정 태스크를 학습한다. ULMFiT이 100개 레이블로 100배 데이터 모델과 맞먹은 것이 그 예다.
+
+2. **범용 표현 학습**: "다음 단어 예측"이나 "마스킹된 단어 예측"이라는 단순한 목표가 문법, 의미, 상식까지 언어의 풍부한 구조를 자연스럽게 학습하게 했다.
+
+3. **컴퓨터 비전의 검증된 경로**: ImageNet 사전학습 → 파인튜닝 패러다임이 CV에서 이미 성공했다. NLP가 같은 길을 따라간 것이다.
+
+4. **경제성**: 비싼 사전학습은 한 번만. 이후엔 다양한 다운스트림 태스크에 재사용할 수 있다.
+
+---
+
+## 2019년의 후속 연구들
+
+2018년의 혁신은 2019년에도 이어졌다.
+
+**RoBERTa** (Liu et al., Facebook AI, 2019년 7월): BERT가 심각하게 undertrained되었음을 실험으로 증명했다. NSP 목표 제거, 동적 마스킹, 10배 더 많은 데이터만으로 BERT 이후 발표된 모든 모델을 능가했다. 특히 NSP 제거가 성능을 높였다는 발견은 BERT의 설계 선택에 의문을 제기했다. "논문의 주장이 항상 최적은 아니다"는 교훈을 남겼다.
+
+**T5** (Raffel et al., Google Research, 2019년 10월): "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer." 모든 NLP 태스크를 텍스트→텍스트 형식으로 통일했다. 번역은 `"translate English to French: ..."`, 분류는 `"sentiment: ..."` 식으로. 60M에서 11B 파라미터까지 확장하며 당시 SOTA를 달성했다.
+
+**BART** (Lewis et al., Facebook AI, 2019년 10월): BERT의 양방향 인코더와 GPT의 단방향 디코더를 결합한 seq2seq 구조. 다양한 노이징 방법으로 원본 텍스트를 복원하도록 학습해, 추상적 요약과 대화 생성에서 강점을 보였다.
+
+---
+
+## 한계와 전환점 — 단방향 vs 양방향의 갈림길
+
+2018년의 두 설계 철학 — GPT의 단방향과 BERT의 양방향 — 은 이후 NLP를 두 계통으로 나눴다.
+
+흥미롭게도, 장기적으로는 단방향(GPT 계열)이 LLM 시대의 주류가 됐다.
+
+**GPT 계열(decoder-only)이 주류가 된 이유**:
+- Causal LM은 학습과 생성이 동일한 메커니즘이다. 학습할 때 다음 토큰을 예측하고, 추론할 때도 다음 토큰을 생성한다. 별도의 디코딩 전략이 필요 없다.
+- 파인튜닝 없이도 예시를 프롬프트에 넣어서 새 태스크를 해결하는 **in-context learning**으로 확장이 자연스럽다.
+- GPT-2, GPT-3, GPT-4까지 같은 아키텍처로 스케일업이 가능했다.
+- GPT-3의 2020년 성공 이후, 거의 모든 대형 언어 모델 (LLaMA, Gemma, Mistral)이 decoder-only를 채택했다.
+
+**BERT 계열(encoder-only)이 특정 영역에 국한된 이유**:
+- 마스킹 기반 학습은 구조적으로 자유로운 텍스트 생성이 불가능하다.
+- 각 태스크마다 파인튜닝이 필요해, 범용 추론 모델로 확장이 어렵다.
+- 단, 검색(임베딩), 분류, 개체명 인식 같은 이해 태스크에서는 여전히 효율적이다.
+
+그리고 이 갈림길에서 파생된 또 하나의 문제가 있었다. 모델이 커질수록 학습 비용도 함께 폭발적으로 늘어났다. 2019년 BERT Large를 학습시키는 데 고성능 GPU가 며칠씩 필요했다면, 곧 등장할 다음 세대 모델들은 수백억 파라미터, 수백만 달러의 비용을 요구하게 된다.
+
+이 현실이 두 가지 질문을 촉발시켰다.
+
+**"그렇다면 얼마나 크게 만들어야 하는가?"** — 크기, 데이터, 연산의 비율을 어떻게 잡아야 최적인지를 수식으로 밝히려는 시도, Scaling Laws로 이어진다.
+
+**"크기만으로 충분한가?"** — 아무리 크게 만들어도, 모델이 원하는 방향으로 동작하지 않는다는 문제, 정렬(Alignment)과 RLHF 연구로 이어진다.
+
+6편은 이 두 질문에 대한 답이다.
+
+---
+
+## 참고 자료
+
+- Howard & Ruder (2018). Universal Language Model Fine-tuning for Text Classification. [arXiv:1801.06146](https://arxiv.org/abs/1801.06146)
+- Peters et al. (2018). Deep Contextualized Word Representations. [arXiv:1802.05365](https://arxiv.org/abs/1802.05365)
+- Radford et al. (2018). Improving Language Understanding by Generative Pre-Training. [OpenAI](https://openai.com/index/language-unsupervised/)
+- Devlin et al. (2018). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. [arXiv:1810.04805](https://arxiv.org/abs/1810.04805)
+- Liu et al. (2019). RoBERTa: A Robustly Optimized BERT Pretraining Approach. [arXiv:1907.11692](https://arxiv.org/abs/1907.11692)
+- Raffel et al. (2020). Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer. [arXiv:1910.10683](https://arxiv.org/abs/1910.10683)
+- Ruder, S. (2018). NLP's ImageNet moment has arrived. [ruder.io](https://www.ruder.io/nlp-imagenet/)
+- Jay Alammar. The Illustrated BERT, ELMo, and co. [jalammar.github.io](https://jalammar.github.io/illustrated-bert/)
