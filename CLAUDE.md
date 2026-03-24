@@ -11,7 +11,7 @@ Next.js 16 + Bun + Velite 기반 기술 블로그. GitHub Pages 정적 호스팅
 
 ## Key Paths
 
-- 콘텐츠: `content/posts/*.mdx`
+- 콘텐츠: `content/posts/*.mdx` (가이드: `.claude/nexus/knowledge/posting-guide.md`)
 - 앱: `src/app/`
 - 컴포넌트: `src/components/`
 - 콘텐츠 import: `#content` (→ `.velite/`)
