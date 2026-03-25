@@ -56,10 +56,40 @@ code[data-theme*=" "] span {
   filter: invert(1) hue-rotate(180deg) brightness(1.3) contrast(1.1);
 }
 
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.prose, .prose *,
+article h1 {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 pre > code {
   display: grid;
   padding: 1rem;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   line-height: 1.7;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }

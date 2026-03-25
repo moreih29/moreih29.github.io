@@ -1,4 +1,5 @@
 import { defineConfig, defineCollection, s } from 'velite'
+import rehypeSlug from 'rehype-slug'
 import rehypePrettyCode from 'rehype-pretty-code'
 
 export default defineConfig({
@@ -18,6 +19,7 @@ export default defineConfig({
         seriesOrder: s.number().optional(),
         category: s.string().default('General'),
         cover: s.string().optional(),
+        toc: s.toc(),
         metadata: s.metadata(),
         excerpt: s.excerpt(),
         body: s.mdx(),
@@ -26,6 +28,7 @@ export default defineConfig({
   },
   mdx: {
     rehypePlugins: [
+      rehypeSlug,
       [rehypePrettyCode, {
         theme: { dark: 'github-dark-dimmed', light: 'github-light' },
         keepBackground: false,
