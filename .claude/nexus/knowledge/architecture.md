@@ -1,72 +1,68 @@
-# moreih29-blog Architecture
+<!-- tags: architecture, directory, routing, data-flow, velite, next.js -->
+# Architecture
 
-<!-- tags: architecture, stack, structure, build, deploy -->
-
-## Tech Stack
-
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Runtime & PM | Bun | 1.3.9 |
-| Framework | Next.js (Static Export) | 16.x |
-| Language | TypeScript | 5.x |
-| Content | MDX + Velite | velite 0.3.x |
-| Styling | Tailwind CSS (CSS-first) | 4.x |
-| Code Highlighting | rehype-pretty-code + Shiki | - |
-| Linter | ESLint (flat config) + typescript-eslint | 10.x |
-| Formatter | Prettier + prettier-plugin-tailwindcss | 3.x |
-| CI/CD | GitHub Actions | - |
-| Hosting | GitHub Pages (moreih29.github.io) | - |
+<!-- tags: architecture, directory, data-flow, routing -->
 
 ## Directory Structure
 
 ```
 moreih29-blog/
-├── .github/workflows/deploy.yml   # GitHub Actions: bun install → bun run build → deploy-pages
-├── content/posts/*.mdx            # 블로그 콘텐츠 (Velite가 빌드 타임에 처리)
-├── public/images/                 # 정적 에셋
-├── scripts/patch-velite.mjs       # Velite Import Attributes 패치 (Turbopack 호환)
+├── content/posts/*.mdx     # MDX 콘텐츠 (velite가 처리)
 ├── src/
-│   ├── app/
-│   │   ├── layout.tsx             # RootLayout + Header + Footer
-│   │   ├── page.tsx               # 홈 (포스트 목록)
-│   │   ├── globals.css            # Tailwind v4 CSS-first 설정
-│   │   └── posts/[slug]/page.tsx  # 포스트 상세 (generateStaticParams)
-│   └── components/
-│       └── mdx-content.tsx        # MDX 렌더러 (react/jsx-runtime)
-├── .velite/                       # Velite 빌드 출력 (gitignored)
-├── out/                           # Next.js static export 출력 (gitignored)
-├── velite.config.ts               # Velite 콘텐츠 스키마 + rehype 플러그인
-├── next.config.ts                 # output: 'export', Velite dev 통합
-├── postcss.config.mjs             # @tailwindcss/postcss
-└── tsconfig.json                  # paths: @/* → ./src/*, #content → ./.velite
+│   ├── app/                # Next.js App Router
+│   │   ├── layout.tsx      # RootLayout (Header, Footer, ThemeProvider)
+│   │   ├── page.tsx        # 메인: HeroSlider + CategoryFilter
+│   │   ├── globals.css     # Tailwind v4 테마 변수 (light/dark)
+│   │   ├── posts/[slug]/   # 개별 포스트 (generateStaticParams)
+│   │   ├── series/         # 시리즈 목록
+│   │   └── tags/           # 태그 클라우드 + /tags/[tag] 개별 페이지
+│   ├── components/
+│   │   ├── category-filter.tsx  # 카테고리+태그 다중 필터 (PostCard 포함)
+│   │   ├── hero-slider.tsx      # 최신 3개 포스트 슬라이더
+│   │   ├── mdx-content.tsx      # MDX → React 렌더러
+│   │   ├── pagination.tsx       # 클라이언트 페이지네이션
+│   │   ├── series-nav.tsx       # SeriesToc + SeriesPrevNext
+│   │   ├── series-view.tsx      # 시리즈 목록 (SeriesCard + StandaloneCard)
+│   │   ├── theme-provider.tsx   # Context 기반 테마 (light/dark/system)
+│   │   └── theme-toggle.tsx     # 테마 토글 버튼
+│   └── lib/
+│       ├── constants.ts    # categoryColors (Web/AI/MLOps/DevOps/General)
+│       ├── types.ts        # Post 인터페이스
+│       └── utils.ts        # formatDate, getCategoryColor
+├── scripts/patch-velite.mjs  # velite 빌드 후 JSON import 패치
+├── public/                   # 정적 에셋 (images/, static/)
+├── .velite/                  # velite 빌드 출력 (posts.json 등)
+└── out/                      # next build 정적 출력 (GitHub Pages 배포)
 ```
 
-## Key Dependencies
+## Data Flow
 
-### Content Pipeline
-- **Velite**: 빌드 타임 MDX 컴파일, Zod 기반 스키마 검증, `.velite/` 에 JSON 출력
-- **patch-velite.mjs**: Velite가 생성하는 `import ... with { type: 'json' }` 구문을 `createRequire` 방식으로 패치 (Next.js Turbopack이 Import Attributes 미지원)
-- **rehype-pretty-code + Shiki**: 듀얼 테마 코드 하이라이팅 (github-dark-dimmed / github-light)
-
-### Build Flow
 ```
-prebuild: bun velite build → node scripts/patch-velite.mjs
-build:    next build (output: 'export') → out/
-dev:      next dev --turbopack (next.config.ts에서 velite watch 자동 실행)
+content/posts/*.mdx
+  → velite build (스키마 검증, MDX 컴파일)
+  → .velite/posts.json + .velite/index.js
+  → patch-velite.mjs (JSON import 호환 패치)
+  → import { posts } from '#content' (tsconfig paths alias)
+  → Next.js 페이지에서 사용
+  → next build --output export → out/
+  → GitHub Pages 배포
 ```
 
-## Entry Points
+## Routing
 
-| Entry | File | Purpose |
-|-------|------|---------|
-| 홈 | `src/app/page.tsx` | `#content`에서 posts 가져와 목록 표시 |
-| 포스트 상세 | `src/app/posts/[slug]/page.tsx` | `generateStaticParams`로 정적 경로 생성 |
-| 레이아웃 | `src/app/layout.tsx` | Header, Footer, 전역 스타일 |
-| 콘텐츠 | `content/posts/*.mdx` | frontmatter + MDX 본문 |
+| Route | File | 렌더링 |
+|-------|------|--------|
+| `/` | `app/page.tsx` | SSG — HeroSlider + CategoryFilter |
+| `/posts/[slug]` | `app/posts/[slug]/page.tsx` | SSG — generateStaticParams |
+| `/series` | `app/series/page.tsx` | SSG — SeriesView |
+| `/tags` | `app/tags/page.tsx` | SSG — 태그 클라우드 + 알파벳 리스트 |
+| `/tags/[tag]` | `app/tags/[tag]/page.tsx` | SSG — generateStaticParams |
 
-## Deploy Pipeline
+모든 페이지가 정적 생성(SSG). `output: 'export'`로 완전 정적 사이트.
 
-1. `main` 브랜치 push → GitHub Actions 트리거
-2. `oven-sh/setup-bun@v2` → `bun install --frozen-lockfile` → `bun run build`
-3. `actions/upload-pages-artifact@v3` → `actions/deploy-pages@v4`
-4. GitHub Pages Settings에서 Source = "GitHub Actions" 필수
+## 핵심 설계 결정
+
+- **Velite + patch**: Velite가 MDX를 처리하지만 `.velite/index.js`의 JSON import 구문이 Next.js와 호환되지 않아 `patch-velite.mjs`로 `createRequire` 방식으로 변환
+- **`#content` alias**: `.velite/` 디렉토리를 `#content`로 매핑하여 빌드 산출물과 소스를 분리
+- **클라이언트 필터링**: 정적 사이트이므로 카테고리/태그 필터링은 `'use client'` 컴포넌트에서 useState로 처리
+- **다크모드 FOUC 방지**: `layout.tsx`의 `<head>`에 인라인 스크립트로 localStorage 읽어서 초기 클래스 적용
