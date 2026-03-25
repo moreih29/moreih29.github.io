@@ -1,0 +1,138 @@
+<svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <!-- Title -->
+  <text x="360" y="32" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">Transformer Attention vs. Selective SSM (Mamba)</text>
+
+  <!-- LEFT: Transformer -->
+  <text x="180" y="62" text-anchor="middle" font-size="13" font-weight="bold" fill="#374151">Transformer Attention</text>
+
+  <!-- Complexity label -->
+  <text x="180" y="82" text-anchor="middle" font-size="11" fill="#6B7280">O(T²) 메모리·연산</text>
+
+  <!-- Token boxes -->
+  <rect x="40" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="60" y="121" text-anchor="middle" font-size="11" fill="#374151">x₁</text>
+  <rect x="100" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="120" y="121" text-anchor="middle" font-size="11" fill="#374151">x₂</text>
+  <rect x="160" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="180" y="121" text-anchor="middle" font-size="11" fill="#374151">x₃</text>
+  <rect x="220" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="240" y="121" text-anchor="middle" font-size="11" fill="#374151">x₄</text>
+  <rect x="280" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="300" y="121" text-anchor="middle" font-size="11" fill="#374151">x₅</text>
+
+  <!-- All-to-all attention lines -->
+  <!-- x1 → all -->
+  <line x1="60" y1="132" x2="120" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="60" y1="132" x2="180" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="60" y1="132" x2="240" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="60" y1="132" x2="300" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <!-- x2 → all -->
+  <line x1="120" y1="132" x2="60" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="120" y1="132" x2="180" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="120" y1="132" x2="240" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="120" y1="132" x2="300" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <!-- x3 → all -->
+  <line x1="180" y1="132" x2="60" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="180" y1="132" x2="120" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="180" y1="132" x2="240" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+  <line x1="180" y1="132" x2="300" y2="155" stroke="#9CA3AF" stroke-width="1" opacity="0.7"/>
+
+  <!-- Attention matrix (simplified) -->
+  <rect x="40" y="160" width="280" height="60" rx="4" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+  <text x="180" y="185" text-anchor="middle" font-size="11" fill="#374151">Attention Matrix</text>
+  <text x="180" y="202" text-anchor="middle" font-size="10" fill="#6B7280">T × T 행렬 전체를 메모리에 저장</text>
+
+  <!-- Output tokens -->
+  <rect x="40" y="236" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="60" y="257" text-anchor="middle" font-size="11" fill="#374151">y₁</text>
+  <rect x="100" y="236" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="120" y="257" text-anchor="middle" font-size="11" fill="#374151">y₂</text>
+  <rect x="160" y="236" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="180" y="257" text-anchor="middle" font-size="11" fill="#374151">y₃</text>
+  <rect x="220" y="236" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="240" y="257" text-anchor="middle" font-size="11" fill="#374151">y₄</text>
+  <rect x="280" y="236" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="300" y="257" text-anchor="middle" font-size="11" fill="#374151">y₅</text>
+
+  <!-- Arrows matrix→output -->
+  <line x1="180" y1="220" x2="60" y2="236" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="180" y1="220" x2="120" y2="236" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="180" y1="220" x2="180" y2="236" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="180" y1="220" x2="240" y2="236" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="180" y1="220" x2="300" y2="236" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- DIVIDER -->
+  <line x1="360" y1="55" x2="360" y2="315" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- RIGHT: Mamba SSM -->
+  <text x="540" y="62" text-anchor="middle" font-size="13" font-weight="bold" fill="#374151">Selective SSM (Mamba)</text>
+  <text x="540" y="82" text-anchor="middle" font-size="11" fill="#6B7280">O(T) 메모리·연산, 입력 의존 파라미터</text>
+
+  <!-- Input tokens -->
+  <rect x="400" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="420" y="121" text-anchor="middle" font-size="11" fill="#374151">x₁</text>
+  <rect x="460" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="480" y="121" text-anchor="middle" font-size="11" fill="#374151">x₂</text>
+  <rect x="520" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="540" y="121" text-anchor="middle" font-size="11" fill="#374151">x₃</text>
+  <rect x="580" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="600" y="121" text-anchor="middle" font-size="11" fill="#374151">x₄</text>
+  <rect x="640" y="100" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="660" y="121" text-anchor="middle" font-size="11" fill="#374151">x₅</text>
+
+  <!-- State boxes -->
+  <rect x="410" y="160" width="60" height="36" rx="4" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+  <text x="440" y="181" text-anchor="middle" font-size="11" fill="#374151">h₁</text>
+  <rect x="476" y="160" width="60" height="36" rx="4" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+  <text x="506" y="181" text-anchor="middle" font-size="11" fill="#374151">h₂</text>
+  <rect x="542" y="160" width="60" height="36" rx="4" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+  <text x="572" y="181" text-anchor="middle" font-size="11" fill="#374151">h₃</text>
+  <rect x="608" y="160" width="60" height="36" rx="4" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+  <text x="638" y="181" text-anchor="middle" font-size="11" fill="#374151">h₄</text>
+
+  <!-- Recurrent arrows -->
+  <line x1="470" y1="178" x2="476" y2="178" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="536" y1="178" x2="542" y2="178" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="602" y1="178" x2="608" y2="178" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Input to state arrows -->
+  <line x1="420" y1="132" x2="440" y2="160" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="480" y1="132" x2="506" y2="160" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="540" y1="132" x2="572" y2="160" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="600" y1="132" x2="638" y2="160" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- "선택적" 게이팅 label -->
+  <text x="540" y="212" text-anchor="middle" font-size="10" fill="#6B7280">B, C, Δ 파라미터가 입력 x에 따라 변화</text>
+  <text x="540" y="226" text-anchor="middle" font-size="10" fill="#6B7280">(선택적 기억/망각)</text>
+
+  <!-- Output tokens -->
+  <rect x="400" y="244" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="420" y="265" text-anchor="middle" font-size="11" fill="#374151">y₁</text>
+  <rect x="460" y="244" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="480" y="265" text-anchor="middle" font-size="11" fill="#374151">y₂</text>
+  <rect x="520" y="244" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="540" y="265" text-anchor="middle" font-size="11" fill="#374151">y₃</text>
+  <rect x="580" y="244" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="600" y="265" text-anchor="middle" font-size="11" fill="#374151">y₄</text>
+  <rect x="640" y="244" width="40" height="32" rx="4" fill="none" stroke="#374151" stroke-width="1.5"/>
+  <text x="660" y="265" text-anchor="middle" font-size="11" fill="#374151">y₅</text>
+
+  <!-- State to output arrows -->
+  <line x1="440" y1="196" x2="420" y2="244" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="506" y1="196" x2="480" y2="244" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="572" y1="196" x2="540" y2="244" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="638" y1="196" x2="600" y2="244" stroke="#374151" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Bottom labels -->
+  <text x="180" y="296" text-anchor="middle" font-size="11" fill="#374151">모든 토큰 쌍 간 attention 계산 필요</text>
+  <text x="180" y="312" text-anchor="middle" font-size="11" fill="#374151">→ T 커질수록 T² 비용 폭증</text>
+  <text x="540" y="296" text-anchor="middle" font-size="11" fill="#374151">이전 상태 h만 전달, 토큰 하나씩 처리</text>
+  <text x="540" y="312" text-anchor="middle" font-size="11" fill="#374151">→ T에 비례하는 선형 비용</text>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#374151"/>
+    </marker>
+  </defs>
+</svg>

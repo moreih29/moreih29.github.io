@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" width="760" height="440">
+  <rect width="760" height="440" fill="none"/>
+
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#374151">사전학습 + 파인튜닝 패러다임</text>
+
+  <!-- ===== LEFT: BEFORE ===== -->
+  <rect x="30" y="55" width="320" height="370" rx="12" fill="#374151" opacity="0.04" stroke="#374151" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="190" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#374151">이전: 태스크마다 처음부터</text>
+
+  <!-- Task 1 - separate model -->
+  <rect x="60" y="105" width="50" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="85" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">데이터1</text>
+  <line x1="110" y1="120" x2="140" y2="120" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="143" y="105" width="70" height="30" rx="5" fill="#374151" opacity="0.1" stroke="#374151" stroke-width="1.2"/>
+  <text x="178" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">모델 A</text>
+  <line x1="213" y1="120" x2="243" y2="120" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="246" y="105" width="75" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="284" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">감정 분석</text>
+
+  <!-- Task 2 - separate model -->
+  <rect x="60" y="155" width="50" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="85" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">데이터2</text>
+  <line x1="110" y1="170" x2="140" y2="170" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="143" y="155" width="70" height="30" rx="5" fill="#374151" opacity="0.1" stroke="#374151" stroke-width="1.2"/>
+  <text x="178" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">모델 B</text>
+  <line x1="213" y1="170" x2="243" y2="170" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="246" y="155" width="75" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="284" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">질의응답</text>
+
+  <!-- Task 3 - separate model -->
+  <rect x="60" y="205" width="50" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="85" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">데이터3</text>
+  <line x1="110" y1="220" x2="140" y2="220" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="143" y="205" width="70" height="30" rx="5" fill="#374151" opacity="0.1" stroke="#374151" stroke-width="1.2"/>
+  <text x="178" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">모델 C</text>
+  <line x1="213" y1="220" x2="243" y2="220" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="246" y="205" width="75" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="284" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">번역</text>
+
+  <!-- Task 4 - separate model -->
+  <rect x="60" y="255" width="50" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="85" y="274" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">데이터4</text>
+  <line x1="110" y1="270" x2="140" y2="270" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="143" y="255" width="70" height="30" rx="5" fill="#374151" opacity="0.1" stroke="#374151" stroke-width="1.2"/>
+  <text x="178" y="274" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">모델 D</text>
+  <line x1="213" y1="270" x2="243" y2="270" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="246" y="255" width="75" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="284" y="274" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">요약</text>
+
+  <!-- X marks indicating inefficiency -->
+  <text x="190" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">각 모델이 독립적으로 학습</text>
+  <text x="190" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">지식 공유 없음</text>
+  <text x="190" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6B7280">비용 = N x (데이터 + 학습)</text>
+
+  <!-- ===== CENTER ARROW ===== -->
+  <!-- This is handled by the spacing between the two sections -->
+
+  <!-- ===== RIGHT: AFTER ===== -->
+  <rect x="410" y="55" width="320" height="370" rx="12" fill="#374151" opacity="0.04" stroke="#374151" stroke-width="1.5"/>
+  <text x="570" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#374151">이후: 사전학습 + 파인튜닝</text>
+
+  <!-- Pre-training stage -->
+  <rect x="445" y="100" width="50" height="30" rx="5" fill="none" stroke="#374151" stroke-width="1.2"/>
+  <text x="470" y="119" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#374151">대규모</text>
+  <text x="470" y="129" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#374151">텍스트</text>
+  <line x1="495" y1="115" x2="520" y2="115" stroke="#374151" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- Big pre-trained model -->
+  <rect x="523" y="95" width="100" height="42" rx="8" fill="#374151" opacity="0.15" stroke="#374151" stroke-width="2"/>
+  <text x="573" y="114" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">사전학습</text>
+  <text x="573" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">모델</text>
+
+  <!-- Label: one-time cost -->
+  <text x="573" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">(1회 학습)</text>
+
+  <!-- Branching arrows from pre-trained model to fine-tuned versions -->
+  <line x1="573" y1="137" x2="465" y2="195" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="573" y1="137" x2="535" y2="195" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="573" y1="137" x2="608" y2="195" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="573" y1="137" x2="680" y2="195" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Fine-tuned models -->
+  <!-- FT 1 -->
+  <rect x="430" y="198" width="70" height="55" rx="6" fill="#374151" opacity="0.08" stroke="#374151" stroke-width="1.2"/>
+  <text x="465" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">파인튜닝</text>
+  <line x1="465" y1="222" x2="465" y2="232" stroke="#374151" stroke-width="0.8"/>
+  <text x="465" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#374151">감정 분석</text>
+
+  <!-- FT 2 -->
+  <rect x="505" y="198" width="60" height="55" rx="6" fill="#374151" opacity="0.08" stroke="#374151" stroke-width="1.2"/>
+  <text x="535" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">파인튜닝</text>
+  <line x1="535" y1="222" x2="535" y2="232" stroke="#374151" stroke-width="0.8"/>
+  <text x="535" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#374151">질의응답</text>
+
+  <!-- FT 3 -->
+  <rect x="575" y="198" width="63" height="55" rx="6" fill="#374151" opacity="0.08" stroke="#374151" stroke-width="1.2"/>
+  <text x="608" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">파인튜닝</text>
+  <line x1="608" y1="222" x2="608" y2="232" stroke="#374151" stroke-width="0.8"/>
+  <text x="608" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#374151">번역</text>
+
+  <!-- FT 4 -->
+  <rect x="645" y="198" width="63" height="55" rx="6" fill="#374151" opacity="0.08" stroke="#374151" stroke-width="1.2"/>
+  <text x="680" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#374151">파인튜닝</text>
+  <line x1="680" y1="222" x2="680" y2="232" stroke="#374151" stroke-width="0.8"/>
+  <text x="680" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#374151">요약</text>
+
+  <!-- Benefits text -->
+  <text x="570" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">하나의 사전학습 모델을</text>
+  <text x="570" y="308" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">여러 태스크에 재사용</text>
+  <text x="570" y="328" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6B7280">비용 = 1 x 사전학습</text>
+  <text x="570" y="346" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6B7280">+ N x (소량 파인튜닝)</text>
+
+  <!-- Key insight at bottom -->
+  <rect x="420" y="370" width="300" height="45" rx="8" fill="#374151" opacity="0.06" stroke="#374151" stroke-width="1"/>
+  <text x="570" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">소량의 레이블 데이터만으로</text>
+  <text x="570" y="406" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">높은 성능 달성 가능</text>
+</svg>

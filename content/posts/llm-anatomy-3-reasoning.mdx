@@ -127,6 +127,8 @@ CoT와 Self-Consistency는 공통점이 있다. 여전히 **왼쪽에서 오른�
 
 CoT가 체인이라면, ToT는 체스 엔진의 수 읽기에 가깝다. 매 단계에서 여러 "사고(thought)" 후보를 생성하고, 그것들을 평가한 뒤, 가장 유망한 방향으로 탐색을 이어간다.
 
+<img src="/images/llm-anatomy/cot-vs-tot.svg" alt="Chain-of-Thought와 Tree of Thoughts 비교 — CoT는 선형 단일 경로, ToT는 다중 경로 탐색과 가지치기 및 역추적" />
+
 네 가지 구성 요소:
 
 - **사고(thought)**: 중간 단계를 나타내는 언어 시퀀스 단위
@@ -324,19 +326,19 @@ CoT는 "모델에게 보여주면 따라한다"는 단순한 관찰에서 출발
 
 ## 참고 자료
 
-[^1]: Wei et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. NeurIPS 2022. [arXiv:2201.11903](https://arxiv.org/abs/2201.11903)
+[^1]: [T1] Wei et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. NeurIPS 2022. [arXiv:2201.11903](https://arxiv.org/abs/2201.11903)
 
-[^2]: Wang et al. (2022). Self-Consistency Improves Chain of Thought Reasoning in Language Models. ICLR 2023. [arXiv:2203.11171](https://arxiv.org/abs/2203.11171)
+[^2]: [T1] Wang et al. (2022). Self-Consistency Improves Chain of Thought Reasoning in Language Models. ICLR 2023. [arXiv:2203.11171](https://arxiv.org/abs/2203.11171)
 
-[^3]: Yao et al. (2023). Tree of Thoughts: Deliberate Problem Solving with Large Language Models. NeurIPS 2023. [arXiv:2305.10601](https://arxiv.org/abs/2305.10601)
+[^3]: [T1] Yao et al. (2023). Tree of Thoughts: Deliberate Problem Solving with Large Language Models. NeurIPS 2023. [arXiv:2305.10601](https://arxiv.org/abs/2305.10601)
 
-[^4]: OpenAI (2024년 9월). Learning to Reason with LLMs. [openai.com](https://openai.com/index/learning-to-reason-with-llms/)
+[^4]: [T2] OpenAI (2024년 9월). Learning to Reason with LLMs. [openai.com](https://openai.com/index/learning-to-reason-with-llms/)
 
-[^5]: OpenAI (2024년 12월). OpenAI o1 System Card. [arXiv:2412.16720](https://arxiv.org/abs/2412.16720)
+[^5]: [T2] OpenAI (2024년 12월). OpenAI o1 System Card. [arXiv:2412.16720](https://arxiv.org/abs/2412.16720)
 
-[^6]: DeepSeek-AI (2025년 1월). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948). Nature 게재(2025): [링크](https://www.nature.com/articles/s41586-025-09422-z)
+[^6]: [T2] DeepSeek-AI (2025년 1월). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948). Nature 게재(2025): [링크](https://www.nature.com/articles/s41586-025-09422-z)
 
-[^schaeffer]: Schaeffer et al. (2023). Are Emergent Abilities of Large Language Models a Mirage? NeurIPS 2023 Outstanding Paper. [arXiv:2304.15004](https://arxiv.org/abs/2304.15004)
+[^schaeffer]: [T1] Schaeffer et al. (2023). Are Emergent Abilities of Large Language Models a Mirage? NeurIPS 2023 Outstanding Paper. [arXiv:2304.15004](https://arxiv.org/abs/2304.15004)
 
-- Shao et al. (2024). DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models. [arXiv:2402.03300](https://arxiv.org/abs/2402.03300)
-- OpenAI (2024년 9월). Introducing OpenAI o1-preview. [openai.com](https://openai.com/index/introducing-openai-o1-preview/)
+- [T1] Shao et al. (2024). DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models. [arXiv:2402.03300](https://arxiv.org/abs/2402.03300)
+- [T2] OpenAI (2024년 9월). Introducing OpenAI o1-preview. [openai.com](https://openai.com/index/introducing-openai-o1-preview/)

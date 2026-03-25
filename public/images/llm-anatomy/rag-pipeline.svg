@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 540" fill="none">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#374151"/>
+    </marker>
+    <marker id="ar-down" markerWidth="6" markerHeight="8" refX="3" refY="8" orient="auto">
+      <path d="M0,0 L3,8 L6,0" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Stage 1: Indexing -->
+  <g transform="translate(20, 20)">
+    <rect x="0" y="0" width="720" height="130" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="20" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#1E40AF">1단계 -- Indexing (오프라인)</text>
+
+    <!-- Flow -->
+    <rect x="30" y="50" width="100" height="55" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="80" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#374151" text-anchor="middle">문서</text>
+    <text x="80" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#6B7280" text-anchor="middle">&#128196;</text>
+
+    <path d="M138 77 L170 77" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <rect x="178" y="50" width="120" height="55" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="238" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">청크 분할</text>
+    <text x="238" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(Chunking)</text>
+
+    <path d="M306 77 L338 77" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <rect x="346" y="50" width="120" height="55" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="406" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">임베딩 모델</text>
+    <text x="406" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(Embedding)</text>
+
+    <path d="M474 77 L506 77" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <rect x="514" y="50" width="140" height="55" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="584" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#1E40AF" text-anchor="middle">벡터 DB</text>
+    <text x="584" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(Vector Store)</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M600 155 L600 185" stroke="#374151" stroke-width="1.5" marker-end="url(#ar-down)"/>
+
+  <!-- Stage 2: Retrieval -->
+  <g transform="translate(20, 190)">
+    <rect x="0" y="0" width="720" height="130" rx="10" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="20" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#92400E">2단계 -- Retrieval (쿼리 시점)</text>
+
+    <!-- Flow -->
+    <rect x="30" y="50" width="120" height="55" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="90" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">사용자 질문</text>
+    <text x="90" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(Query)</text>
+
+    <path d="M158 77 L190 77" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <rect x="198" y="50" width="120" height="55" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="258" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">임베딩</text>
+    <text x="258" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(동일 모델)</text>
+
+    <path d="M326 77 L358 77" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <rect x="366" y="50" width="140" height="55" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="436" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">벡터 DB 검색</text>
+    <text x="436" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(ANN Search)</text>
+
+    <path d="M514 77 L546 77" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <rect x="554" y="50" width="120" height="55" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="614" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#92400E" text-anchor="middle">관련 청크</text>
+    <text x="614" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#92400E" text-anchor="middle">(Top-k)</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M400 325 L400 355" stroke="#374151" stroke-width="1.5" marker-end="url(#ar-down)"/>
+
+  <!-- Stage 3: Generation -->
+  <g transform="translate(20, 360)">
+    <rect x="0" y="0" width="720" height="150" rx="10" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.5"/>
+    <text x="20" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#166534">3단계 -- Generation</text>
+
+    <!-- Two inputs merging -->
+    <rect x="30" y="50" width="130" height="45" rx="6" fill="white" stroke="#86EFAC" stroke-width="1.2"/>
+    <text x="95" y="77" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">관련 청크 (컨텍스트)</text>
+
+    <rect x="30" y="105" width="130" height="35" rx="6" fill="white" stroke="#86EFAC" stroke-width="1.2"/>
+    <text x="95" y="127" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">사용자 질문</text>
+
+    <!-- Merge bracket -->
+    <path d="M168 72 L200 72 L200 122 L168 122" stroke="#374151" stroke-width="1.2" fill="none"/>
+    <path d="M200 97 L230 97" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+    <text x="215" y="88" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#374151">}</text>
+
+    <!-- LLM -->
+    <rect x="240" y="60" width="200" height="75" rx="10" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+    <text x="340" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#166534" text-anchor="middle">LLM</text>
+    <text x="340" y="112" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">프롬프트 = 컨텍스트 + 질문</text>
+
+    <path d="M448 97 L490 97" stroke="#374151" stroke-width="1.5" marker-end="url(#ar)"/>
+
+    <!-- Answer -->
+    <rect x="498" y="65" width="170" height="65" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="583" y="93" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#1E40AF" text-anchor="middle">답변</text>
+    <text x="583" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">(근거 기반 생성)</text>
+  </g>
+</svg>

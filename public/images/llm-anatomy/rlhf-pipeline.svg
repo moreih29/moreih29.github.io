@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" fill="none">
+  <!-- Title -->
+  <text x="380" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#374151" text-anchor="middle">RLHF 3단계 파이프라인</text>
+
+  <!-- Stage 1: SFT -->
+  <g transform="translate(30, 60)">
+    <rect x="0" y="0" width="700" height="110" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <rect x="0" y="0" width="48" height="110" rx="10" fill="#3B82F6"/>
+    <rect x="24" y="0" width="24" height="110" fill="#3B82F6"/>
+    <text x="24" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" transform="rotate(-90, 24, 60)">1단계</text>
+
+    <text x="80" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1E40AF">SFT (Supervised Fine-Tuning)</text>
+
+    <!-- Flow -->
+    <rect x="70" y="48" width="130" height="40" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="135" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">인간 작성 응답</text>
+
+    <path d="M208 68 L240 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="248" y="48" width="130" height="40" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="313" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">모델 파인튜닝</text>
+
+    <path d="M386 68 L418 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="426" y="48" width="130" height="40" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="491" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#1E40AF" text-anchor="middle">SFT 모델</text>
+  </g>
+
+  <!-- Arrow between stages -->
+  <path d="M380 175 L380 200" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Stage 2: RM -->
+  <g transform="translate(30, 205)">
+    <rect x="0" y="0" width="700" height="110" rx="10" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
+    <rect x="0" y="0" width="48" height="110" rx="10" fill="#F59E0B"/>
+    <rect x="24" y="0" width="24" height="110" fill="#F59E0B"/>
+    <text x="24" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" transform="rotate(-90, 24, 60)">2단계</text>
+
+    <text x="80" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#92400E">보상 모델 (Reward Model) 학습</text>
+
+    <!-- Flow -->
+    <rect x="70" y="48" width="110" height="40" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="125" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">모델 출력들</text>
+
+    <path d="M188 68 L210 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="218" y="48" width="130" height="40" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="283" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">인간 순위 매기기</text>
+
+    <path d="M356 68 L378 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="386" y="48" width="130" height="40" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="451" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">비교 학습</text>
+
+    <path d="M524 68 L546 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="554" y="48" width="110" height="40" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="609" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#92400E" text-anchor="middle">보상 모델</text>
+  </g>
+
+  <!-- Arrow between stages -->
+  <path d="M380 320 L380 345" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Stage 3: PPO -->
+  <g transform="translate(30, 350)">
+    <rect x="0" y="0" width="700" height="140" rx="10" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.5"/>
+    <rect x="0" y="0" width="48" height="140" rx="10" fill="#22C55E"/>
+    <rect x="24" y="0" width="24" height="140" fill="#22C55E"/>
+    <text x="24" y="75" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" transform="rotate(-90, 24, 75)">3단계</text>
+
+    <text x="80" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#166534">PPO 강화학습</text>
+
+    <!-- Flow -->
+    <rect x="70" y="48" width="120" height="40" rx="6" fill="white" stroke="#86EFAC" stroke-width="1.2"/>
+    <text x="130" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">정책 모델 출력</text>
+
+    <path d="M198 68 L220 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="228" y="48" width="140" height="40" rx="6" fill="white" stroke="#86EFAC" stroke-width="1.2"/>
+    <text x="298" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">보상 모델 점수화</text>
+
+    <path d="M376 68 L398 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="406" y="48" width="140" height="40" rx="6" fill="white" stroke="#86EFAC" stroke-width="1.2"/>
+    <text x="476" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">정책 업데이트 (RL)</text>
+
+    <path d="M554 68 L576 68" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="584" y="48" width="90" height="40" rx="6" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+    <text x="629" y="72" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#166534" text-anchor="middle">최종 모델</text>
+
+    <!-- KL Penalty note -->
+    <rect x="150" y="102" width="400" height="28" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="350" y="121" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">KL 페널티: SFT 모델에서 너무 멀어지지 않도록 제약</text>
+  </g>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#374151"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <rect width="800" height="420" fill="none"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#374151">NLP 역사 타임라인 (1950s-1990s)</text>
+
+  <!-- Main timeline line -->
+  <line x1="60" y1="90" x2="740" y2="90" stroke="#374151" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Timeline events - top row -->
+  <!-- 1950 -->
+  <circle cx="95" cy="90" r="6" fill="#374151"/>
+  <line x1="95" y1="84" x2="95" y2="55" stroke="#374151" stroke-width="1.5"/>
+  <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">1950</text>
+  <text x="95" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#374151">튜링 테스트</text>
+
+  <!-- 1957 -->
+  <circle cx="185" cy="90" r="6" fill="#374151"/>
+  <line x1="185" y1="84" x2="185" y2="55" stroke="#374151" stroke-width="1.5"/>
+  <text x="185" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">1957</text>
+  <text x="185" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#374151">촘스키</text>
+  <text x="185" y="133" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#6B7280">Syntactic Structures</text>
+
+  <!-- 1966 -->
+  <circle cx="300" cy="90" r="6" fill="#374151"/>
+  <line x1="300" y1="84" x2="300" y2="55" stroke="#374151" stroke-width="1.5"/>
+  <text x="300" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">1966</text>
+  <text x="300" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#374151">ELIZA</text>
+  <text x="300" y="133" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#6B7280">ALPAC 보고서</text>
+
+  <!-- 1972 -->
+  <circle cx="380" cy="90" r="6" fill="#374151"/>
+  <line x1="380" y1="84" x2="380" y2="55" stroke="#374151" stroke-width="1.5"/>
+  <text x="380" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">1972</text>
+  <text x="380" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#374151">SHRDLU</text>
+
+  <!-- 1973 -->
+  <circle cx="435" cy="90" r="6" fill="#374151"/>
+  <line x1="435" y1="84" x2="435" y2="55" stroke="#374151" stroke-width="1.5"/>
+  <text x="435" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">1973</text>
+  <text x="435" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#374151">Lighthill Report</text>
+
+  <!-- 1983 -->
+  <circle cx="590" cy="90" r="6" fill="#374151"/>
+  <line x1="590" y1="84" x2="590" y2="55" stroke="#374151" stroke-width="1.5"/>
+  <text x="590" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">1983</text>
+  <text x="590" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#374151">철자 검사기</text>
+  <text x="590" y="133" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#6B7280">WordPerfect</text>
+
+  <!-- AI Winter zones -->
+  <!-- 1st AI Winter 1974-1980 -->
+  <rect x="445" y="160" width="140" height="100" rx="8" fill="none" stroke="#374151" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <rect x="445" y="160" width="140" height="100" rx="8" fill="#374151" opacity="0.07"/>
+  <text x="515" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#374151">제1차 AI Winter</text>
+  <text x="515" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6B7280">1974 - 1980</text>
+  <text x="515" y="237" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">연구 펀딩 대폭 삭감</text>
+  <text x="515" y="252" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">기계 번역 연구 중단</text>
+
+  <!-- Connecting lines to AI Winter boxes -->
+  <line x1="515" y1="90" x2="515" y2="160" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- 2nd AI Winter 1987-1993 -->
+  <rect x="610" y="160" width="140" height="100" rx="8" fill="none" stroke="#374151" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <rect x="610" y="160" width="140" height="100" rx="8" fill="#374151" opacity="0.07"/>
+  <text x="680" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#374151">제2차 AI Winter</text>
+  <text x="680" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6B7280">1987 - 1993</text>
+  <text x="680" y="237" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">LISP 머신 시장 붕괴</text>
+  <text x="680" y="252" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">전문가 시스템 실패</text>
+
+  <line x1="680" y1="90" x2="680" y2="160" stroke="#374151" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Legend area -->
+  <rect x="60" y="300" width="680" height="100" rx="8" fill="none" stroke="#374151" stroke-width="1" opacity="0.3"/>
+  <text x="80" y="325" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151">주요 흐름</text>
+
+  <circle cx="90" cy="345" r="5" fill="#374151"/>
+  <text x="105" y="349" font-family="Arial, sans-serif" font-size="10" fill="#374151">핵심 사건 (연도별)</text>
+
+  <rect x="240" y="338" width="18" height="14" rx="3" fill="#374151" opacity="0.07" stroke="#374151" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="265" y="349" font-family="Arial, sans-serif" font-size="10" fill="#374151">AI Winter (연구 침체기)</text>
+
+  <text x="80" y="380" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">규칙 기반 NLP는 제한된 도메인에서 성공했으나, 자연어의 복잡성 앞에서 한계를 드러냈다.</text>
+  <text x="80" y="394" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">두 차례의 AI Winter를 거치며 "규칙에서 데이터로"의 전환이 서서히 준비되었다.</text>
+</svg>

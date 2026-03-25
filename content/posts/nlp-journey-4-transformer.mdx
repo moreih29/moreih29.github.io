@@ -56,6 +56,8 @@ Self-Attention을 이해하는 핵심은 Query, Key, Value 세 벡터입니다.
 
 도서관 검색과 같습니다. 내 Query(검색어)가 각 책의 Key(제목/태그)와 얼마나 일치하는지 점수를 매기고, 그 점수에 따라 각 책의 Value(내용)를 가중 합산해 가져옵니다.
 
+<img src="/images/nlp-journey/self-attention-qkv.svg" alt="입력 임베딩에서 Q, K, V 벡터를 생성하고 Attention 점수를 계산하는 Self-Attention 구조" />
+
 수식으로 표현하면:
 
 ```
@@ -210,11 +212,11 @@ WMT 2014 기계 번역 결과:
 
 ## 참고 자료
 
-- [Vaswani et al. (2017) — Attention Is All You Need](https://arxiv.org/abs/1706.03762)
-- [NeurIPS 2017 공식 심사 리뷰](https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Reviews.html)
-- [Jay Alammar — The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
-- [d2l.ai — Transformer Architecture](https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html)
-- [Xiong et al. (2020) — On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745)
-- [Geva et al. (2021) — Transformer Feed-Forward Layers Are Key-Value Memories](https://arxiv.org/abs/2012.14913)
-- [Duman Keles et al. (2022) — On The Computational Complexity of Self-Attention](https://arxiv.org/abs/2209.04881)
-- [Transformer (deep learning) — Wikipedia](https://en.wikipedia.org/wiki/Attention_Is_All_You_Need)
+- [T1] [Vaswani et al. (2017) — Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [T2] [NeurIPS 2017 공식 심사 리뷰](https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Reviews.html)
+- [T3] [Jay Alammar — The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- [T3] [d2l.ai — Transformer Architecture](https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html)
+- [T1] [Xiong et al. (2020) — On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745)
+- [T1] [Geva et al. (2021) — Transformer Feed-Forward Layers Are Key-Value Memories](https://arxiv.org/abs/2012.14913)
+- [T1] [Duman Keles et al. (2022) — On The Computational Complexity of Self-Attention](https://arxiv.org/abs/2209.04881)
+- [T3] [Transformer (deep learning) — Wikipedia](https://en.wikipedia.org/wiki/Attention_Is_All_You_Need)

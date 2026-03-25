@@ -1,0 +1,258 @@
+---
+title: "아키텍처의 진화 — Transformer 너머의 혁신들"
+slug: llm-anatomy-6-evolution
+date: 2026-03-25
+description: "Mamba의 선택적 상태 공간, Flash Attention-3, MLA, Speculative Decoding — Transformer 이후 LLM 아키텍처 혁신을 해부합니다."
+tags: ["llm", "ai", "mamba", "ssm", "flash-attention-3", "speculative-decoding", "mla"]
+published: true
+series: "LLM 해부학"
+seriesOrder: 6
+category: "AI"
+---
+
+*이 글은 2026년 3월 기준으로 작성됐습니다.*
+
+5편에서 오픈소스 생태계의 폭발적 성장을 살펴봤다. LLaMA가 가중치를 공개하고, LoRA가 파인튜닝 문턱을 낮추고, 양자화가 실행을 민주화했다. 모델을 *어떻게 쓸 것인가*의 문제는 빠르게 풀려갔다.
+
+그 사이 다른 곳에서 다른 질문이 진행되고 있었다. Transformer 자체의 한계를 어떻게 넘을 것인가. Attention의 O(T²) 복잡도, KV 캐시의 메모리 폭증, 토큰을 하나씩 생성해야 하는 autoregressive 디코딩의 속도 한계. 이것들은 "더 큰 모델"이나 "더 많은 데이터"로 해결할 수 없는 구조적 문제였다.
+
+6편은 그 질문에 대한 답들을 해부한다.
+
+---
+
+## SSM/Mamba — "기억"을 선택할 수 있다면
+
+### 왜 필요한가
+
+Transformer Attention의 본질적 비용은 O(T²)다. 시퀀스 길이 T의 모든 토큰 쌍을 비교해야 하기 때문에, T=8192이면 6700만 쌍의 attention score를 계산해야 한다. 컨텍스트가 길어질수록 이 비용은 제곱으로 폭증한다.
+
+순환 신경망(RNN) 계열은 O(T)로 처리하지만, 과거 정보를 고정 크기 상태 벡터에 압축해야 한다. 긴 의존성을 잡지 못한다는 구조적 한계가 있었다.
+
+**상태 공간 모델(SSM, State Space Model)**은 제어 이론에서 온 접근이다. 연속 상태 방정식을 이산화해서 시퀀스를 처리한다. S4(2021년, Gu et al.) 같은 초기 SSM은 선형 시간 복잡도를 달성했다. 그런데 문제가 있었다. 상태 전이 파라미터 A, B, C가 입력에 무관한 고정값이었다. "중요한 것은 기억하고 불필요한 것은 잊는다"는 선택이 불가능했다.
+
+언어는 이산적이고 내용에 따라 무엇을 기억할지가 달라진다. "고양이가 생선을 먹었다"에서 주어("고양이")를 긴 문장 끝까지 기억해야 할지는 맥락에 따라 다르다. 데이터-독립적 SSM은 이 판단을 할 수 없었다.
+
+### 핵심 아이디어 — Mamba (Gu & Dao, 2023)
+
+Albert Gu와 Tri Dao(FlashAttention을 만든 그 Tri Dao)는 SSM 파라미터를 입력의 함수로 만들었다. 구체적으로, B, C, Δ(스텝 크기)를 입력 x에 대한 선형 투영으로 계산한다.
+
+```
+표준 SSM:   h[t] = A·h[t-1] + B·x[t]   (A, B는 고정)
+Mamba SSM:  h[t] = A·h[t-1] + B(x[t])·x[t]  (B, C, Δ가 x에 따라 변화)
+```
+
+이 "선택적" 메커니즘이 핵심이다. 모델이 토큰별로 "이것은 상태에 저장할 만한 정보인가?"를 결정할 수 있게 됐다. 어떤 입력은 상태를 크게 업데이트하고, 어떤 입력은 거의 통과시킨다. RNN의 O(T) 비용으로 Transformer가 가진 맥락 의존적 처리를 달성한다.
+
+Mamba는 attention도 MLP 블록도 없는 순수 SSM 아키텍처다. 대신 하드웨어 효율을 위해 FlashAttention과 유사한 parallel scan 커널을 별도 설계했다.
+
+<img src="/images/llm-anatomy/ssm-vs-transformer.svg" alt="Transformer Attention(O(T²))과 Selective SSM Mamba(O(T)) 비교 — Transformer는 모든 토큰 쌍 간 attention matrix를 계산하고, Mamba는 이전 상태 h를 순차적으로 업데이트한다" />
+
+### 결과 (Gu & Dao, 2023; arXiv:2312.00752)
+
+- Transformer 대비 **5× 높은 추론 처리량** (같은 크기 기준)
+- 시퀀스 길이에 대해 **선형 스케일링** — T=1M 토큰도 선형 메모리
+- Mamba-3B: 같은 크기 Transformer를 능가, **2배 큰 Transformer와 동급** 성능
+- 언어, 오디오, 유전체학 등 다중 모달리티에서 검증
+
+---
+
+## Mamba-2 — 이론적 연결을 찾다
+
+Mamba의 selective scan은 GPU의 행렬 곱셈(matmul) 유닛을 충분히 활용하지 못한다는 약점이 있었다. GPU는 matmul에 극도로 최적화돼 있는데, selective scan은 그 구조에 맞지 않는다.
+
+Dao와 Gu는 2024년 **구조적 상태 공간 이중성(SSD, Structured State Space Duality)** 프레임워크로 이 문제를 근본부터 재고했다. 핵심 발견은 이렇다: 특정 형태의 SSM(스칼라-곱-항등 상태 행렬)이 **1-semiseparable 인과 마스크를 가진 어텐션과 수학적으로 동치**다.
+
+같은 시퀀스 변환을 O(T) 순환과 O(T²) 어텐션 두 방식으로 모두 구현할 수 있다는 것이다. 짧은 시퀀스에서는 어텐션처럼 병렬 계산하고, 긴 시퀀스에서는 순환으로 처리한다. 상황에 따라 전환할 수 있다.
+
+이론적 통찰이 실용적 이점으로 이어졌다. SSM 레이어 코어를 약 **25줄의 코드**로 구현 가능해졌고(Mamba의 selective scan 대비 대폭 단순화), Transformer에 쓰이는 텐서 병렬, 시퀀스 병렬 같은 시스템 최적화를 SSM에 그대로 적용할 수 있게 됐다. 학습 속도는 Mamba 대비 **2~8× 향상**됐다.
+
+---
+
+## 하이브리드 아키텍처 — 적을 친구로
+
+순수 SSM은 이론적으로 효율적이지만 현실에서 한계가 드러났다. 긴 컨텍스트에서 **in-context recall** — 앞에서 본 특정 사실을 정확히 불러오는 능력 — 이 Transformer 어텐션보다 약했다. 반면 순수 Transformer는 컨텍스트가 길어지면 KV 캐시 메모리가 선형으로 폭증한다.
+
+AI21 Labs의 **Jamba(2024, arXiv:2403.19887)** 는 다른 접근을 택했다. "SSM이 Transformer를 대체한다"가 아니라, **둘의 강점을 레이어 단위로 결합**한다.
+
+구조는 단순하다. Transformer 레이어와 Mamba 레이어를 1:7 비율로 교차 배치한다. 8개 레이어 중 1개만 Transformer 어텐션, 나머지 7개는 Mamba SSM이다. 일부 레이어에 MoE(Mixture of Experts)도 추가한다.
+
+결과: Jamba(52B 전체, 12B 활성)는 Mixtral-8x7B 및 Llama-2 70B와 동급 성능을 보이면서도 **256K 토큰** 컨텍스트를 지원하고, 긴 컨텍스트에서 Mixtral 8x7B 대비 **3× 처리량**을 달성했다. 단일 80GB GPU에 탑재 가능하다.
+
+"어떤 아키텍처가 옳은가"가 아니라 "어떤 조합이 실용적인가"라는 질문으로 이동한 것이다.
+
+---
+
+## MLA — KV 캐시를 저차원으로 압축하다
+
+### 왜 필요한가
+
+KV 캐시 문제는 이미 1편에서 다뤘다. 복잡도 자체보다 실용적 수치가 더 직관적이다: LLaMA-2-13B를 컨텍스트 4096, 배치 크기 8로 서빙하면 KV 캐시가 약 25GB, 모델 파라미터(26GB)와 맞먹는다.
+
+GQA(Grouped Query Attention)는 KV head 수를 줄여 캐시를 절감했다. 단, head 수를 줄이면 모델 표현력도 줄어드는 트레이드오프가 있다.
+
+### 핵심 아이디어
+
+DeepSeek이 V2에서 도입한 **MLA(Multi-head Latent Attention)**는 다른 방향으로 접근한다. K와 V를 각 head별로 저장하는 대신, **저차원 잠재 벡터 하나로 공동 압축**한다.
+
+```
+표준 MHA:   캐시에 K₁, K₂, ..., Kₕ, V₁, V₂, ..., Vₕ 저장 (각 head별)
+MLA:        캐시에 압축 잠재 벡터 c 하나 저장
+            → 사용 시 c를 각 head의 K, V로 복원
+```
+
+중요한 것은 복원이 정보 손실 없이(lossless) 이루어진다는 점이다. 각 query head는 여전히 자신에게 최적화된 K, V를 받는다. 표현력은 MHA 수준이지만 메모리는 훨씬 적다.
+
+DeepSeek 팀의 실험에서 GQA는 MHA보다 성능이 낮았지만, MLA는 MHA보다 **모델링 성능이 높게** 나타났다. 메모리를 줄이면서 성능까지 올린 것이다.
+
+### 결과 (DeepSeek-AI, 2024; arXiv:2405.04434)
+
+| 항목 | MHA | GQA | MLA |
+|------|-----|-----|-----|
+| KV 캐시 크기 | 100% (기준) | 중간 축소 | ~6.7% (93.3% 감소) |
+| 모델 품질 | 기준 | MHA보다 낮음 | MHA보다 높음 |
+
+- DeepSeek 67B → DeepSeek-V2(236B 총/21B 활성): KV 캐시 **93.3% 감소**
+- 최대 생성 처리량 **5.76× 향상**
+- 학습 비용 **42.5% 절감**
+
+DeepSeek-V3(671B, 2024)는 MLA를 NSA(Native Sparse Attention)와 결합해 더 나아갔다. NSA는 64K 시퀀스 기준 forward **9×**, 디코딩 지연 **11.6× 감소**를 달성했다(ACL 2025 Best Paper). MLA와 NSA를 합치면 긴 컨텍스트에서 연산 비용과 메모리 비용이 동시에 줄어든다.
+
+---
+
+## FlashAttention-3 — Hopper를 제대로 쓰다
+
+### 왜 필요한가
+
+NVIDIA가 H100(Hopper 아키텍처) GPU를 출시했을 때, FlashAttention-2는 이 GPU에서 이론 성능의 **35%** 밖에 활용하지 못했다. H100은 FA-2가 설계될 때 존재하지 않던 하드웨어 기능들을 탑재하고 있었다.
+
+- **TMA(Tensor Memory Accelerator)**: 비동기 데이터 이동 전담 유닛
+- **Warp-specialization**: warp 단위 비동기 파이프라인
+- **FP8 Tensor Core**: 배정도 대비 2× 처리량
+
+이것들을 활용하지 못한 채 구형 A100용으로 설계된 FA-2를 그대로 돌리는 것은 낭비였다.
+
+### 핵심 아이디어
+
+Shah et al.(2024, arXiv:2407.08608)의 FlashAttention-3는 Hopper 전용으로 재설계됐다. 세 가지 기법이 핵심이다.
+
+**1. Warp-specialization + TMA 활용**: 계산(Tensor Core)과 데이터 이동(TMA)을 담당하는 warp를 분리해 비동기로 동시 실행한다. 한 warp가 다음 타일 데이터를 불러오는 동안 다른 warp는 현재 타일을 계산한다.
+
+**2. Interleaved matmul-softmax**: 블록 단위 행렬 곱과 softmax 연산을 교차 실행한다. matmul과 pointwise 연산이 파이프라인으로 중첩돼 지연이 줄어든다.
+
+**3. FP8 블록 양자화 + incoherent processing**: H100의 FP8 Tensor Core를 활용해 처리량을 늘리되, 양자화 오차는 블록 단위 스케일링으로 제어한다.
+
+### 결과 (Shah et al., NeurIPS 2024)
+
+- **FP16**: H100에서 최대 **740 TFLOPs/s** (75% 활용률), FA-2 대비 **1.5~2.0× 빠름**
+- **FP8**: 약 **1.2 PFLOPs/s** 달성
+- FP8 수치 오차: 기준 FP8 어텐션 대비 **2.6× 낮음**
+- FA-2가 35%였던 H100 활용률을 75%로 끌어올렸다
+
+정리하면: FA-1은 알고리즘 수준의 혁신(IO-aware), FA-2는 GPU 병렬화 최적화, FA-3는 차세대 하드웨어 전용 재설계다. 매 세대 하드웨어가 바뀔 때마다 어텐션 구현도 함께 진화한다.
+
+---
+
+## DeepSeekMoE — 전문가를 더 전문적으로
+
+1편에서 MoE(Mixture of Experts)의 기본 구조를 다뤘다. E개 전문가 중 k개만 활성화해 파라미터 용량과 연산 비용을 분리하는 아이디어. Mixtral 8x7B가 오픈소스로 증명했다.
+
+DeepSeek은 여기서 더 나갔다. 기존 MoE의 두 가지 문제를 지목했다.
+
+**지식 혼잡(knowledge redundancy)**: 전문가 수가 적으면 각 전문가가 너무 다양한 지식을 담당하게 된다. "전문가"라는 이름이 무색해진다.
+
+**지식 중복(knowledge overlap)**: 라우팅되지 않는 전문가도 공통 지식을 중복 학습한다. 용량 낭비다.
+
+**DeepSeekMoE(2024, arXiv:2401.06066; ACL 2024)** 의 해법은 두 가지다.
+
+**Fine-grained 세분화**: FFN의 중간 차원을 분할해 전문가 수를 m배 늘리고, 활성화 전문가도 m배 늘린다. 전문가당 담당 범위가 좁아지고 전문화가 높아진다.
+
+**Shared Expert 격리**: 항상 활성화되는 공유 전문가 1~2개를 별도로 둔다. 어떤 입력에도 필요한 공통 지식을 여기에 집중시켜, 라우팅 전문가들이 공통 지식을 중복 학습하지 않도록 한다.
+
+결과: DeepSeekMoE 16B는 DeepSeek 7B, LLaMA-2 7B와 동급 성능을 내면서 계산량은 약 **40%**만 쓴다. DeepSeek-V3(671B 총 파라미터, 37B 활성)는 이 구조 위에 256개 라우팅 전문가와 1개 공유 전문가를 올렸다.
+
+---
+
+## Speculative Decoding — 초안 작성과 검증의 분리
+
+### 왜 필요한가
+
+LLM의 autoregressive 디코딩은 구조적 딜레마가 있다. 토큰을 하나 생성하려면 모델 전체를 한 번 forward해야 한다. 배치 크기가 작을 때(단일 사용자 요청) GPU는 대부분 놀고 있다 — 병렬 처리할 대상이 없기 때문이다. GPU의 강점인 병렬성이 autoregressive 디코딩에서는 거의 활용되지 않는 것이다.
+
+### 핵심 아이디어
+
+2023년 Google과 DeepMind가 독립적으로 같은 아이디어를 발표했다. **Draft-then-Verify 패턴**이다.
+
+1. **소형 Draft 모델**이 k개 토큰을 자기회귀적으로 빠르게 생성한다.
+2. **대형 Target 모델**이 k+1개 토큰을 **병렬로** 한 번에 평가한다.
+3. Target 모델의 확률 분포와 일치하는 토큰은 그대로 수용한다.
+4. 처음으로 불일치하는 위치부터 이후 토큰을 거부하고, Target 분포에서 재샘플링한다.
+
+<img src="/images/llm-anatomy/speculative-decoding.svg" alt="Speculative Decoding의 Draft-then-Verify 패턴 — 소형 Draft 모델이 k개 초안 토큰을 생성하고, 대형 Target 모델이 단 1회 forward로 병렬 검증한다. 수용된 토큰은 그대로 출력하고 거부된 위치부터 재샘플링한다" />
+
+이 과정의 핵심 속성: **출력 분포가 Target 모델만 단독으로 사용한 것과 수학적으로 동치**다. Draft 모델의 오류는 거부 단계에서 완전히 교정된다. 정확도 손실 없는 가속이다.
+
+왜 이득인가? Target 모델 1회 forward로 k+1개 토큰을 검증할 수 있다. Draft 모델이 k개를 맞히면 Target 단독 대비 k배 빠른 게 아닐까 싶지만, 현실적 이득은 k×α 수준이다 (α: 수용률). Draft 모델이 Target과 분포가 비슷할수록(예: 같은 계열의 소형 모델) 수용률이 높아진다.
+
+### 결과
+
+- Leviathan et al. (Google, ICML 2023): T5-XXL에서 **2~3× 가속**
+- Chen et al. (DeepMind, arXiv:2302.01318): Chinchilla 70B에서 **2~2.5× 가속** (출력 품질 동일)
+- vLLM 실제 배포: draft 모델 기반으로 최대 **1.5× 속도 향상**
+
+2024~2025년에는 변형이 폭발적으로 늘었다. Medusa(단일 모델 내 여러 드래프트 헤드), EAGLE(학습된 draft 헤드), Self-Speculative Decoding(동일 모델의 앞 레이어를 draft로 재활용) 등이다. 오늘날 대부분의 프로덕션 LLM 서빙 스택에 어떤 형태로든 들어가 있다.
+
+---
+
+## BitNet — 1비트 LLM의 가능성
+
+> 주의: 아직 실험적 방향이다. 현재 실용적 배포에는 상당한 제약이 있다.
+
+모든 가중치를 {-1, 0, +1} 세 값으로만 표현하면 어떨까? Ma et al.의 **BitNet b1.58(2024, arXiv:2402.17764)** 은 이 아이디어를 진지하게 구현했다.
+
+이름의 b1.58은 log₂3 ≈ 1.58 비트에서 왔다. 사후 양자화(post-training quantization)가 아니라 **처음부터 1.58비트로 학습**한다는 것이 핵심이다. 활성화는 INT8을 유지한다.
+
+전용 구현(bitnet.cpp)을 쓰면 인상적인 수치가 나온다. ARM CPU에서 **1.37~5.07× 속도, 에너지 55~70% 절감**. x86에서 **2.37~6.17× 속도, 에너지 72~82% 절감**. BitNet b1.58 3.9B는 LLaMA 3B와 동급 perplexity를 보인다.
+
+그런데 여기서 명확히 해야 할 것이 있다. 이 수치는 전용 C++ 커널을 쓸 때만 나온다. HuggingFace 같은 표준 라이브러리에서는 속도 이점이 없다. 현재 GPU는 1비트 연산에 최적화돼 있지 않아 GPU 워크로드에서의 이점은 제한적이다. 70B+ 대규모에서 성능 동등성이 유지될지도 아직 검증이 부족하다.
+
+BitNet은 "LLM 추론의 에너지 비용을 근본적으로 낮출 수 있는가"라는 질문에 가장 급진적인 답을 제시한다. 생태계와 하드웨어 지원이 따라와야 현실화되는 방향이지만, 연구 트렌드로는 주목할 만하다.
+
+---
+
+## 다섯 방향의 연결
+
+이 편에서 다룬 기술들은 서로 다른 병목을 공격한다.
+
+**SSM/Mamba**는 Attention의 O(T²) 계산 복잡도 자체를 우회한다. 긴 컨텍스트를 선형 비용으로 처리하는 새 경로다. **하이브리드 아키텍처**(Jamba)는 "대체"가 아닌 "결합"으로 이 아이디어를 실용화했다.
+
+**MLA**는 KV 캐시의 메모리 비용을 공격한다. GQA가 head 수를 줄이는 근사 해법이었다면, MLA는 표현력을 유지하면서 메모리를 95% 가까이 줄인 수학적 해법이다. **NSA**는 attention 연산량 자체를 하드웨어 정렬된 방식으로 희소화했다.
+
+**FlashAttention-3**는 알고리즘이 아닌 하드웨어 활용을 최적화한다. 연산은 같지만 더 빠르다. **Speculative Decoding**은 autoregressive 디코딩의 순차성 한계를 단일 모델 내 역할 분리로 우회한다.
+
+**BitNet**은 방향이 다르다. 연산의 수치 표현 자체를 바꾸는 훨씬 급진적인 시도다.
+
+흥미로운 점은, 이 기술들이 서로를 강화한다는 것이다. MLA로 KV 캐시를 줄이면 Speculative Decoding의 draft 모델이 더 효율적으로 동작할 수 있다. FlashAttention-3의 하드웨어 활용 철학은 Mamba의 커널 설계에 영향을 줬다. 하이브리드 아키텍처는 SSM과 Transformer 각각의 강점을 최적 조합으로 이어 붙인다.
+
+Transformer가 등장한 지 7년이 넘었다. 그 기본 구조는 여전히 살아있지만, 주변의 모든 것이 바뀌었다. 그리고 내부도 조용히 바뀌고 있다.
+
+---
+
+다음 편(7편)은 이 시리즈의 마지막이다. "생각하는 모델"의 이야기 — 추론 능력을 어떻게 학습시킬 것인가. o1, DeepSeek-R1이 열어놓은 패러다임, 그리고 "더 많이 생각한다고 항상 좋은 게 아니다"는 역설을 다룬다.
+
+---
+
+## 참고 자료
+
+- [T1] Gu, A., & Dao, T. (2023). Mamba: Linear-Time Sequence Modeling with Selective State Spaces. arXiv:2312.00752
+- [T1] Dao, T., & Gu, A. (2024). Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality. arXiv:2405.21060
+- [T1] Lieber, O. et al. (2024). Jamba: A Hybrid Transformer-Mamba Language Model. arXiv:2403.19887
+- [T1] DeepSeek-AI (2024). DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model. arXiv:2405.04434
+- [T1] Yuan, Z. et al. (2025). Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention. arXiv:2502.11089
+- [T1] Shah, J. et al. (2024). FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision. arXiv:2407.08608 (NeurIPS 2024)
+- [T1] Dai, D. et al. (2024). DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models. arXiv:2401.06066 (ACL 2024)
+- [T1] DeepSeek-AI (2024). DeepSeek-V3 Technical Report. arXiv:2412.19437
+- [T1] Leviathan, Y., Kalman, M., & Matias, Y. (2023). Fast Inference from Transformers via Speculative Decoding. ICML 2023. arXiv:2211.17192
+- [T1] Chen, C. et al. (2023). Accelerating Large Language Model Decoding with Speculative Sampling. arXiv:2302.01318
+- [T1] Ma, S. et al. (2024). The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits. arXiv:2402.17764
+- [T1] Ma, S. et al. (2025). BitNet b1.58 2B4T Technical Report. arXiv:2504.12285
+- [T2] AI21 Labs (2024). Jamba 공식 발표. ai21.com/blog/announcing-jamba

@@ -54,9 +54,13 @@ GPT-3는 강력했지만, 원하는 대로 동작하지 않았다. 사실을 유
 
 보상 모델의 점수를 최대화하도록 언어 모델 자체를 강화학습으로 업데이트한다. 단, SFT 모델에서 너무 멀어지지 않도록 KL divergence 페널티를 건다.
 
-$$\text{objective} = \mathbb{E}[r_\theta(x,y)] - \beta \cdot \text{KL}(\pi_\theta \| \pi_{\text{SFT}})$$
+```
+objective = E[r(x,y)] - β · KL(π_θ ∥ π_SFT)
+```
 
-여기서 $r_\theta$는 보상 모델, $\beta$는 KL 페널티 계수다. $\beta$가 없으면 모델이 보상만 극단적으로 최대화하다가 엉뚱한 응답을 생성하게 된다.
+여기서 r은 보상 모델, β는 KL 페널티 계수다. β가 없으면 모델이 보상만 극단적으로 최대화하다가 엉뚱한 응답을 생성하게 된다.
+
+<img src="/images/llm-anatomy/rlhf-pipeline.svg" alt="RLHF 3단계 파이프라인 — SFT로 기초 정렬, 보상 모델 학습, PPO 강화학습과 KL 페널티로 최종 정책 최적화" />
 
 ### 결과: 크기를 이긴 정렬
 
@@ -80,19 +84,25 @@ RLHF의 한계는 파이프라인의 복잡성이었다. 보상 모델을 별도
 
 ### 수학적 유도
 
-Bradley-Terry 선호도 모델에서 출발한다. 사람이 응답 $y_w$을 $y_l$보다 선호할 확률:
+Bradley-Terry 선호도 모델에서 출발한다. 사람이 응답 y\_w을 y\_l보다 선호할 확률:
 
-$$P(y_w \succ y_l \mid x) = \sigma(r^*(x, y_w) - r^*(x, y_l))$$
+```
+P(y_w ≻ y_l | x) = σ(r*(x, y_w) - r*(x, y_l))
+```
 
-RL의 KL-constrained 최적화 문제에서 최적 정책 $\pi^*$와 보상 $r^*$의 관계를 정리하면:
+RL의 KL-constrained 최적화 문제에서 최적 정책 π\*와 보상 r\*의 관계를 정리하면:
 
-$$r^*(x, y) = \beta \cdot \log\frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} + \beta \log Z(x)$$
+```
+r*(x, y) = β · log(π*(y|x) / π_ref(y|x)) + β · log Z(x)
+```
 
-이를 Bradley-Terry 식에 대입하면, 분리 불가능해 보이던 $Z(x)$가 사라지면서 다음 목표 함수가 도출된다:
+이를 Bradley-Terry 식에 대입하면, 분리 불가능해 보이던 Z(x)가 사라지면서 다음 목표 함수가 도출된다:
 
-$$\mathcal{L}_{\text{DPO}} = -\mathbb{E}\left[\log \sigma\!\left(\beta \log\frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \beta \log\frac{\pi_\theta(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)}\right)\right]$$
+```
+L_DPO = -E[log σ(β·log(π_θ(y_w|x)/π_ref(y_w|x)) - β·log(π_θ(y_l|x)/π_ref(y_l|x)))]
+```
 
-보상 모델이 없다. 별도의 RM 학습 없이, 선호 쌍 데이터 $(x, y_w, y_l)$와 binary cross-entropy 손실만으로 언어 모델을 직접 최적화한다.
+보상 모델이 없다. 별도의 RM 학습 없이, 선호 쌍 데이터 (x, y\_w, y\_l)와 binary cross-entropy 손실만으로 언어 모델을 직접 최적화한다.
 
 직관적으로는: "모델이 암묵적으로 자기 자신이 보상 함수다."
 
@@ -116,9 +126,11 @@ PPO를 대형 모델에 적용하면 한 가지 현실적 문제가 생긴다. *
 
 ### 핵심 아이디어
 
-동일 프롬프트에 대해 $G$개의 출력을 샘플링한다. 각 출력의 advantage는 그룹 내 상대적 순위로 추정한다.
+동일 프롬프트에 대해 G개의 출력을 샘플링한다. 각 출력의 advantage는 그룹 내 상대적 순위로 추정한다.
 
-$$A_i = \frac{r_i - \text{mean}(r_1, \ldots, r_G)}{\text{std}(r_1, \ldots, r_G)}$$
+```
+A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
+```
 
 이 방식으로 크리틱 모델이 불필요해진다. 메모리 절감, 구현 단순화.
 
@@ -189,13 +201,13 @@ Lin et al. (2024, EMNLP)의 실험에서 이것이 수치로 확인됐다[^7]. O
 
 원인은 분포 이탈(out-of-distribution)이다. 학습 중에 RL로 생성되는 응답들은 보상 모델이 학습할 때 보지 못한 분포로 점점 이동한다. 보상 모델이 이상한 응답에 엉뚱하게 높은 점수를 주기 시작한다.
 
-KL divergence 페널티($\beta$)가 이를 막는 주요 장치다. SFT 모델에서 너무 멀어지지 않도록 제약을 건다.
+KL divergence 페널티(β)가 이를 막는 주요 장치다. SFT 모델에서 너무 멀어지지 않도록 제약을 건다.
 
 ### 완화 방법들
 
 - **모델 가중치 평균화**: SFT 전후 모델의 가중치를 보간. 놀랍게도 단순하지만 Pareto front 최적화에 효과적
 - **SFT loss 정규화**: RLHF 목표 함수에 SFT loss를 추가 항으로 포함
-- **KL 계수 튜닝**: $\beta$ 값을 태스크별로 조정
+- **KL 계수 튜닝**: β 값을 태스크별로 조정
 
 정렬 세는 현재진행형 연구 문제다. 모델이 더 안전해지는 동시에 더 유능해지는 방법은 아직 완전히 해결되지 않았다.
 
@@ -246,20 +258,20 @@ RLHF는 인간 피드백을 학습 신호로 만드는 방법을 체계화했다
 
 ## 참고 자료
 
-[^1]: Ouyang et al. (2022). Training language models to follow instructions with human feedback. NeurIPS 2022. [arXiv:2203.02155](https://arxiv.org/abs/2203.02155)
+[^1]: [T1] Ouyang et al. (2022). Training language models to follow instructions with human feedback. NeurIPS 2022. [arXiv:2203.02155](https://arxiv.org/abs/2203.02155)
 
-[^2]: Rafailov et al. (2023). Direct Preference Optimization: Your Language Model is Secretly a Reward Model. NeurIPS 2023. [arXiv:2305.18290](https://arxiv.org/abs/2305.18290)
+[^2]: [T1] Rafailov et al. (2023). Direct Preference Optimization: Your Language Model is Secretly a Reward Model. NeurIPS 2023. [arXiv:2305.18290](https://arxiv.org/abs/2305.18290)
 
-[^3]: Xu et al. (2024). Is DPO Superior to PPO for LLM Alignment? A Comprehensive Study. ICML 2024. [arXiv:2404.10719](https://arxiv.org/abs/2404.10719)
+[^3]: [T1] Xu et al. (2024). Is DPO Superior to PPO for LLM Alignment? A Comprehensive Study. ICML 2024. [arXiv:2404.10719](https://arxiv.org/abs/2404.10719)
 
-[^4]: Shao et al. (2024). DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models. [arXiv:2402.03300](https://arxiv.org/abs/2402.03300)
+[^4]: [T1] Shao et al. (2024). DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models. [arXiv:2402.03300](https://arxiv.org/abs/2402.03300)
 
-[^5]: DeepSeek-AI (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948)
+[^5]: [T2] DeepSeek-AI (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948)
 
-[^6]: Bai et al. (2022). Constitutional AI: Harmlessness from AI Feedback. [arXiv:2212.08073](https://arxiv.org/abs/2212.08073)
+[^6]: [T1] Bai et al. (2022). Constitutional AI: Harmlessness from AI Feedback. [arXiv:2212.08073](https://arxiv.org/abs/2212.08073)
 
-[^7]: Lin et al. (2024). Mitigating the Alignment Tax of RLHF. EMNLP 2024. [arXiv:2309.06256](https://arxiv.org/abs/2309.06256)
+[^7]: [T1] Lin et al. (2024). Mitigating the Alignment Tax of RLHF. EMNLP 2024. [arXiv:2309.06256](https://arxiv.org/abs/2309.06256)
 
-- Gao et al. (2023). Scaling Laws for Reward Model Overoptimization. ICML 2023. [링크](https://proceedings.mlr.press/v202/gao23h/gao23h.pdf)
-- Weng, L. (2024). Reward Hacking in Reinforcement Learning. Lil'Log. [링크](https://lilianweng.github.io/posts/2024-11-28-reward-hacking/)
-- Anthropic (2022). Constitutional AI: Harmlessness from AI Feedback. [anthropic.com](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)
+- [T1] Gao et al. (2023). Scaling Laws for Reward Model Overoptimization. ICML 2023. [링크](https://proceedings.mlr.press/v202/gao23h/gao23h.pdf)
+- [T3] Weng, L. (2024). Reward Hacking in Reinforcement Learning. Lil'Log. [링크](https://lilianweng.github.io/posts/2024-11-28-reward-hacking/)
+- [T2] Anthropic (2022). Constitutional AI: Harmlessness from AI Feedback. [anthropic.com](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)
