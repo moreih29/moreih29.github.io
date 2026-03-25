@@ -96,7 +96,7 @@ Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova — Google AI Langu
 
 **첫 번째**: 진정한 양방향(bidirectional). GPT는 왼쪽→오른쪽만 봤다. ELMo는 독립된 두 방향을 합쳤다. BERT는 Transformer의 **encoder** 구조를 활용해 모든 토큰이 동시에 양쪽 문맥을 볼 수 있게 했다.
 
-이를 가능하게 한 것이 **MLM(Masked Language Modeling)**이었다. 문장에서 15%의 토큰을 무작위로 마스킹하고, 모델이 그 마스킹된 토큰을 예측하도록 학습한다. 왼쪽도 보고, 오른쪽도 보면서.
+이를 가능하게 한 것이 <strong>MLM(Masked Language Modeling)</strong>이었다. 문장에서 15%의 토큰을 무작위로 마스킹하고, 모델이 그 마스킹된 토큰을 예측하도록 학습한다. 왼쪽도 보고, 오른쪽도 보면서.
 
 **두 번째**: NSP(Next Sentence Prediction). 두 문장이 실제로 연속적인지 예측하는 태스크를 추가했다. (단, 이 NSP 목표는 나중에 RoBERTa에서 불필요하다고 밝혀진다.)
 
