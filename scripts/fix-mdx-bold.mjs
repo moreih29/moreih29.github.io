@@ -1,6 +1,5 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { globSync } from 'fs'
-import { resolve } from 'path'
+import { readFileSync, writeFileSync, readdirSync } from 'fs'
+import { resolve, join } from 'path'
 
 const DRY_RUN = process.argv.includes('--dry-run')
 
@@ -57,7 +56,7 @@ function processFile(filePath) {
 }
 
 const root = resolve(process.cwd(), 'content/posts')
-const files = globSync('**/*.mdx', { cwd: root }).map((f) => resolve(root, f))
+const files = readdirSync(root).filter((f) => f.endsWith('.mdx')).map((f) => join(root, f))
 
 let totalFiles = 0
 let totalReplacements = 0
