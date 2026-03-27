@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 420" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .era-label { font-size: 13px; font-weight: 700; fill: #ffffff; }
+      .era-sub { font-size: 10px; fill: #e2e8f0; }
+      .tech { font-size: 10px; font-weight: 600; fill: #1a1a2e; }
+      .tech-detail { font-size: 9px; fill: #6b7280; }
+      .metric { font-size: 9px; font-weight: 600; fill: #059669; }
+      .year { font-size: 11px; font-weight: 700; fill: #9ca3af; }
+      .arrow-line { stroke: #3b82f6; stroke-width: 2.5; fill: none; marker-end: url(#tri); }
+    </style>
+    <marker id="tri" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="420" fill="#fafafa" rx="8"/>
+  <text x="430" y="32" text-anchor="middle" class="title">제조업 컴퓨터 비전 — 기술 진화 스택</text>
+
+  <!-- Timeline arrow -->
+  <line x1="60" y1="390" x2="800" y2="390" class="arrow-line"/>
+  <text x="80" y="410" class="year">2015</text>
+  <text x="250" y="410" class="year">2018</text>
+  <text x="430" y="410" class="year">2021</text>
+  <text x="600" y="410" class="year">2023</text>
+  <text x="760" y="410" class="year">2025</text>
+
+  <!-- Era 1: Rule-based -->
+  <g transform="translate(40, 55)">
+    <rect width="170" height="70" rx="8" fill="#94a3b8"/>
+    <text x="85" y="28" text-anchor="middle" class="era-label">규칙 기반</text>
+    <text x="85" y="48" text-anchor="middle" class="era-sub">Rule-based / Template Matching</text>
+
+    <rect y="80" width="170" height="48" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="85" y="100" text-anchor="middle" class="tech">임계값 비교 / 에지 검출</text>
+    <text x="85" y="118" text-anchor="middle" class="tech-detail">엔지니어가 규칙을 수작업 정의</text>
+
+    <rect y="138" width="170" height="36" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="85" y="160" text-anchor="middle" class="metric">한계: 새 결함 유형마다 재설계</text>
+
+    <rect y="184" width="170" height="36" rx="6" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="85" y="200" text-anchor="middle" class="tech-detail">Cognex, Keyence</text>
+    <text x="85" y="214" text-anchor="middle" class="tech-detail">하드코딩 비전 시스템</text>
+  </g>
+
+  <!-- Era 2: Deep Learning CNN -->
+  <g transform="translate(230, 55)">
+    <rect width="180" height="70" rx="8" fill="#3b82f6"/>
+    <text x="90" y="28" text-anchor="middle" class="era-label">딥러닝 CNN</text>
+    <text x="90" y="48" text-anchor="middle" class="era-sub">ResNet / YOLO / U-Net</text>
+
+    <rect y="80" width="180" height="48" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+    <text x="90" y="100" text-anchor="middle" class="tech">지도 학습 결함 분류</text>
+    <text x="90" y="118" text-anchor="middle" class="tech-detail">라벨링된 불량 이미지 수천 장 필요</text>
+
+    <rect y="138" width="180" height="36" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="90" y="160" text-anchor="middle" class="metric">정확도 95%+ / ROI 200-300%</text>
+
+    <rect y="184" width="180" height="36" rx="6" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="90" y="200" text-anchor="middle" class="tech-detail">Landing AI, Teledyne, Basler</text>
+    <text x="90" y="214" text-anchor="middle" class="tech-detail">데이터 중심 AI 접근</text>
+
+    <rect y="230" width="180" height="48" rx="6" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
+    <text x="90" y="250" text-anchor="middle" class="tech" fill="#92400e">병목: 라벨링 비용</text>
+    <text x="90" y="268" text-anchor="middle" class="tech-detail">불량 이미지 확보 난이도 높음</text>
+  </g>
+
+  <!-- Era 3: Multimodal + GenAI -->
+  <g transform="translate(430, 55)">
+    <rect width="190" height="70" rx="8" fill="#8b5cf6"/>
+    <text x="95" y="28" text-anchor="middle" class="era-label">멀티모달 + GenAI</text>
+    <text x="95" y="48" text-anchor="middle" class="era-sub">ViT / CLIP / Diffusion</text>
+
+    <rect y="80" width="190" height="60" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1"/>
+    <text x="95" y="100" text-anchor="middle" class="tech">자연어 결함 정의</text>
+    <text x="95" y="118" text-anchor="middle" class="tech-detail">"가장자리 미세 크랙" → 텍스트로</text>
+    <text x="95" y="134" text-anchor="middle" class="tech-detail">새 결함 유형 = 프롬프트 추가</text>
+
+    <rect y="150" width="190" height="48" rx="6" fill="#fff1f2" stroke="#fda4af" stroke-width="1"/>
+    <text x="95" y="170" text-anchor="middle" class="tech">합성 데이터 생성</text>
+    <text x="95" y="188" text-anchor="middle" class="tech-detail">Diffusion + LoRA → 비용 80%+ 절감</text>
+
+    <rect y="208" width="190" height="36" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="95" y="228" text-anchor="middle" class="metric">소량 데이터로 고성능 달성</text>
+
+    <rect y="254" width="190" height="36" rx="6" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="95" y="270" text-anchor="middle" class="tech-detail">Landing AI LandingLens</text>
+    <text x="95" y="284" text-anchor="middle" class="tech-detail">+ GPT-4V/Gemini 연동</text>
+  </g>
+
+  <!-- Era 4: Autonomous Inspection -->
+  <g transform="translate(640, 55)">
+    <rect width="180" height="70" rx="8" fill="#1a1a2e"/>
+    <text x="90" y="28" text-anchor="middle" class="era-label">자율 검사 (전망)</text>
+    <text x="90" y="48" text-anchor="middle" class="era-sub">Foundation Model + Edge</text>
+
+    <rect y="80" width="180" height="60" rx="6" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
+    <text x="90" y="100" text-anchor="middle" class="tech">IFM 기반 비전</text>
+    <text x="90" y="118" text-anchor="middle" class="tech-detail">산업 특화 Foundation Model</text>
+    <text x="90" y="134" text-anchor="middle" class="tech-detail">CAD/CAE 데이터 사전학습</text>
+
+    <rect y="150" width="180" height="48" rx="6" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
+    <text x="90" y="170" text-anchor="middle" class="tech">엣지 추론</text>
+    <text x="90" y="188" text-anchor="middle" class="tech-detail">NPU 기반 라인 내 실시간 검사</text>
+
+    <rect y="208" width="180" height="48" rx="6" fill="#f8fafc" stroke="#334155" stroke-width="1"/>
+    <text x="90" y="228" text-anchor="middle" class="tech">폐루프 품질 제어</text>
+    <text x="90" y="246" text-anchor="middle" class="tech-detail">검사→피드백→공정 조정 자동화</text>
+  </g>
+
+  <!-- Connecting arrows between eras -->
+  <path d="M 210,90 L 230,90" class="arrow-line"/>
+  <path d="M 410,90 L 430,90" class="arrow-line"/>
+  <path d="M 620,90 L 640,90" class="arrow-line"/>
+</svg>

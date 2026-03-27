@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .layer-title { font-size: 12px; font-weight: 700; fill: #ffffff; }
+      .box-title { font-size: 11px; font-weight: 700; fill: #1a1a2e; }
+      .box-sub { font-size: 9px; fill: #374151; }
+      .kpi { font-size: 10px; font-weight: 700; fill: #2563eb; }
+      .note { font-size: 9px; fill: #6b7280; }
+      .safety-text { font-size: 9px; font-weight: 600; fill: #dc2626; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#64748b"/>
+    </marker>
+    <marker id="arr-white" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="500" fill="#f8fafc" rx="10"/>
+  <text x="430" y="28" text-anchor="middle" class="title">Siemens IFM 아키텍처 — Industrial Copilot + vPLC 통합 구조</text>
+
+  <!-- Layer 1: Human Interface -->
+  <rect x="20" y="45" width="820" height="72" rx="6" fill="#1e3a5f"/>
+  <text x="430" y="66" text-anchor="middle" class="layer-title">인터페이스 레이어</text>
+
+  <rect x="36" y="74" width="180" height="34" rx="4" fill="#2563eb"/>
+  <text x="126" y="87" text-anchor="middle" class="box-title" fill="#fff">Industrial Copilot</text>
+  <text x="126" y="100" text-anchor="middle" class="box-sub" fill="#bfdbfe">자연어 질의 · PLC 코드 생성</text>
+
+  <rect x="228" y="74" width="180" height="34" rx="4" fill="#2563eb"/>
+  <text x="318" y="87" text-anchor="middle" class="box-title" fill="#fff">Factory Ops Agent</text>
+  <text x="318" y="100" text-anchor="middle" class="box-sub" fill="#bfdbfe">KQL 변환 · MES/QMS 조회</text>
+
+  <rect x="420" y="74" width="180" height="34" rx="4" fill="#2563eb"/>
+  <text x="510" y="87" text-anchor="middle" class="box-title" fill="#fff">디지털트윈 UI</text>
+  <text x="510" y="100" text-anchor="middle" class="box-sub" fill="#bfdbfe">What-if 시뮬레이션 · 3D 뷰</text>
+
+  <rect x="612" y="74" width="212" height="34" rx="4" fill="#1d4ed8"/>
+  <text x="718" y="87" text-anchor="middle" class="box-title" fill="#fff">엔지니어 / 현장 작업자</text>
+  <text x="718" y="100" text-anchor="middle" class="box-sub" fill="#bfdbfe">자연어 · 터치 · 음성 입력</text>
+
+  <!-- Arrows: Interface → Foundation -->
+  <line x1="430" y1="117" x2="430" y2="133" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Layer 2: Foundation Model -->
+  <rect x="20" y="133" width="820" height="86" rx="6" fill="#7c3aed"/>
+  <text x="430" y="152" text-anchor="middle" class="layer-title">IFM 추론 레이어 — Industrial Foundation Model</text>
+
+  <rect x="36" y="160" width="148" height="50" rx="4" fill="#5b21b6"/>
+  <text x="110" y="178" text-anchor="middle" class="box-title" fill="#e9d5ff">사전 학습 데이터</text>
+  <text x="110" y="191" text-anchor="middle" class="box-sub" fill="#c4b5fd">CAD · CAE · PLC코드</text>
+  <text x="110" y="202" text-anchor="middle" class="box-sub" fill="#c4b5fd">센서 · 산업 표준문서</text>
+
+  <rect x="196" y="160" width="148" height="50" rx="4" fill="#5b21b6"/>
+  <text x="270" y="178" text-anchor="middle" class="box-title" fill="#e9d5ff">도메인 추론</text>
+  <text x="270" y="191" text-anchor="middle" class="box-sub" fill="#c4b5fd">G-code · Ladder Logic</text>
+  <text x="270" y="202" text-anchor="middle" class="box-sub" fill="#c4b5fd">P&amp;ID 네이티브 이해</text>
+
+  <rect x="356" y="160" width="148" height="50" rx="4" fill="#5b21b6"/>
+  <text x="430" y="178" text-anchor="middle" class="box-title" fill="#e9d5ff">Azure OpenAI</text>
+  <text x="430" y="191" text-anchor="middle" class="box-sub" fill="#c4b5fd">클라우드 / 온프레미스</text>
+  <text x="430" y="202" text-anchor="middle" class="box-sub" fill="#c4b5fd">하이브리드 배포</text>
+
+  <rect x="516" y="160" width="148" height="50" rx="4" fill="#5b21b6"/>
+  <text x="590" y="178" text-anchor="middle" class="box-title" fill="#e9d5ff">RAG 엔진</text>
+  <text x="590" y="191" text-anchor="middle" class="box-sub" fill="#c4b5fd">공장 지식베이스</text>
+  <text x="590" y="202" text-anchor="middle" class="box-sub" fill="#c4b5fd">매뉴얼 · 이력 검색</text>
+
+  <rect x="676" y="160" width="148" height="50" rx="4" fill="#4c1d95"/>
+  <text x="750" y="178" text-anchor="middle" class="box-title" fill="#e9d5ff">Altair 시뮬레이션</text>
+  <text x="750" y="191" text-anchor="middle" class="box-sub" fill="#c4b5fd">FEM/CFD 통합</text>
+  <text x="750" y="202" text-anchor="middle" class="box-sub" fill="#c4b5fd">($10B 인수, 2024)</text>
+
+  <!-- AI Safety Layer -->
+  <rect x="20" y="225" width="820" height="32" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="200" y="246" class="safety-text">AI Safety Layer</text>
+  <text x="300" y="246" class="note">물리적 제약 검증 · 안전 범위 초과 차단 · ISO 61508 / IEC 62443 준수 · 인간 개입 트리거</text>
+
+  <!-- Arrows: Foundation → Safety → Execution -->
+  <line x1="430" y1="257" x2="430" y2="271" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Layer 3: Execution -->
+  <rect x="20" y="271" width="820" height="86" rx="6" fill="#064e3b"/>
+  <text x="430" y="290" text-anchor="middle" class="layer-title">실행 레이어</text>
+
+  <rect x="36" y="298" width="155" height="50" rx="4" fill="#065f46"/>
+  <text x="113" y="316" text-anchor="middle" class="box-title" fill="#a7f3d0">vPLC (가상 PLC)</text>
+  <text x="113" y="329" text-anchor="middle" class="box-sub" fill="#6ee7b7">소프트웨어 제어 로직</text>
+  <text x="113" y="340" text-anchor="middle" class="box-sub" fill="#6ee7b7">Audi Böllinger TÜV 인증</text>
+
+  <rect x="203" y="298" width="155" height="50" rx="4" fill="#065f46"/>
+  <text x="280" y="316" text-anchor="middle" class="box-title" fill="#a7f3d0">디지털트윈</text>
+  <text x="280" y="329" text-anchor="middle" class="box-sub" fill="#6ee7b7">공장 현재 상태 반영</text>
+  <text x="280" y="340" text-anchor="middle" class="box-sub" fill="#6ee7b7">실시간 동기화</text>
+
+  <rect x="370" y="298" width="155" height="50" rx="4" fill="#065f46"/>
+  <text x="447" y="316" text-anchor="middle" class="box-title" fill="#a7f3d0">엣지 AI 추론</text>
+  <text x="447" y="329" text-anchor="middle" class="box-sub" fill="#6ee7b7">NPU 기반 로컬 처리</text>
+  <text x="447" y="340" text-anchor="middle" class="box-sub" fill="#6ee7b7">레이턴시 1~10ms</text>
+
+  <rect x="537" y="298" width="155" height="50" rx="4" fill="#065f46"/>
+  <text x="614" y="316" text-anchor="middle" class="box-title" fill="#a7f3d0">MES / SCADA</text>
+  <text x="614" y="329" text-anchor="middle" class="box-sub" fill="#6ee7b7">ISA-95 계층 연동</text>
+  <text x="614" y="340" text-anchor="middle" class="box-sub" fill="#6ee7b7">생산 실행 시스템</text>
+
+  <rect x="704" y="298" width="120" height="50" rx="4" fill="#047857"/>
+  <text x="764" y="316" text-anchor="middle" class="box-title" fill="#a7f3d0">로봇 / AMR</text>
+  <text x="764" y="329" text-anchor="middle" class="box-sub" fill="#6ee7b7">물리적 실행</text>
+  <text x="764" y="340" text-anchor="middle" class="box-sub" fill="#6ee7b7">Sim-to-Real</text>
+
+  <!-- Arrows: Execution → Physical -->
+  <line x1="430" y1="357" x2="430" y2="371" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Layer 4: Physical & Feedback -->
+  <rect x="20" y="371" width="820" height="58" rx="6" fill="#1e293b"/>
+  <text x="150" y="393" text-anchor="middle" class="layer-title">물리 공장</text>
+  <text x="150" y="415" class="box-sub" fill="#94a3b8">CNC · 용접 · 도장 · 조립 · 검사 라인</text>
+  <rect x="300" y="381" width="540" height="40" rx="4" fill="#0f172a"/>
+  <text x="570" y="398" text-anchor="middle" class="box-sub" fill="#60a5fa">피드백 루프: 센서 데이터 → 시계열 분석 → IFM → 파라미터 재조정</text>
+  <text x="570" y="412" text-anchor="middle" class="box-sub" fill="#38bdf8">결함 이미지 → 합성 데이터 → 비전 모델 재학습 (CV ↔ GenAI 루프)</text>
+
+  <!-- Feedback arrow -->
+  <path d="M 820 400 C 845 400, 845 200, 820 200" stroke="#60a5fa" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="847" y="305" class="note" fill="#60a5fa" transform="rotate(90, 847, 305)">피드백</text>
+
+  <!-- Bottom note -->
+  <text x="430" y="472" text-anchor="middle" class="note">IFM은 단독 제품이 아니라 플랫폼 — Copilot, vPLC, 디지털트윈, 엣지 AI가 단일 추론 기반 위에서 통합된다</text>
+  <text x="430" y="486" text-anchor="middle" class="note">출처: Siemens Hannover Messe 2025 발표 · Microsoft Azure AI Foundry 기술문서</text>
+</svg>

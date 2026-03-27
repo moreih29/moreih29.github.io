@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "bun velite build && node scripts/patch-velite.mjs",
+    "prebuild": "node scripts/fix-mdx-bold.mjs && bun velite build && node scripts/patch-velite.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint src --ext .ts,.tsx",

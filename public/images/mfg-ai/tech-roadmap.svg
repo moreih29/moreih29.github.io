@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" fill="none">
+
+  <!-- Title -->
+  <text x="360" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">제조업 AI 기술 로드맵 (2025~2030)</text>
+
+  <!-- Timeline backbone -->
+  <line x1="60" y1="100" x2="680" y2="100" stroke="#D1D5DB" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Phase nodes -->
+  <!-- 2025~2026 -->
+  <circle cx="130" cy="100" r="14" fill="#3B82F6" stroke="white" stroke-width="2"/>
+  <text x="130" y="105" text-anchor="middle" font-family="monospace" font-size="9" fill="white" font-weight="bold">25~26</text>
+
+  <!-- 2027~2028 -->
+  <circle cx="390" cy="100" r="14" fill="#8B5CF6" stroke="white" stroke-width="2"/>
+  <text x="390" y="105" text-anchor="middle" font-family="monospace" font-size="9" fill="white" font-weight="bold">27~28</text>
+
+  <!-- 2029~2030 -->
+  <circle cx="640" cy="100" r="14" fill="#10B981" stroke="white" stroke-width="2"/>
+  <text x="640" y="105" text-anchor="middle" font-family="monospace" font-size="9" fill="white" font-weight="bold">29~30</text>
+
+  <!-- Phase 1: 2025~2026 — 토대 놓기 -->
+  <rect x="30" y="126" width="200" height="186" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="130" y="148" text-anchor="middle" font-family="monospace" font-size="11" fill="#1D4ED8" font-weight="bold">토대 놓기</text>
+
+  <rect x="42" y="158" width="176" height="30" rx="4" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="130" y="172" text-anchor="middle" font-family="monospace" font-size="9" fill="#1D4ED8" font-weight="bold">IFM 상용화 초기</text>
+  <text x="130" y="183" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">산업 특화 Foundation Model 경쟁 시작</text>
+
+  <rect x="42" y="196" width="176" height="30" rx="4" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="130" y="210" text-anchor="middle" font-family="monospace" font-size="9" fill="#1D4ED8" font-weight="bold">엣지 AI + 5G 본격화</text>
+  <text x="130" y="221" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">공장 내 실시간 추론 인프라 구축</text>
+
+  <rect x="42" y="234" width="176" height="30" rx="4" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="130" y="248" text-anchor="middle" font-family="monospace" font-size="9" fill="#1D4ED8" font-weight="bold">GenAI 코파일럿 확산</text>
+  <text x="130" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">현장 엔지니어 자연어 인터페이스</text>
+
+  <text x="130" y="296" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">AI 도입률: 78% → 전 산업 확산</text>
+  <text x="130" y="308" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">GenAI 시장: $630M → $2B</text>
+
+  <!-- Phase 2: 2027~2028 — 통합과 확장 -->
+  <rect x="290" y="126" width="200" height="186" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="390" y="148" text-anchor="middle" font-family="monospace" font-size="11" fill="#5B21B6" font-weight="bold">통합과 확장</text>
+
+  <rect x="302" y="158" width="176" height="30" rx="4" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="390" y="172" text-anchor="middle" font-family="monospace" font-size="9" fill="#5B21B6" font-weight="bold">IFM 중앙 추론 엔진화</text>
+  <text x="390" y="183" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">디지털트윈 + Copilot + vPLC 통합</text>
+
+  <rect x="302" y="196" width="176" height="30" rx="4" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="390" y="210" text-anchor="middle" font-family="monospace" font-size="9" fill="#5B21B6" font-weight="bold">자율 PLC 상용화</text>
+  <text x="390" y="221" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">LLM 기반 제어 로직 소프트웨어화</text>
+
+  <rect x="302" y="234" width="176" height="30" rx="4" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="390" y="248" text-anchor="middle" font-family="monospace" font-size="9" fill="#5B21B6" font-weight="bold">중소기업 GenAI 확대</text>
+  <text x="390" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">SaaS형 제조 AI 진입 장벽 낮춤</text>
+
+  <text x="390" y="296" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">엣지 AI 시장: $50B 돌파</text>
+  <text x="390" y="308" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">디지털트윈 도입률: 50%+</text>
+
+  <!-- Phase 3: 2029~2030 — 자율 제조 확산 -->
+  <rect x="550" y="126" width="150" height="186" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="625" y="148" text-anchor="middle" font-family="monospace" font-size="11" fill="#065F46" font-weight="bold">자율 제조 확산</text>
+
+  <rect x="562" y="158" width="126" height="30" rx="4" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="625" y="172" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46" font-weight="bold">자율 제조 확산</text>
+  <text x="625" y="183" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">한국 30% · 선진국 50%+</text>
+
+  <rect x="562" y="196" width="126" height="30" rx="4" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="625" y="210" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46" font-weight="bold">FM 파인튜닝 경쟁</text>
+  <text x="625" y="221" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">자사 데이터 튜닝이 차별화</text>
+
+  <rect x="562" y="234" width="126" height="30" rx="4" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="625" y="248" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46" font-weight="bold">도메인 FM 생태계</text>
+  <text x="625" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">반도체·자동차·제약 특화</text>
+
+  <text x="625" y="296" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">GenAI 시장: $13.9B</text>
+  <text x="625" y="308" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">엣지 AI: $118.7B</text>
+
+  <!-- Arrows between phases -->
+  <line x1="230" y1="100" x2="276" y2="100" stroke="#D1D5DB" stroke-width="2"/>
+  <polygon points="274,96 282,100 274,104" fill="#D1D5DB"/>
+  <line x1="490" y1="100" x2="526" y2="100" stroke="#D1D5DB" stroke-width="2"/>
+  <polygon points="524,96 532,100 524,104" fill="#D1D5DB"/>
+</svg>

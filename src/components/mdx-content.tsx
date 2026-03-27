@@ -1,7 +1,8 @@
 import * as runtime from 'react/jsx-runtime'
+import { ClickableImage } from './image-modal'
 
 const sharedComponents = {
-  // 커스텀 MDX 컴포넌트 추가 가능
+  img: ClickableImage,
 }
 
 const useMDXComponent = (code: string) => {

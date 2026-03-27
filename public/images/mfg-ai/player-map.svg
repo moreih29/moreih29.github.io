@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" fill="none">
+
+  <!-- Title -->
+  <text x="360" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">제조업 AI 플레이어 맵 — 3개 진영의 경쟁 구도</text>
+
+  <!-- ── 진영 1: 전통 제조 IT ── -->
+  <rect x="20" y="44" width="210" height="256" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="125" y="68" text-anchor="middle" font-family="monospace" font-size="11" fill="#92400E" font-weight="bold">전통 제조 IT</text>
+  <text x="125" y="84" text-anchor="middle" font-family="monospace" font-size="9" fill="#92400E">현장을 아는 자들</text>
+
+  <rect x="36" y="96" width="178" height="36" rx="5" fill="#FDE68A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="125" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#92400E" font-weight="bold">Siemens</text>
+  <text x="125" y="126" text-anchor="middle" font-family="monospace" font-size="8" fill="#78350F">Altair $10B 인수 · IFM</text>
+
+  <rect x="36" y="140" width="178" height="36" rx="5" fill="#FDE68A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="125" y="156" text-anchor="middle" font-family="monospace" font-size="10" fill="#92400E" font-weight="bold">Rockwell / Honeywell</text>
+  <text x="125" y="170" text-anchor="middle" font-family="monospace" font-size="8" fill="#78350F">OT 제어 · SCADA 플랫폼</text>
+
+  <rect x="36" y="184" width="178" height="36" rx="5" fill="#FDE68A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="125" y="200" text-anchor="middle" font-family="monospace" font-size="10" fill="#92400E" font-weight="bold">ABB / Schneider</text>
+  <text x="125" y="214" text-anchor="middle" font-family="monospace" font-size="8" fill="#78350F">로보틱스 · 에너지 관리</text>
+
+  <text x="125" y="246" text-anchor="middle" font-family="monospace" font-size="8" fill="#92400E">강점: 도메인 지식 · OT 네트워크</text>
+  <text x="125" y="260" text-anchor="middle" font-family="monospace" font-size="8" fill="#92400E">전략: 혁신 기업 인수 흡수</text>
+  <text x="125" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#B45309">Emerson → Aspentech $11B (2022)</text>
+
+  <!-- ── 진영 2: 빅테크 ── -->
+  <rect x="255" y="44" width="210" height="256" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+  <text x="360" y="68" text-anchor="middle" font-family="monospace" font-size="11" fill="#1D4ED8" font-weight="bold">빅테크</text>
+  <text x="360" y="84" text-anchor="middle" font-family="monospace" font-size="9" fill="#1D4ED8">공장 바닥까지 내려온 클라우드</text>
+
+  <rect x="271" y="96" width="178" height="36" rx="5" fill="#BFDBFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="360" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#1D4ED8" font-weight="bold">Microsoft</text>
+  <text x="360" y="126" text-anchor="middle" font-family="monospace" font-size="8" fill="#1E3A8A">Factory Operations Agent · $80B capex</text>
+
+  <rect x="271" y="140" width="178" height="36" rx="5" fill="#BFDBFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="360" y="156" text-anchor="middle" font-family="monospace" font-size="10" fill="#1D4ED8" font-weight="bold">AWS</text>
+  <text x="360" y="170" text-anchor="middle" font-family="monospace" font-size="8" fill="#1E3A8A">AI Factories · Nova Forge · $105B capex</text>
+
+  <rect x="271" y="184" width="178" height="36" rx="5" fill="#BFDBFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="360" y="200" text-anchor="middle" font-family="monospace" font-size="10" fill="#1D4ED8" font-weight="bold">Google / NVIDIA</text>
+  <text x="360" y="214" text-anchor="middle" font-family="monospace" font-size="8" fill="#1E3A8A">$75B capex · GPU 인프라</text>
+
+  <text x="360" y="246" text-anchor="middle" font-family="monospace" font-size="8" fill="#1D4ED8">강점: AI 인프라 · LLM · 클라우드</text>
+  <text x="360" y="260" text-anchor="middle" font-family="monospace" font-size="8" fill="#1D4ED8">전략: 제조 특화 솔루션 파트너십</text>
+  <text x="360" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#1E40AF">3사 합계 capex $255B+</text>
+
+  <!-- ── 진영 3: AI 네이티브 ── -->
+  <rect x="490" y="44" width="210" height="256" rx="10" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="595" y="68" text-anchor="middle" font-family="monospace" font-size="11" fill="#065F46" font-weight="bold">AI 네이티브</text>
+  <text x="595" y="84" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46">문제를 정의하는 자들</text>
+
+  <rect x="506" y="96" width="178" height="36" rx="5" fill="#A7F3D0" stroke="#10B981" stroke-width="1"/>
+  <text x="595" y="112" text-anchor="middle" font-family="monospace" font-size="10" fill="#065F46" font-weight="bold">Landing AI</text>
+  <text x="595" y="126" text-anchor="middle" font-family="monospace" font-size="8" fill="#064E3B">데이터 중심 비전 AI · 품질검사 특화</text>
+
+  <rect x="506" y="140" width="178" height="36" rx="5" fill="#A7F3D0" stroke="#10B981" stroke-width="1"/>
+  <text x="595" y="156" text-anchor="middle" font-family="monospace" font-size="10" fill="#065F46" font-weight="bold">Sight Machine</text>
+  <text x="595" y="170" text-anchor="middle" font-family="monospace" font-size="8" fill="#064E3B">제조 데이터 플랫폼 · $85.5M 투자</text>
+
+  <rect x="506" y="184" width="178" height="36" rx="5" fill="#A7F3D0" stroke="#10B981" stroke-width="1"/>
+  <text x="595" y="200" text-anchor="middle" font-family="monospace" font-size="10" fill="#065F46" font-weight="bold">Cognite</text>
+  <text x="595" y="214" text-anchor="middle" font-family="monospace" font-size="8" fill="#064E3B">산업 OT/IT 데이터 통합</text>
+
+  <text x="595" y="246" text-anchor="middle" font-family="monospace" font-size="8" fill="#065F46">강점: 문제 특화 · 빠른 혁신</text>
+  <text x="595" y="260" text-anchor="middle" font-family="monospace" font-size="8" fill="#065F46">전략: 특정 도메인 깊이 파고들기</text>
+  <text x="595" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#047857">+ 컨설팅: Accenture $3B 투자</text>
+
+  <!-- Arrows between camps -->
+  <line x1="230" y1="172" x2="253" y2="172" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="467" y1="172" x2="488" y2="172" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="360" y="308" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">← 전통 기업이 스타트업 인수 흡수 | 빅테크가 전통 기업과 파트너십 →</text>
+</svg>

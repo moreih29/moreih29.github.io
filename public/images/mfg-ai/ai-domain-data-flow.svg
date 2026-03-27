@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 480" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .box-label { font-size: 12px; font-weight: 700; fill: #ffffff; }
+      .box-sub { font-size: 9px; fill: #e2e8f0; }
+      .flow-label { font-size: 9px; fill: #6b7280; font-style: italic; }
+      .layer-label { font-size: 11px; font-weight: 600; fill: #9ca3af; letter-spacing: 2px; }
+      .arrow { stroke: #94a3b8; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+      .arrow-strong { stroke: #3b82f6; stroke-width: 2; fill: none; marker-end: url(#arrowhead-blue); }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="480" fill="#fafafa" rx="8"/>
+
+  <!-- Title -->
+  <text x="430" y="32" text-anchor="middle" class="title">제조업 AI 도메인 간 데이터 흐름</text>
+
+  <!-- Layer Labels -->
+  <text x="30" y="100" class="layer-label" transform="rotate(-90, 30, 100)">SENSE</text>
+  <text x="30" y="260" class="layer-label" transform="rotate(-90, 30, 260)">THINK</text>
+  <text x="30" y="410" class="layer-label" transform="rotate(-90, 30, 410)">ACT</text>
+
+  <!-- Horizontal dividers -->
+  <line x1="50" y1="170" x2="830" y2="170" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="6,4"/>
+  <line x1="50" y1="340" x2="830" y2="340" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- SENSE Layer -->
+  <!-- Computer Vision -->
+  <rect x="100" y="60" width="180" height="56" rx="8" fill="#3b82f6"/>
+  <text x="190" y="84" text-anchor="middle" class="box-label">컴퓨터 비전</text>
+  <text x="190" y="102" text-anchor="middle" class="box-sub">카메라 / 이미지 / 비디오</text>
+
+  <!-- Time Series -->
+  <rect x="340" y="60" width="180" height="56" rx="8" fill="#f59e0b"/>
+  <text x="430" y="84" text-anchor="middle" class="box-label" fill="#1a1a2e">시계열 분석</text>
+  <text x="430" y="102" text-anchor="middle" class="box-sub" fill="#78350f">진동 / 온도 / 압력 / 전류</text>
+
+  <!-- Physical World (input) -->
+  <rect x="600" y="60" width="200" height="56" rx="8" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1"/>
+  <text x="700" y="84" text-anchor="middle" font-size="12" font-weight="600" fill="#374151">물리적 공장</text>
+  <text x="700" y="102" text-anchor="middle" font-size="9" fill="#6b7280">센서 / 카메라 / PLC / MES</text>
+
+  <!-- Arrows from Physical World to Sense -->
+  <path d="M 600,78 L 288,78" class="arrow"/>
+  <path d="M 600,95 L 528,95" class="arrow"/>
+  <text x="544" y="74" class="flow-label">이미지</text>
+  <text x="544" y="108" class="flow-label">센서 신호</text>
+
+  <!-- THINK Layer -->
+  <!-- Optimization -->
+  <rect x="60" y="200" width="170" height="56" rx="8" fill="#ec4899"/>
+  <text x="145" y="224" text-anchor="middle" class="box-label">최적화/OR</text>
+  <text x="145" y="242" text-anchor="middle" class="box-sub">MILP / RL / Bayesian Opt</text>
+
+  <!-- NLP/LLM -->
+  <rect x="270" y="200" width="170" height="56" rx="8" fill="#8b5cf6"/>
+  <text x="355" y="224" text-anchor="middle" class="box-label">NLP/LLM</text>
+  <text x="355" y="242" text-anchor="middle" class="box-sub">RAG / 코파일럿 / 에이전트</text>
+
+  <!-- Generative AI -->
+  <rect x="480" y="200" width="170" height="56" rx="8" fill="#f43f5e"/>
+  <text x="565" y="224" text-anchor="middle" class="box-label">생성형 AI</text>
+  <text x="565" y="242" text-anchor="middle" class="box-sub">GAN / Diffusion / LLM</text>
+
+  <!-- Arrows from Sense to Think -->
+  <path d="M 190,116 L 145,192" class="arrow-strong"/>
+  <text x="130" y="158" class="flow-label">결함 패턴</text>
+
+  <path d="M 430,116 L 145,192" class="arrow-strong"/>
+  <text x="240" y="158" class="flow-label">이상 신호</text>
+
+  <path d="M 190,116 L 355,192" class="arrow"/>
+  <text x="300" y="148" class="flow-label">검사 결과</text>
+
+  <path d="M 430,116 L 355,192" class="arrow"/>
+
+  <path d="M 190,116 L 565,192" class="arrow"/>
+  <text x="440" y="148" class="flow-label">학습 데이터</text>
+
+  <!-- Cross-connections in Think layer -->
+  <path d="M 238,228 L 262,228" class="arrow" stroke="#d946ef"/>
+  <path d="M 448,228 L 472,228" class="arrow" stroke="#d946ef"/>
+
+  <!-- Generative AI feedback to CV -->
+  <path d="M 565,200 C 565,150 350,50 280,60" class="arrow" stroke="#f43f5e" stroke-dasharray="4,3"/>
+  <text x="470" y="115" class="flow-label" fill="#f43f5e">합성 데이터</text>
+
+  <!-- ACT Layer -->
+  <!-- Digital Twin -->
+  <rect x="120" y="370" width="180" height="56" rx="8" fill="#10b981"/>
+  <text x="210" y="394" text-anchor="middle" class="box-label">디지털트윈</text>
+  <text x="210" y="412" text-anchor="middle" class="box-sub">가상 시뮬레이션 / 검증</text>
+
+  <!-- Robotics -->
+  <rect x="370" y="370" width="180" height="56" rx="8" fill="#0ea5e9"/>
+  <text x="460" y="394" text-anchor="middle" class="box-label">로보틱스</text>
+  <text x="460" y="412" text-anchor="middle" class="box-sub">AMR / 코봇 / 자율 시스템</text>
+
+  <!-- Output -->
+  <rect x="620" y="370" width="180" height="56" rx="8" fill="#1a1a2e"/>
+  <text x="710" y="394" text-anchor="middle" class="box-label">자율 제조</text>
+  <text x="710" y="412" text-anchor="middle" class="box-sub">Lights-out Factory</text>
+
+  <!-- Arrows from Think to Act -->
+  <path d="M 145,256 L 210,362" class="arrow-strong"/>
+  <text x="140" y="310" class="flow-label">최적 파라미터</text>
+
+  <path d="M 355,256 L 210,362" class="arrow"/>
+  <text x="260" y="318" class="flow-label">자연어 명령</text>
+
+  <path d="M 145,256 L 460,362" class="arrow"/>
+  <text x="340" y="298" class="flow-label">경로/동작 계획</text>
+
+  <path d="M 565,256 L 210,362" class="arrow"/>
+
+  <!-- Arrows within Act -->
+  <path d="M 308,398 L 362,398" class="arrow-strong"/>
+  <text x="320" y="392" class="flow-label">Sim-to-Real</text>
+
+  <path d="M 558,398 L 612,398" class="arrow-strong"/>
+
+  <!-- Feedback loop -->
+  <path d="M 710,426 C 710,460 700,460 700,460 L 100,460 C 80,460 80,440 80,420 L 80,100 C 80,80 90,78 100,78" class="arrow" stroke="#6b7280" stroke-dasharray="5,3"/>
+  <text x="400" y="456" text-anchor="middle" class="flow-label">실행 결과 피드백 (지속 학습)</text>
+</svg>

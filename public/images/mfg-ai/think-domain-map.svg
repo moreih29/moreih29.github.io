@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .section-title { font-size: 13px; font-weight: 700; fill: #ffffff; }
+      .card-title { font-size: 12px; font-weight: 700; fill: #1a1a2e; }
+      .card-sub { font-size: 10px; fill: #374151; }
+      .card-kpi { font-size: 11px; font-weight: 700; fill: #2563eb; }
+      .label { font-size: 10px; fill: #6b7280; }
+      .arrow-label { font-size: 9px; fill: #9ca3af; }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="480" fill="#f8fafc" rx="10"/>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" class="title">Think 레이어 — 판단의 세 기술과 제조 적용</text>
+
+  <!-- Section: 최적화/OR -->
+  <rect x="20" y="50" width="268" height="390" rx="8" fill="#fdf2f8" stroke="#e879f9" stroke-width="1.5"/>
+  <rect x="20" y="50" width="268" height="36" rx="8" fill="#c026d3"/>
+  <rect x="20" y="78" width="268" height="8" fill="#c026d3"/>
+  <text x="154" y="74" text-anchor="middle" class="section-title">최적화 / OR</text>
+
+  <!-- OR: MILP -->
+  <rect x="34" y="100" width="120" height="80" rx="6" fill="#ffffff" stroke="#e879f9" stroke-width="1"/>
+  <text x="94" y="120" text-anchor="middle" class="card-title">MILP</text>
+  <text x="94" y="136" text-anchor="middle" class="card-sub">전역 최적해 보장</text>
+  <text x="94" y="150" text-anchor="middle" class="card-sub">소~중규모 정적 문제</text>
+  <text x="94" y="165" text-anchor="middle" class="card-kpi">스케줄링 최적화</text>
+
+  <!-- OR: RL -->
+  <rect x="162" y="100" width="114" height="80" rx="6" fill="#ffffff" stroke="#e879f9" stroke-width="1"/>
+  <text x="219" y="120" text-anchor="middle" class="card-title">강화학습(RL)</text>
+  <text x="219" y="136" text-anchor="middle" class="card-sub">실시간 의사결정</text>
+  <text x="219" y="150" text-anchor="middle" class="card-sub">대규모 동적 환경</text>
+  <text x="219" y="165" text-anchor="middle" class="card-kpi">공정 제어</text>
+
+  <!-- Hybrid arrow -->
+  <line x1="154" y1="140" x2="162" y2="140" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- OR: Bayesian -->
+  <rect x="34" y="192" width="242" height="60" rx="6" fill="#fae8ff" stroke="#e879f9" stroke-width="1"/>
+  <text x="155" y="214" text-anchor="middle" class="card-title">Bayesian Optimization</text>
+  <text x="155" y="230" text-anchor="middle" class="card-sub">소수 실험으로 최적점 탐색 — 실험 비용이 큰 제조 환경에 최적</text>
+  <text x="155" y="245" text-anchor="middle" class="card-kpi">BO 급성장 2023→</text>
+
+  <!-- OR: 사례 -->
+  <rect x="34" y="264" width="242" height="88" rx="6" fill="#f3e8ff" stroke="#d8b4fe" stroke-width="1"/>
+  <text x="50" y="284" class="card-title">제조 적용 사례</text>
+  <text x="50" y="300" class="card-sub">공정 스케줄링: MILP+RL 하이브리드 → 풀이 50% 단축</text>
+  <text x="50" y="316" class="card-sub">에너지 최적화: Eaton 20% 절감</text>
+  <text x="50" y="332" class="card-sub">공급망 라우팅: RL 기반 실시간 재배분</text>
+  <text x="50" y="348" class="card-sub">도입 규모: 공정최적화 41% · 공급망 35%</text>
+
+  <!-- Section: NLP/LLM -->
+  <rect x="306" y="50" width="268" height="390" rx="8" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.5"/>
+  <rect x="306" y="50" width="268" height="36" rx="8" fill="#2563eb"/>
+  <rect x="306" y="78" width="268" height="8" fill="#2563eb"/>
+  <text x="440" y="74" text-anchor="middle" class="section-title">NLP / LLM</text>
+
+  <!-- LLM: RAG -->
+  <rect x="320" y="100" width="240" height="70" rx="6" fill="#ffffff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="440" y="120" text-anchor="middle" class="card-title">RAG (검색 증강 생성)</text>
+  <text x="440" y="136" text-anchor="middle" class="card-sub">사용률 51% — 파인튜닝(9%) 압도</text>
+  <text x="440" y="152" text-anchor="middle" class="card-sub">인덱스 업데이트 &gt;&gt; 모델 재학습 (비용·속도)</text>
+  <text x="440" y="165" text-anchor="middle" class="card-kpi">매뉴얼·품질보고서·설비이력 검색</text>
+
+  <!-- LLM: Industrial Copilot -->
+  <rect x="320" y="182" width="240" height="80" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="440" y="202" text-anchor="middle" class="card-title">Siemens Industrial Copilot</text>
+  <text x="440" y="218" text-anchor="middle" class="card-sub">Azure OpenAI + 온프레미스 + AI Safety Layer</text>
+  <text x="440" y="234" text-anchor="middle" class="card-sub">TIA Portal PLC 코드(SCL) 자동 생성</text>
+  <text x="440" y="248" text-anchor="middle" class="card-sub">도입: 100개+ 기업 (2025 기준)</text>
+  <text x="440" y="261" text-anchor="middle" class="card-kpi">ISA 95 준수 · ISO 61508 안전 레이어</text>
+
+  <!-- LLM: Factory Ops Agent -->
+  <rect x="320" y="274" width="240" height="60" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="440" y="294" text-anchor="middle" class="card-title">Factory Operations Agent</text>
+  <text x="440" y="310" text-anchor="middle" class="card-sub">자연어 → KQL 변환 → MES/QMS 조회</text>
+  <text x="440" y="326" text-anchor="middle" class="card-kpi">Microsoft Azure AI Foundry 기반</text>
+
+  <!-- LLM: 한계 -->
+  <rect x="320" y="346" width="240" height="66" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="440" y="366" text-anchor="middle" class="card-title" fill="#dc2626">현재 한계</text>
+  <text x="440" y="382" text-anchor="middle" class="card-sub">할루시네이션 연간 손실 $250M+</text>
+  <text x="440" y="398" text-anchor="middle" class="card-sub">실시간 제어 루프 직접 삽입 불가 (지연)</text>
+  <text x="440" y="410" text-anchor="middle" class="card-kpi" fill="#dc2626">코파일럿 단계 → 에이전트 전환 진행 중</text>
+
+  <!-- Section: 생성형 AI -->
+  <rect x="592" y="50" width="288" height="390" rx="8" fill="#fff7ed" stroke="#fb923c" stroke-width="1.5"/>
+  <rect x="592" y="50" width="288" height="36" rx="8" fill="#ea580c"/>
+  <rect x="592" y="78" width="288" height="8" fill="#ea580c"/>
+  <text x="736" y="74" text-anchor="middle" class="section-title">생성형 AI</text>
+
+  <!-- GenAI: Generative Design -->
+  <rect x="606" y="100" width="260" height="80" rx="6" fill="#ffffff" stroke="#fdba74" stroke-width="1"/>
+  <text x="736" y="120" text-anchor="middle" class="card-title">생성적 설계 (Generative Design)</text>
+  <text x="736" y="136" text-anchor="middle" class="card-sub">제약 조건 내 최적 형상 자율 탐색</text>
+  <text x="736" y="152" text-anchor="middle" class="card-sub">Airbus: 경량 고강도 파트</text>
+  <text x="736" y="165" text-anchor="middle" class="card-kpi">Fiat Chrysler: 12→1 통합, 36% 경량화</text>
+
+  <!-- GenAI: Synthetic Data -->
+  <rect x="606" y="192" width="260" height="70" rx="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1"/>
+  <text x="736" y="212" text-anchor="middle" class="card-title">합성 데이터 생성</text>
+  <text x="736" y="228" text-anchor="middle" class="card-sub">Diffusion &gt; GAN (2023년 이후 대체)</text>
+  <text x="736" y="244" text-anchor="middle" class="card-sub">학습 데이터 확보 비용 80%↓</text>
+  <text x="736" y="260" text-anchor="middle" class="card-kpi">불량 이미지 수백장 → 합성 수만장</text>
+
+  <!-- GenAI: Simulation -->
+  <rect x="606" y="274" width="260" height="70" rx="6" fill="#ffedd5" stroke="#fdba74" stroke-width="1"/>
+  <text x="736" y="294" text-anchor="middle" class="card-title">시뮬레이션 자동화</text>
+  <text x="736" y="310" text-anchor="middle" class="card-sub">멀티에이전트 LLM (OpenAI o3 기반)</text>
+  <text x="736" y="326" text-anchor="middle" class="card-sub">Grid search 대비 31배 빠른 탐색</text>
+  <text x="736" y="340" text-anchor="middle" class="card-kpi">반도체 오버레이 최적화 0.2nm 정확도</text>
+
+  <!-- GenAI: Market -->
+  <rect x="606" y="356" width="260" height="56" rx="6" fill="#fef3c7" stroke="#fcd34d" stroke-width="1"/>
+  <text x="736" y="376" text-anchor="middle" class="card-title">시장 전망</text>
+  <text x="736" y="392" text-anchor="middle" class="card-sub">제조 GenAI: $5.32B (2024) → $47.88B (2030)</text>
+  <text x="736" y="406" text-anchor="middle" class="card-kpi">CAGR 46.5% · 프로젝트 실패율 70~85%</text>
+
+  <!-- Cross-domain arrows -->
+  <line x1="288" y1="240" x2="306" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="297" y="236" text-anchor="middle" class="arrow-label">스케줄</text>
+  <line x1="574" y1="240" x2="592" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="583" y="236" text-anchor="middle" class="arrow-label">설계</text>
+
+  <!-- Bottom note -->
+  <text x="450" y="458" text-anchor="middle" class="label">세 도메인은 제조 현장에서 독립이 아니라 상호 보완적으로 작동한다 — IFM은 이 셋을 단일 추론 엔진으로 통합하는 방향으로 발전 중</text>
+</svg>

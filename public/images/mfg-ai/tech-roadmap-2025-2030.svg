@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .year-label { font-size: 13px; font-weight: 700; fill: #ffffff; }
+      .track-title { font-size: 11px; font-weight: 700; fill: #1a1a2e; }
+      .item { font-size: 9px; fill: #374151; }
+      .kpi { font-size: 9px; font-weight: 700; fill: #2563eb; }
+      .milestone { font-size: 8px; fill: #6b7280; font-style: italic; }
+      .market { font-size: 10px; font-weight: 700; fill: #059669; }
+      .section-label { font-size: 10px; font-weight: 600; fill: #6b7280; }
+    </style>
+  </defs>
+
+  <rect width="900" height="520" fill="#f8fafc" rx="10"/>
+  <text x="450" y="26" text-anchor="middle" class="title">제조업 AI 기술 로드맵 2025–2030 + 시장 규모</text>
+
+  <!-- Year columns header -->
+  <rect x="140" y="36" width="120" height="30" rx="4" fill="#1e40af"/>
+  <text x="200" y="56" text-anchor="middle" class="year-label">2025</text>
+
+  <rect x="268" y="36" width="120" height="30" rx="4" fill="#1d4ed8"/>
+  <text x="328" y="56" text-anchor="middle" class="year-label">2026</text>
+
+  <rect x="396" y="36" width="120" height="30" rx="4" fill="#6d28d9"/>
+  <text x="456" y="56" text-anchor="middle" class="year-label">2027</text>
+
+  <rect x="524" y="36" width="120" height="30" rx="4" fill="#7c3aed"/>
+  <text x="584" y="56" text-anchor="middle" class="year-label">2028</text>
+
+  <rect x="652" y="36" width="120" height="30" rx="4" fill="#b45309"/>
+  <text x="712" y="56" text-anchor="middle" class="year-label">2029</text>
+
+  <rect x="780" y="36" width="110" height="30" rx="4" fill="#92400e"/>
+  <text x="835" y="56" text-anchor="middle" class="year-label">2030</text>
+
+  <!-- Track 1: Foundation Model / LLM -->
+  <rect x="10" y="72" width="124" height="72" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="72" y="92" text-anchor="middle" class="track-title">Foundation</text>
+  <text x="72" y="106" text-anchor="middle" class="track-title">Model / LLM</text>
+  <text x="72" y="122" text-anchor="middle" class="milestone">IFM / RAG</text>
+  <text x="72" y="136" text-anchor="middle" class="milestone">에이전트</text>
+
+  <rect x="140" y="72" width="120" height="72" rx="4" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="200" y="90" text-anchor="middle" class="item">Siemens IFM 상용화 초기</text>
+  <text x="200" y="104" text-anchor="middle" class="item">RAG 51% 표준화</text>
+  <text x="200" y="118" text-anchor="middle" class="item">Industrial Copilot 확산</text>
+  <text x="200" y="132" text-anchor="middle" class="kpi">100개+ 기업 도입</text>
+
+  <rect x="268" y="72" width="120" height="72" rx="4" fill="#bfdbfe" stroke="#60a5fa" stroke-width="1"/>
+  <text x="328" y="90" text-anchor="middle" class="item">도메인별 IFM 경쟁</text>
+  <text x="328" y="104" text-anchor="middle" class="item">에이전트 파이프라인</text>
+  <text x="328" y="118" text-anchor="middle" class="item">자연어 → 공정 제어</text>
+  <text x="328" y="132" text-anchor="middle" class="kpi">할루시네이션 50%↓</text>
+
+  <rect x="396" y="72" width="120" height="72" rx="4" fill="#a5b4fc" stroke="#818cf8" stroke-width="1"/>
+  <text x="456" y="90" text-anchor="middle" class="item">IFM 중앙 추론 통합</text>
+  <text x="456" y="104" text-anchor="middle" class="item">지식 그래프 + 인과 추론</text>
+  <text x="456" y="118" text-anchor="middle" class="item">자율 에이전트 (안전 범위)</text>
+  <text x="456" y="132" text-anchor="middle" class="kpi">설계 87% 자동화</text>
+
+  <rect x="524" y="72" width="120" height="72" rx="4" fill="#8b5cf6" stroke="#7c3aed" stroke-width="1"/>
+  <text x="584" y="90" text-anchor="middle" class="item" fill="#fff">산업별 특화 FM 생태계</text>
+  <text x="584" y="104" text-anchor="middle" class="item" fill="#fff">반도체·자동차·화학</text>
+  <text x="584" y="118" text-anchor="middle" class="item" fill="#fff">자율 설계-검증 루프</text>
+  <text x="584" y="132" text-anchor="middle" class="kpi" fill="#ddd6fe">FM 파인튜닝이 경쟁력</text>
+
+  <rect x="652" y="72" width="120" height="72" rx="4" fill="#7c3aed" stroke="#6d28d9" stroke-width="1"/>
+  <text x="712" y="104" text-anchor="middle" class="item" fill="#fff">범용 제조 AI 보조</text>
+  <text x="712" y="118" text-anchor="middle" class="item" fill="#fff">중소기업 SaaS 확산</text>
+
+  <rect x="780" y="72" width="110" height="72" rx="4" fill="#6d28d9" stroke="#5b21b6" stroke-width="1"/>
+  <text x="835" y="97" text-anchor="middle" class="item" fill="#fff">FM 기반 제조 표준화</text>
+  <text x="835" y="111" text-anchor="middle" class="item" fill="#fff">코드 없는 AI 통합</text>
+  <text x="835" y="125" text-anchor="middle" class="kpi" fill="#ddd6fe">$40B+ 시장</text>
+
+  <!-- Track 2: Digital Twin / Edge -->
+  <rect x="10" y="150" width="124" height="72" rx="4" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="72" y="170" text-anchor="middle" class="track-title">디지털트윈</text>
+  <text x="72" y="184" text-anchor="middle" class="track-title">+ 엣지 AI</text>
+  <text x="72" y="200" text-anchor="middle" class="milestone">NPU / FEM</text>
+  <text x="72" y="214" text-anchor="middle" class="milestone">CFD / 물리 모델</text>
+
+  <rect x="140" y="150" width="120" height="72" rx="4" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="200" y="168" text-anchor="middle" class="item">엣지 AI $24.9B 시장</text>
+  <text x="200" y="182" text-anchor="middle" class="item">NPU CAGR 23%</text>
+  <text x="200" y="196" text-anchor="middle" class="item">클라우드-엣지 하이브리드</text>
+  <text x="200" y="210" text-anchor="middle" class="kpi">레이턴시 1~10ms</text>
+
+  <rect x="268" y="150" width="120" height="72" rx="4" fill="#a7f3d0" stroke="#34d399" stroke-width="1"/>
+  <text x="328" y="168" text-anchor="middle" class="item">디지털트윈 도입 29%→40%</text>
+  <text x="328" y="182" text-anchor="middle" class="item">공장 전체 시뮬레이션</text>
+  <text x="328" y="196" text-anchor="middle" class="item">IFM + 트윈 통합 시작</text>
+  <text x="328" y="210" text-anchor="middle" class="kpi">Unilever형 $52M 절감 확산</text>
+
+  <rect x="396" y="150" width="120" height="72" rx="4" fill="#6ee7b7" stroke="#10b981" stroke-width="1"/>
+  <text x="456" y="168" text-anchor="middle" class="item">실시간 물리-가상 동기화</text>
+  <text x="456" y="182" text-anchor="middle" class="item">엣지 AI 자율 추론</text>
+  <text x="456" y="196" text-anchor="middle" class="item">클라우드 의존도 최소화</text>
+  <text x="456" y="210" text-anchor="middle" class="kpi">엣지 시장 $60B+</text>
+
+  <rect x="524" y="150" width="120" height="72" rx="4" fill="#34d399" stroke="#059669" stroke-width="1"/>
+  <text x="584" y="168" text-anchor="middle" class="item" fill="#fff">완전 자율 트윈 운영</text>
+  <text x="584" y="182" text-anchor="middle" class="item" fill="#fff">What-if → 자동 실행</text>
+  <text x="584" y="196" text-anchor="middle" class="item" fill="#fff">공급망 디지털트윈 통합</text>
+  <text x="584" y="210" text-anchor="middle" class="kpi" fill="#d1fae5">트윈 CAGR 47.9%</text>
+
+  <rect x="652" y="150" width="120" height="72" rx="4" fill="#059669" stroke="#047857" stroke-width="1"/>
+  <text x="712" y="175" text-anchor="middle" class="item" fill="#fff">글로벌 공급망 트윈</text>
+  <text x="712" y="189" text-anchor="middle" class="item" fill="#fff">엣지 $100B+ 시장</text>
+
+  <rect x="780" y="150" width="110" height="72" rx="4" fill="#047857" stroke="#065f46" stroke-width="1"/>
+  <text x="835" y="175" text-anchor="middle" class="item" fill="#fff">트윈 도입률 60%+</text>
+  <text x="835" y="189" text-anchor="middle" class="item" fill="#fff">엣지 $118B 달성</text>
+
+  <!-- Track 3: Robotics -->
+  <rect x="10" y="228" width="124" height="72" rx="4" fill="#fff7ed" stroke="#fdba74" stroke-width="1"/>
+  <text x="72" y="248" text-anchor="middle" class="track-title">로보틱스</text>
+  <text x="72" y="262" text-anchor="middle" class="track-title">+ 자율 제조</text>
+  <text x="72" y="278" text-anchor="middle" class="milestone">AMR / VLA</text>
+  <text x="72" y="292" text-anchor="middle" class="milestone">SLAM / RL</text>
+
+  <rect x="140" y="228" width="120" height="72" rx="4" fill="#fef3c7" stroke="#fcd34d" stroke-width="1"/>
+  <text x="200" y="246" text-anchor="middle" class="item">AMR 신규 설치 65%</text>
+  <text x="200" y="260" text-anchor="middle" class="item">GR00T N1 배포 시작</text>
+  <text x="200" y="274" text-anchor="middle" class="item">Sim-to-Real 실용화</text>
+  <text x="200" y="288" text-anchor="middle" class="kpi">코봇 CAGR 35.2%</text>
+
+  <rect x="268" y="228" width="120" height="72" rx="4" fill="#fde68a" stroke="#fbbf24" stroke-width="1"/>
+  <text x="328" y="246" text-anchor="middle" class="item">VLA 다품종 대응 개선</text>
+  <text x="328" y="260" text-anchor="middle" class="item">RaaS 모델 확산</text>
+  <text x="328" y="274" text-anchor="middle" class="item">협동로봇 $40B+ 시장</text>
+  <text x="328" y="288" text-anchor="middle" class="kpi">DHL형 배포 60%↓ 확산</text>
+
+  <rect x="396" y="228" width="120" height="72" rx="4" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+  <text x="456" y="246" text-anchor="middle" class="item">범용 조작 로봇 상용화</text>
+  <text x="456" y="260" text-anchor="middle" class="item">자율 조립 라인 등장</text>
+  <text x="456" y="274" text-anchor="middle" class="item">자율 제조 도입 30%+</text>
+  <text x="456" y="288" text-anchor="middle" class="kpi">Lights-out 10개→50개+ 공장</text>
+
+  <rect x="524" y="228" width="120" height="72" rx="4" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+  <text x="584" y="246" text-anchor="middle" class="item" fill="#fff">다품종 Lights-out</text>
+  <text x="584" y="260" text-anchor="middle" class="item" fill="#fff">협동로봇 $80B+</text>
+  <text x="584" y="274" text-anchor="middle" class="item" fill="#fff">인간-로봇 협업 표준화</text>
+  <text x="584" y="288" text-anchor="middle" class="kpi" fill="#fef3c7">삼성 팹 50% 자동화</text>
+
+  <rect x="652" y="228" width="120" height="72" rx="4" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+  <text x="712" y="253" text-anchor="middle" class="item" fill="#fff">인간형 로봇 상용화</text>
+  <text x="712" y="267" text-anchor="middle" class="item" fill="#fff">AMR 물류 80% 이상</text>
+
+  <rect x="780" y="228" width="110" height="72" rx="4" fill="#b45309" stroke="#92400e" stroke-width="1"/>
+  <text x="835" y="253" text-anchor="middle" class="item" fill="#fff">코봇 $118B 달성</text>
+  <text x="835" y="267" text-anchor="middle" class="item" fill="#fff">자율 제조 50%+</text>
+  <text x="835" y="281" text-anchor="middle" class="item" fill="#fff">삼성 팹 100% 목표</text>
+
+  <!-- Market Size Bar Chart -->
+  <rect x="10" y="310" width="880" height="4" fill="#e2e8f0"/>
+  <text x="10" y="330" class="section-label">전체 제조 AI 시장 규모 (단위: $B)</text>
+
+  <!-- Market bars -->
+  <rect x="140" y="340" width="120" height="28" rx="3" fill="#3b82f6" opacity="0.7"/>
+  <text x="200" y="358" text-anchor="middle" class="market" fill="#fff">$5.4B</text>
+
+  <rect x="268" y="332" width="120" height="36" rx="3" fill="#3b82f6" opacity="0.8"/>
+  <text x="328" y="354" text-anchor="middle" class="market" fill="#fff">$7.8B</text>
+
+  <rect x="396" y="322" width="120" height="46" rx="3" fill="#6d28d9" opacity="0.8"/>
+  <text x="456" y="350" text-anchor="middle" class="market" fill="#fff">$12.3B</text>
+
+  <rect x="524" y="312" width="120" height="56" rx="3" fill="#7c3aed" opacity="0.85"/>
+  <text x="584" y="344" text-anchor="middle" class="market" fill="#fff">$19.8B</text>
+
+  <rect x="652" y="300" width="120" height="68" rx="3" fill="#b45309" opacity="0.85"/>
+  <text x="712" y="338" text-anchor="middle" class="market" fill="#fff">$29.4B</text>
+
+  <rect x="780" y="286" width="110" height="82" rx="3" fill="#92400e"/>
+  <text x="835" y="330" text-anchor="middle" class="market" fill="#fff">$44.1B</text>
+  <text x="835" y="344" text-anchor="middle" class="item" fill="#fde68a">CAGR ~42%</text>
+
+  <!-- Growth arrow -->
+  <path d="M 200 354 C 400 350, 600 340, 835 320" stroke="#94a3b8" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+
+  <!-- Key Events -->
+  <rect x="10" y="378" width="880" height="4" fill="#e2e8f0"/>
+  <text x="10" y="398" class="section-label">핵심 이벤트 / 지표</text>
+
+  <rect x="140" y="406" width="120" height="50" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="200" y="422" text-anchor="middle" class="item">AI 도입률 78%</text>
+  <text x="200" y="436" text-anchor="middle" class="item">수익 전환 5.6%</text>
+  <text x="200" y="448" text-anchor="middle" class="kpi">채택-성과 간극</text>
+
+  <rect x="268" y="406" width="120" height="50" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="328" y="422" text-anchor="middle" class="item">IFM 상용 확산</text>
+  <text x="328" y="436" text-anchor="middle" class="item">Altair 통합 완료</text>
+  <text x="328" y="448" text-anchor="middle" class="kpi">M&amp;A 가속</text>
+
+  <rect x="396" y="406" width="120" height="50" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="456" y="422" text-anchor="middle" class="item">GenAI $12B 돌파</text>
+  <text x="456" y="436" text-anchor="middle" class="item">한국 자율 제조 10%</text>
+  <text x="456" y="448" text-anchor="middle" class="kpi">수익 전환 20%+</text>
+
+  <rect x="524" y="406" width="120" height="50" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="584" y="422" text-anchor="middle" class="item">트윈 CAGR 정점</text>
+  <text x="584" y="436" text-anchor="middle" class="item">RaaS 표준 정착</text>
+  <text x="584" y="448" text-anchor="middle" class="kpi">총 AI M&amp;A $100B+</text>
+
+  <rect x="652" y="406" width="120" height="50" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="712" y="422" text-anchor="middle" class="item">자율 제조 30%</text>
+  <text x="712" y="436" text-anchor="middle" class="item">엣지 $100B</text>
+  <text x="712" y="448" text-anchor="middle" class="kpi">한국 목표 달성</text>
+
+  <rect x="780" y="406" width="110" height="50" rx="4" fill="#1a1a2e" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="835" y="422" text-anchor="middle" class="item" fill="#fff">선진국 50%+ 자율화</text>
+  <text x="835" y="436" text-anchor="middle" class="item" fill="#fff">삼성 팹 100%</text>
+  <text x="835" y="448" text-anchor="middle" class="kpi" fill="#60a5fa">$44B 시장 달성</text>
+
+  <!-- Source note -->
+  <text x="450" y="470" text-anchor="middle" font-size="8" fill="#9ca3af">출처: McKinsey (2025), Precedence Research, MarketsandMarkets, Fortune BI · 예측치는 중간값 기준</text>
+</svg>

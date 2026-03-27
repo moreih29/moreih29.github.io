@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" fill="none">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L8,4 z" fill="#9CA3AF"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="360" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">자율 제조 발전 단계 — 코파일럿에서 Lights-out까지</text>
+
+  <!-- Stage 1: 코파일럿 -->
+  <rect x="20" y="46" width="148" height="196" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <rect x="20" y="46" width="148" height="32" rx="8" fill="#3B82F6"/>
+  <rect x="20" y="62" width="148" height="16" fill="#3B82F6"/>
+  <text x="94" y="67" text-anchor="middle" font-family="monospace" font-size="10" fill="white" font-weight="bold">1단계: 코파일럿</text>
+
+  <text x="94" y="95" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">현재 (2025)</text>
+  <line x1="36" y1="102" x2="152" y2="102" stroke="#BFDBFE" stroke-width="1"/>
+
+  <text x="94" y="120" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">AI가 제안</text>
+  <text x="94" y="134" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">인간이 결정</text>
+  <line x1="36" y1="146" x2="152" y2="146" stroke="#BFDBFE" stroke-width="1"/>
+
+  <text x="94" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 자연어 질의응답</text>
+  <text x="94" y="176" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 보고서 자동 생성</text>
+  <text x="94" y="190" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 이상 감지 알림</text>
+  <line x1="36" y1="200" x2="152" y2="200" stroke="#BFDBFE" stroke-width="1"/>
+
+  <text x="94" y="216" text-anchor="middle" font-family="monospace" font-size="8" fill="#3B82F6">대표 사례:</text>
+  <text x="94" y="228" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">Siemens Industrial Copilot</text>
+  <text x="94" y="240" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">MS Factory Operations Agent</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="168" y1="144" x2="196" y2="144" stroke="#9CA3AF" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- Stage 2: 반자율 -->
+  <rect x="198" y="46" width="148" height="196" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2"/>
+  <rect x="198" y="46" width="148" height="32" rx="8" fill="#8B5CF6"/>
+  <rect x="198" y="62" width="148" height="16" fill="#8B5CF6"/>
+  <text x="272" y="67" text-anchor="middle" font-family="monospace" font-size="10" fill="white" font-weight="bold">2단계: 반자율</text>
+
+  <text x="272" y="95" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">2027~2028</text>
+  <line x1="214" y1="102" x2="330" y2="102" stroke="#DDD6FE" stroke-width="1"/>
+
+  <text x="272" y="120" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">AI가 범위 내 실행</text>
+  <text x="272" y="134" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">예외만 인간 개입</text>
+  <line x1="214" y1="146" x2="330" y2="146" stroke="#DDD6FE" stroke-width="1"/>
+
+  <text x="272" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 자율 파라미터 조정</text>
+  <text x="272" y="176" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· AI 기반 vPLC 제어</text>
+  <text x="272" y="190" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 사전 승인 의사결정</text>
+  <line x1="214" y1="200" x2="330" y2="200" stroke="#DDD6FE" stroke-width="1"/>
+
+  <text x="272" y="216" text-anchor="middle" font-family="monospace" font-size="8" fill="#8B5CF6">대표 사례:</text>
+  <text x="272" y="228" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">Audi Böllinger Höfe vPLC</text>
+  <text x="272" y="240" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">(IFM + TÜV 인증)</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="346" y1="144" x2="374" y2="144" stroke="#9CA3AF" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- Stage 3: 고도자율 -->
+  <rect x="376" y="46" width="148" height="196" rx="8" fill="#FFF7ED" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="376" y="46" width="148" height="32" rx="8" fill="#F59E0B"/>
+  <rect x="376" y="62" width="148" height="16" fill="#F59E0B"/>
+  <text x="450" y="67" text-anchor="middle" font-family="monospace" font-size="10" fill="white" font-weight="bold">3단계: 고도 자율</text>
+
+  <text x="450" y="95" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">2028~2030</text>
+  <line x1="392" y1="102" x2="508" y2="102" stroke="#FDE68A" stroke-width="1"/>
+
+  <text x="450" y="120" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">AI가 대부분 실행</text>
+  <text x="450" y="134" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">인간은 목표 설정만</text>
+  <line x1="392" y1="146" x2="508" y2="146" stroke="#FDE68A" stroke-width="1"/>
+
+  <text x="450" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 자율 품질 제어</text>
+  <text x="450" y="176" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 예지보전 자율 실행</text>
+  <text x="450" y="190" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 실시간 공정 최적화</text>
+  <line x1="392" y1="200" x2="508" y2="200" stroke="#FDE68A" stroke-width="1"/>
+
+  <text x="450" y="216" text-anchor="middle" font-family="monospace" font-size="8" fill="#F59E0B">대표 목표:</text>
+  <text x="450" y="228" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">삼성 팹 100% 자동화</text>
+  <text x="450" y="240" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">한국 자율제조 30% 목표</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="524" y1="144" x2="552" y2="144" stroke="#9CA3AF" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- Stage 4: Lights-out -->
+  <rect x="554" y="46" width="148" height="196" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+  <rect x="554" y="46" width="148" height="32" rx="8" fill="#10B981"/>
+  <rect x="554" y="62" width="148" height="16" fill="#10B981"/>
+  <text x="628" y="67" text-anchor="middle" font-family="monospace" font-size="10" fill="white" font-weight="bold">4단계: Lights-out</text>
+
+  <text x="628" y="95" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">2030+</text>
+  <line x1="570" y1="102" x2="686" y2="102" stroke="#6EE7B7" stroke-width="1"/>
+
+  <text x="628" y="120" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">완전 자율 운영</text>
+  <text x="628" y="134" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">24/7 무인 생산</text>
+  <line x1="570" y1="146" x2="686" y2="146" stroke="#6EE7B7" stroke-width="1"/>
+
+  <text x="628" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 불 꺼도 돌아가는 공장</text>
+  <text x="628" y="176" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 생산성 2~3배</text>
+  <text x="628" y="190" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">· 불량률 99% 감소</text>
+  <line x1="570" y1="200" x2="686" y2="200" stroke="#6EE7B7" stroke-width="1"/>
+
+  <text x="628" y="216" text-anchor="middle" font-family="monospace" font-size="8" fill="#10B981">현존 사례:</text>
+  <text x="628" y="228" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">FANUC · Xiaomi · Philips</text>
+  <text x="628" y="240" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">Linglong Tire (2024 가동)</text>
+
+  <!-- Bottom note -->
+  <text x="360" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#9CA3AF">* 단계 전환 조건: 엣지 AI 인프라 + Foundation Model + 안전 규제 인증</text>
+</svg>

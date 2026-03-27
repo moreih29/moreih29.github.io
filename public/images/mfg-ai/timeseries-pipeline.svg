@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .stage-label { font-size: 12px; font-weight: 700; fill: #ffffff; }
+      .stage-sub { font-size: 9px; fill: #e2e8f0; }
+      .item { font-size: 10px; fill: #374151; }
+      .item-bold { font-size: 10px; font-weight: 600; fill: #1a1a2e; }
+      .note { font-size: 9px; fill: #6b7280; font-style: italic; }
+      .metric { font-size: 9px; font-weight: 600; fill: #059669; }
+      .arrow { stroke: #f59e0b; stroke-width: 2; fill: none; marker-end: url(#arr-y); }
+      .arrow-down { stroke: #8b5cf6; stroke-width: 1.5; fill: none; marker-end: url(#arr-p); }
+      .section-bg { fill: #fff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    <marker id="arr-y" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f59e0b"/>
+    </marker>
+    <marker id="arr-p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8b5cf6"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="400" fill="#fafafa" rx="8"/>
+  <text x="430" y="32" text-anchor="middle" class="title">예지보전 시계열 분석 파이프라인</text>
+
+  <!-- Stage 1: Data Acquisition -->
+  <g transform="translate(30, 55)">
+    <rect width="140" height="50" rx="8" fill="#f59e0b"/>
+    <text x="70" y="28" text-anchor="middle" class="stage-label" fill="#1a1a2e">데이터 수집</text>
+    <text x="70" y="44" text-anchor="middle" class="stage-sub" fill="#78350f">Sensors / IoT</text>
+
+    <rect y="60" width="140" height="130" rx="6" class="section-bg"/>
+    <text x="70" y="82" text-anchor="middle" class="item-bold">센서 유형</text>
+    <text x="15" y="100" class="item">진동 (가속도계)</text>
+    <text x="15" y="116" class="item">온도 (열전대)</text>
+    <text x="15" y="132" class="item">압력 (압력 센서)</text>
+    <text x="15" y="148" class="item">전류 (CT)</text>
+    <text x="15" y="164" class="item">음향 (AE 센서)</text>
+    <text x="15" y="180" class="note">샘플링: 1kHz~100kHz</text>
+  </g>
+
+  <path d="M 170,80 L 198,80" class="arrow"/>
+
+  <!-- Stage 2: Preprocessing -->
+  <g transform="translate(200, 55)">
+    <rect width="140" height="50" rx="8" fill="#f59e0b"/>
+    <text x="70" y="28" text-anchor="middle" class="stage-label" fill="#1a1a2e">전처리</text>
+    <text x="70" y="44" text-anchor="middle" class="stage-sub" fill="#78350f">Feature Engineering</text>
+
+    <rect y="60" width="140" height="130" rx="6" class="section-bg"/>
+    <text x="70" y="82" text-anchor="middle" class="item-bold">시간 도메인</text>
+    <text x="15" y="100" class="item">RMS, Peak, Kurtosis</text>
+    <text x="15" y="116" class="item">이동 평균, 편차</text>
+    <text x="70" y="138" text-anchor="middle" class="item-bold">주파수 도메인</text>
+    <text x="15" y="156" class="item">FFT, PSD, 엔벨로프</text>
+    <text x="15" y="172" class="item">웨이블릿 변환</text>
+    <text x="15" y="188" class="note">정규화 / 결측치 처리</text>
+  </g>
+
+  <path d="M 340,80 L 368,80" class="arrow"/>
+
+  <!-- Stage 3: Model -->
+  <g transform="translate(370, 55)">
+    <rect width="160" height="50" rx="8" fill="#f59e0b"/>
+    <text x="80" y="28" text-anchor="middle" class="stage-label" fill="#1a1a2e">모델 추론</text>
+    <text x="80" y="44" text-anchor="middle" class="stage-sub" fill="#78350f">ML / DL Models</text>
+
+    <rect y="60" width="160" height="180" rx="6" class="section-bg"/>
+    <text x="80" y="82" text-anchor="middle" class="item-bold">전통 ML</text>
+    <text x="15" y="100" class="item">Random Forest, XGBoost</text>
+    <text x="15" y="116" class="note">소규모 데이터에 여전히 유효</text>
+
+    <text x="80" y="138" text-anchor="middle" class="item-bold">CNN+LSTM 하이브리드</text>
+    <text x="15" y="156" class="item">정확도 96.1%, F1 95.2%</text>
+    <text x="15" y="172" class="metric">현재 최고 성능</text>
+
+    <text x="80" y="194" text-anchor="middle" class="item-bold">Transformer</text>
+    <text x="15" y="212" class="item">Recall 92.3%, AUC 0.991</text>
+    <text x="15" y="228" class="note">긴 시퀀스 강점</text>
+  </g>
+
+  <path d="M 530,80 L 558,80" class="arrow"/>
+
+  <!-- Stage 4: Decision -->
+  <g transform="translate(560, 55)">
+    <rect width="130" height="50" rx="8" fill="#f59e0b"/>
+    <text x="65" y="28" text-anchor="middle" class="stage-label" fill="#1a1a2e">의사결정</text>
+    <text x="65" y="44" text-anchor="middle" class="stage-sub" fill="#78350f">Alert / Schedule</text>
+
+    <rect y="60" width="130" height="130" rx="6" class="section-bg"/>
+    <text x="65" y="82" text-anchor="middle" class="item-bold">출력</text>
+    <text x="15" y="100" class="item">Health Index (HI)</text>
+    <text x="15" y="116" class="item">RUL 예측</text>
+    <text x="15" y="132" class="item">이상 등급 분류</text>
+    <text x="65" y="156" text-anchor="middle" class="item-bold">액션</text>
+    <text x="15" y="174" class="item">정비 오더 생성</text>
+    <text x="15" y="190" class="note">CMMS/EAM 연동</text>
+  </g>
+
+  <path d="M 690,80 L 718,80" class="arrow"/>
+
+  <!-- Stage 5: LLM Report (2024+) -->
+  <g transform="translate(720, 55)">
+    <rect width="120" height="50" rx="8" fill="#8b5cf6"/>
+    <text x="60" y="28" text-anchor="middle" class="stage-label">LLM 리포트</text>
+    <text x="60" y="44" text-anchor="middle" class="stage-sub">2024년~ 신규</text>
+
+    <rect y="60" width="120" height="130" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1"/>
+    <text x="60" y="82" text-anchor="middle" class="item-bold">자연어 진단</text>
+    <text x="10" y="100" class="item">"3번 베어링</text>
+    <text x="10" y="116" class="item">진동 비정상,</text>
+    <text x="10" y="132" class="item">18일 내 고장</text>
+    <text x="10" y="148" class="item">예상. 교체 권고"</text>
+    <text x="60" y="170" text-anchor="middle" class="metric">전 주기 자동화</text>
+    <text x="10" y="188" class="note">감지→진단→리포트</text>
+  </g>
+
+  <!-- Bottom: Performance comparison -->
+  <g transform="translate(30, 310)">
+    <rect width="800" height="75" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="400" y="22" text-anchor="middle" class="item-bold">성과 벤치마크</text>
+
+    <text x="30" y="48" class="item-bold">GE Aviation</text>
+    <text x="30" y="64" class="metric">다운타임 50% 감소, $1B+ 절감</text>
+
+    <text x="230" y="48" class="item-bold">Siemens Senseye</text>
+    <text x="230" y="64" class="metric">유지보수 비용 30% 절감, ROI 3개월</text>
+
+    <text x="470" y="48" class="item-bold">Bosch</text>
+    <text x="470" y="64" class="metric">통합 비용 70% 감소</text>
+
+    <text x="630" y="48" class="item-bold">포스코 고로</text>
+    <text x="630" y="64" class="metric">품질 불량률 63% 감소</text>
+  </g>
+</svg>

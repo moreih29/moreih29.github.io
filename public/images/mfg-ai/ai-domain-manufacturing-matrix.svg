@@ -1,0 +1,253 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .header { font-size: 11px; font-weight: 600; fill: #ffffff; }
+      .domain-label { font-size: 11px; font-weight: 600; fill: #1a1a2e; }
+      .cell-text { font-size: 9px; fill: #374151; }
+      .legend-text { font-size: 10px; fill: #6b7280; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="#fafafa" rx="8"/>
+
+  <!-- Title -->
+  <text x="450" y="32" text-anchor="middle" class="title">제조업 AI 도메인 x 적용 분야 매트릭스</text>
+
+  <!-- Column Headers (Manufacturing Areas) -->
+  <g transform="translate(170, 50)">
+    <rect x="0" y="0" width="100" height="36" rx="4" fill="#3b82f6"/>
+    <text x="50" y="22" text-anchor="middle" class="header">품질검사</text>
+
+    <rect x="108" y="0" width="100" height="36" rx="4" fill="#3b82f6"/>
+    <text x="158" y="22" text-anchor="middle" class="header">예지보전</text>
+
+    <rect x="216" y="0" width="100" height="36" rx="4" fill="#3b82f6"/>
+    <text x="266" y="22" text-anchor="middle" class="header">공정최적화</text>
+
+    <rect x="324" y="0" width="100" height="36" rx="4" fill="#3b82f6"/>
+    <text x="374" y="22" text-anchor="middle" class="header">공급망</text>
+
+    <rect x="432" y="0" width="100" height="36" rx="4" fill="#3b82f6"/>
+    <text x="482" y="22" text-anchor="middle" class="header">설계</text>
+
+    <rect x="540" y="0" width="100" height="36" rx="4" fill="#3b82f6"/>
+    <text x="590" y="22" text-anchor="middle" class="header">자율 제조</text>
+  </g>
+
+  <!-- Row 1: Computer Vision -->
+  <g transform="translate(10, 96)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">컴퓨터 비전</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">CNN, ViT, 멀티모달</text>
+  </g>
+  <g transform="translate(170, 96)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="50" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="50" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">결함 탐지/분류</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="158" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="158" y="36" text-anchor="middle" class="cell-text">설비 외관 감시</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="266" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="374" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="374" y="36" text-anchor="middle" class="cell-text">입고 검수</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="482" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="590" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="590" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">로봇 비전</text>
+  </g>
+
+  <!-- Row 2: Time Series -->
+  <g transform="translate(10, 156)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">시계열 분석</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">LSTM, Transformer</text>
+  </g>
+  <g transform="translate(170, 156)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="50" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="50" y="36" text-anchor="middle" class="cell-text">SPC 모니터링</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="158" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="158" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">이상 감지/RUL</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="266" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="266" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">공정 변수 추적</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="374" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="374" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">수요 예측</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="482" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="590" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="590" y="36" text-anchor="middle" class="cell-text">설비 상태 감시</text>
+  </g>
+
+  <!-- Row 3: Optimization/OR -->
+  <g transform="translate(10, 216)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#fce7f3" stroke="#ec4899" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">최적화/OR</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">MILP, RL, 메타휴리스틱</text>
+  </g>
+  <g transform="translate(170, 216)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="50" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="158" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="158" y="36" text-anchor="middle" class="cell-text">정비 스케줄링</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="266" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="266" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">파라미터/스케줄링</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="374" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="374" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">라우팅/재고 최적화</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="482" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="482" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">생성적 설계</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="590" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="590" y="36" text-anchor="middle" class="cell-text">경로 계획</text>
+  </g>
+
+  <!-- Row 4: NLP/LLM -->
+  <g transform="translate(10, 276)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">NLP/LLM</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">RAG, 에이전트, 파인튜닝</text>
+  </g>
+  <g transform="translate(170, 276)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="50" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="50" y="36" text-anchor="middle" class="cell-text">결함 리포트 생성</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="158" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="158" y="36" text-anchor="middle" class="cell-text">정비 리포트 생성</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="266" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="266" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">코파일럿/질의</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="374" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="374" y="36" text-anchor="middle" class="cell-text">문서 분석</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="482" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="482" y="36" text-anchor="middle" class="cell-text">사양 검토</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="590" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="590" y="36" text-anchor="middle" class="cell-text">오케스트레이션</text>
+  </g>
+
+  <!-- Row 5: Generative AI -->
+  <g transform="translate(10, 336)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#fff1f2" stroke="#f43f5e" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">생성형 AI</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">GAN, Diffusion, LLM</text>
+  </g>
+  <g transform="translate(170, 336)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="50" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="50" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">합성 데이터 생성</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="158" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="266" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="266" y="36" text-anchor="middle" class="cell-text">시뮬레이션 자동화</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="374" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="482" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="482" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">생성적 설계</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="590" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+  </g>
+
+  <!-- Row 6: Digital Twin -->
+  <g transform="translate(10, 396)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#ecfdf5" stroke="#10b981" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">디지털트윈</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">FEM, CFD, 물리 모델</text>
+  </g>
+  <g transform="translate(170, 396)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="50" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="50" y="36" text-anchor="middle" class="cell-text">가상 검증</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="158" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="158" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">설비 시뮬레이션</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="266" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="266" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">What-if 분석</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="374" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="374" y="36" text-anchor="middle" class="cell-text">물류 시뮬레이션</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="482" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="482" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">가상 시운전</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="590" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="590" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">가상 공장 운영</text>
+  </g>
+
+  <!-- Row 7: Robotics -->
+  <g transform="translate(10, 456)">
+    <rect x="0" y="0" width="152" height="52" rx="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="1"/>
+    <text x="76" y="20" text-anchor="middle" class="domain-label">로보틱스</text>
+    <text x="76" y="36" text-anchor="middle" class="cell-text" fill="#6b7280">SLAM, 경로계획, RL</text>
+  </g>
+  <g transform="translate(170, 456)">
+    <rect x="0" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="50" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="50" y="36" text-anchor="middle" class="cell-text">검사 자동화</text>
+
+    <rect x="108" y="0" width="100" height="52" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="158" y="20" text-anchor="middle" class="cell-text" font-weight="600">보조</text>
+    <text x="158" y="36" text-anchor="middle" class="cell-text">위험 환경 점검</text>
+
+    <rect x="216" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="266" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="324" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="374" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="374" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">AMR 물류 자동화</text>
+
+    <rect x="432" y="0" width="100" height="52" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="482" y="28" text-anchor="middle" class="cell-text" fill="#9ca3af">간접</text>
+
+    <rect x="540" y="0" width="100" height="52" rx="4" fill="#166534" opacity="0.85"/>
+    <text x="590" y="20" text-anchor="middle" class="cell-text" fill="#fff" font-weight="600">핵심</text>
+    <text x="590" y="36" text-anchor="middle" class="cell-text" fill="#dcfce7">자율 조립/이송</text>
+  </g>
+</svg>

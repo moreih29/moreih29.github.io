@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
+      .stage-num { font-size: 22px; font-weight: 800; fill: #ffffff; }
+      .stage-title { font-size: 13px; font-weight: 700; fill: #1a1a2e; }
+      .stage-sub { font-size: 10px; fill: #374151; }
+      .stage-kw { font-size: 10px; font-weight: 600; fill: #2563eb; }
+      .example { font-size: 9px; fill: #6b7280; font-style: italic; }
+      .year { font-size: 10px; font-weight: 600; fill: #9ca3af; }
+      .axis-label { font-size: 10px; fill: #9ca3af; }
+    </style>
+    <marker id="arrowR" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="440" fill="#f8fafc" rx="10"/>
+  <text x="450" y="28" text-anchor="middle" class="title">자율 제조 발전 단계 — 코파일럿에서 Lights-out까지</text>
+
+  <!-- Progress bar background -->
+  <rect x="40" y="50" width="820" height="8" rx="4" fill="#e2e8f0"/>
+  <rect x="40" y="50" width="420" height="8" rx="4" fill="url(#progressGrad)"/>
+  <defs>
+    <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Stage markers on timeline -->
+  <circle cx="40" cy="54" r="5" fill="#3b82f6"/>
+  <circle cx="204" cy="54" r="5" fill="#3b82f6"/>
+  <circle cx="368" cy="54" r="5" fill="#6d28d9"/>
+  <circle cx="532" cy="54" r="5" fill="#94a3b8"/>
+  <circle cx="696" cy="54" r="5" fill="#94a3b8"/>
+  <circle cx="860" cy="54" r="5" fill="#94a3b8"/>
+
+  <!-- Year labels -->
+  <text x="40" y="46" text-anchor="middle" class="year">~2022</text>
+  <text x="204" y="46" text-anchor="middle" class="year">2023</text>
+  <text x="368" y="46" text-anchor="middle" class="year">2024~25</text>
+  <text x="532" y="46" text-anchor="middle" class="year">2026~27</text>
+  <text x="696" y="46" text-anchor="middle" class="year">2028~29</text>
+  <text x="860" y="46" text-anchor="middle" class="year">2030+</text>
+
+  <!-- Stage 1 -->
+  <rect x="20" y="72" width="148" height="336" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <rect x="20" y="72" width="148" height="44" rx="8" fill="#2563eb"/>
+  <rect x="20" y="108" width="148" height="8" fill="#2563eb"/>
+  <text x="94" y="92" text-anchor="middle" class="stage-num">1</text>
+  <text x="94" y="108" text-anchor="middle" class="stage-sub" fill="#bfdbfe">수동 보조</text>
+  <text x="94" y="132" text-anchor="middle" class="stage-title">AI 보조</text>
+  <text x="94" y="150" text-anchor="middle" class="stage-sub">인간이 결정, AI가 정보 제공</text>
+  <text x="94" y="168" text-anchor="middle" class="stage-sub">코파일럿 형태</text>
+  <rect x="34" y="180" width="120" height="28" rx="4" fill="#dbeafe"/>
+  <text x="94" y="198" text-anchor="middle" class="stage-kw">AI가 제안, 인간이 승인</text>
+  <text x="94" y="230" text-anchor="middle" class="example">예: Industrial Copilot,</text>
+  <text x="94" y="244" text-anchor="middle" class="example">Factory Ops Agent</text>
+  <text x="94" y="270" text-anchor="middle" class="stage-sub">현재 도입 78%</text>
+  <text x="94" y="285" text-anchor="middle" class="stage-sub">하지만 수익 전환 5.6%</text>
+  <rect x="34" y="360" width="120" height="36" rx="4" fill="#bfdbfe"/>
+  <text x="94" y="380" text-anchor="middle" class="stage-sub" fill="#1e40af">자동화율: 20~40%</text>
+  <text x="94" y="396" text-anchor="middle" class="stage-sub" fill="#1e40af">인간 감독 필수</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="168" y1="240" x2="184" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 2 -->
+  <rect x="184" y="72" width="148" height="336" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <rect x="184" y="72" width="148" height="44" rx="8" fill="#16a34a"/>
+  <rect x="184" y="108" width="148" height="8" fill="#16a34a"/>
+  <text x="258" y="92" text-anchor="middle" class="stage-num">2</text>
+  <text x="258" y="108" text-anchor="middle" class="stage-sub" fill="#bbf7d0">부분 자동화</text>
+  <text x="258" y="132" text-anchor="middle" class="stage-title">공정 자율화</text>
+  <text x="258" y="150" text-anchor="middle" class="stage-sub">반복 공정 자동 실행</text>
+  <text x="258" y="168" text-anchor="middle" class="stage-sub">예외 상황 시 인간 개입</text>
+  <rect x="198" y="180" width="120" height="28" rx="4" fill="#dcfce7"/>
+  <text x="258" y="198" text-anchor="middle" class="stage-kw">정의된 범위 내 자율 실행</text>
+  <text x="258" y="230" text-anchor="middle" class="example">예: Philips 면도기 공장</text>
+  <text x="258" y="244" text-anchor="middle" class="example">(128로봇, 인간 9명)</text>
+  <text x="258" y="270" text-anchor="middle" class="stage-sub">특정 공정 단위 자율화</text>
+  <text x="258" y="285" text-anchor="middle" class="stage-sub">60% 기업 최소 1공정 운영 중</text>
+  <rect x="198" y="360" width="120" height="36" rx="4" fill="#bbf7d0"/>
+  <text x="258" y="380" text-anchor="middle" class="stage-sub" fill="#166534">자동화율: 40~70%</text>
+  <text x="258" y="396" text-anchor="middle" class="stage-sub" fill="#166534">핵심 공정 자율 운영</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="332" y1="240" x2="348" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 3 (current frontier) -->
+  <rect x="348" y="72" width="148" height="336" rx="8" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+  <rect x="348" y="72" width="148" height="44" rx="8" fill="#7c3aed"/>
+  <rect x="348" y="108" width="148" height="8" fill="#7c3aed"/>
+  <text x="422" y="92" text-anchor="middle" class="stage-num">3</text>
+  <text x="422" y="108" text-anchor="middle" class="stage-sub" fill="#ddd6fe">높은 자율화 ← 현재 최전선</text>
+  <text x="422" y="132" text-anchor="middle" class="stage-title">전체 공정 연동</text>
+  <text x="422" y="150" text-anchor="middle" class="stage-sub">다공정 통합 자율 운영</text>
+  <text x="422" y="168" text-anchor="middle" class="stage-sub">실시간 최적화 + 대응</text>
+  <rect x="362" y="180" width="120" height="28" rx="4" fill="#ede9fe"/>
+  <text x="422" y="198" text-anchor="middle" class="stage-kw">AI가 계획·실행·모니터링</text>
+  <text x="422" y="230" text-anchor="middle" class="example">예: FANUC 로봇 공장</text>
+  <text x="422" y="244" text-anchor="middle" class="example">Xiaomi 스마트폰 공장</text>
+  <text x="422" y="260" text-anchor="middle" class="example">Linglong 타이어 공장</text>
+  <text x="422" y="285" text-anchor="middle" class="stage-sub">단일 제품 대량 생산에 최적화</text>
+  <rect x="362" y="360" width="120" height="36" rx="4" fill="#ddd6fe"/>
+  <text x="422" y="380" text-anchor="middle" class="stage-sub" fill="#5b21b6">자동화율: 70~95%</text>
+  <text x="422" y="396" text-anchor="middle" class="stage-sub" fill="#5b21b6">특정 제품 유형에 한정</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="496" y1="240" x2="512" y2="240" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 4 -->
+  <rect x="512" y="72" width="148" height="336" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <rect x="512" y="72" width="148" height="44" rx="8" fill="#6b7280"/>
+  <rect x="512" y="108" width="148" height="8" fill="#6b7280"/>
+  <text x="586" y="92" text-anchor="middle" class="stage-num">4</text>
+  <text x="586" y="108" text-anchor="middle" class="stage-sub" fill="#e5e7eb">다품종 자율화</text>
+  <text x="586" y="132" text-anchor="middle" class="stage-title">유연 자율 생산</text>
+  <text x="586" y="150" text-anchor="middle" class="stage-sub">다품종 소량 자율 대응</text>
+  <text x="586" y="168" text-anchor="middle" class="stage-sub">동적 재구성 능력</text>
+  <rect x="526" y="180" width="120" height="28" rx="4" fill="#f3f4f6"/>
+  <text x="586" y="198" text-anchor="middle" class="stage-kw">VLA 모델 + 범용 로봇</text>
+  <text x="586" y="230" text-anchor="middle" class="example">목표: 2027~2028</text>
+  <text x="586" y="244" text-anchor="middle" class="example">RT-2 → pi0 → GR00T N1</text>
+  <text x="586" y="260" text-anchor="middle" class="example">Foundation Model 로보틱스</text>
+  <text x="586" y="285" text-anchor="middle" class="stage-sub">현재 난제: 다품종 소량 대응</text>
+  <rect x="526" y="360" width="120" height="36" rx="4" fill="#f3f4f6"/>
+  <text x="586" y="380" text-anchor="middle" class="stage-sub" fill="#374151">자동화율: 80~95%</text>
+  <text x="586" y="396" text-anchor="middle" class="stage-sub" fill="#374151">제품 유연성 확보</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="660" y1="240" x2="676" y2="240" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR)"/>
+
+  <!-- Stage 5 -->
+  <rect x="676" y="72" width="204" height="336" rx="8" fill="#fff7ed" stroke="#fcd34d" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <rect x="676" y="72" width="204" height="44" rx="8" fill="#b45309"/>
+  <rect x="676" y="108" width="204" height="8" fill="#b45309"/>
+  <text x="778" y="92" text-anchor="middle" class="stage-num">5</text>
+  <text x="778" y="108" text-anchor="middle" class="stage-sub" fill="#fde68a">Lights-out Factory</text>
+  <text x="778" y="132" text-anchor="middle" class="stage-title">완전 자율 제조</text>
+  <text x="778" y="150" text-anchor="middle" class="stage-sub">인간 개입 없는 24/7 운영</text>
+  <text x="778" y="168" text-anchor="middle" class="stage-sub">자기 수리 · 자기 최적화</text>
+  <rect x="690" y="180" width="176" height="28" rx="4" fill="#fef3c7"/>
+  <text x="778" y="198" text-anchor="middle" class="stage-kw">IFM + 엣지 AI + 디지털트윈 완전 통합</text>
+  <text x="778" y="230" text-anchor="middle" class="example">목표: 삼성전자 2030년 팹 100%</text>
+  <text x="778" y="244" text-anchor="middle" class="example">한국 목표: 도입률 30% (2030)</text>
+  <text x="778" y="260" text-anchor="middle" class="example">선진국 전망: 50%+ (2030)</text>
+  <text x="778" y="285" text-anchor="middle" class="stage-sub">성과: 생산성 2~3배, 불량 99%↓</text>
+  <text x="778" y="300" text-anchor="middle" class="stage-sub">에너지 30% 절감</text>
+  <rect x="690" y="360" width="176" height="36" rx="4" fill="#fde68a"/>
+  <text x="778" y="380" text-anchor="middle" class="stage-sub" fill="#92400e">자동화율: 95~100%</text>
+  <text x="778" y="396" text-anchor="middle" class="stage-sub" fill="#92400e">현재 FANUC·Xiaomi·Linglong 선도</text>
+
+  <!-- Human involvement line -->
+  <text x="450" y="425" text-anchor="middle" class="axis-label">인간 개입도: 높음 ←————————————————————————→ 낮음</text>
+  <text x="450" y="438" text-anchor="middle" class="axis-label">AI 자율성: 낮음 ←————————————————————————→ 높음</text>
+</svg>
