@@ -1,7 +1,5 @@
-<!-- tags: research, source, verification, report, posting, image, rules -->
-# Research Rules
-
 <!-- tags: research, source, verification, report, posting, image -->
+# Research Rules
 
 연구팀([research]/[research!])이 조사 및 포스트 작성 시 따르는 규칙.
 
