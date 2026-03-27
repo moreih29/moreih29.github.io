@@ -40,7 +40,11 @@ function Header() {
     <header className="mb-12 border-b border-border pb-4">
       <nav className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <a href="/" className="text-xl font-bold">moreih29</a>
+          <a href="/" className="flex items-center gap-1 text-xl font-bold">
+            <img src="/icon.png" alt="moreih29" width={24} height={24} className="rounded-full dark:hidden" />
+            <img src="/icon-dark.png" alt="moreih29" width={24} height={24} className="rounded-full hidden dark:block" />
+            moreih29
+          </a>
           <a href="/" className="text-sm text-muted hover:text-foreground transition-colors">Posts</a>
           <a href="/series" className="text-sm text-muted hover:text-foreground transition-colors">Series</a>
           <a href="/tags" className="text-sm text-muted hover:text-foreground transition-colors">Tags</a>
