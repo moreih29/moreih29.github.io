@@ -22,13 +22,17 @@
 
 ```bash
 bun run build
-# 1. prebuild: bun velite build && node scripts/patch-velite.mjs
+# 1. prebuild: node scripts/fix-mdx-bold.mjs && bun velite build && node scripts/patch-velite.mjs
 # 2. next build → output: 'export' → out/
 ```
+
+### Fix MDX Bold (`scripts/fix-mdx-bold.mjs`)
+- `**텍스트)**조사` 패턴을 `<strong>` 태그로 자동 교정 (Velite MDX 파서 한계 우회)
 
 ### Velite Build
 - `content/posts/**/*.mdx` → 스키마 검증 → `.velite/posts.json` + `.velite/index.js`
 - rehype-pretty-code로 코드 블록 syntax highlighting (dual theme)
+- `gfm: false` + `remark-gfm` (`singleTilde: false`) — 단일 `~`를 취소선으로 해석하지 않음
 
 ### Patch Script (`scripts/patch-velite.mjs`)
 - `.velite/index.js`의 `export { default as X } from './X.json' with { type: 'json' }` 구문을

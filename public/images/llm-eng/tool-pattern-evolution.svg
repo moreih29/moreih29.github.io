@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" fill="none">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrow-sm" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="390" y="30" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#374151" font-weight="bold">도구 패턴의 진화 — 4단계</text>
+
+  <!-- Stage 1: 단일 도구 호출 -->
+  <rect x="24" y="60" width="158" height="230" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <!-- 헤더 -->
+  <rect x="24" y="60" width="158" height="40" rx="10" fill="#3B82F6"/>
+  <rect x="24" y="86" width="158" height="14" rx="0" fill="#3B82F6"/>
+  <text x="103" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#DBEAFE" font-weight="bold">단계 1</text>
+  <text x="103" y="90" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#ffffff" font-weight="bold">단일 도구 호출</text>
+  <!-- 내용 -->
+  <text x="103" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">특징</text>
+  <text x="103" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">맞는 도구 선택</text>
+  <text x="103" y="153" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">파라미터 채우기</text>
+  <!-- 다이어그램: LLM → 도구 단순 -->
+  <rect x="50" y="170" width="60" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="80" y="187" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#1E40AF">LLM</text>
+  <line x1="110" y1="183" x2="128" y2="183" stroke="#3B82F6" stroke-width="1.2" marker-end="url(#arrow-sm)"/>
+  <rect x="128" y="170" width="40" height="26" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="148" y="187" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF">도구</text>
+  <!-- 적용 시기 -->
+  <rect x="38" y="212" width="130" height="30" rx="6" fill="#DBEAFE"/>
+  <text x="103" y="225" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF">대부분의 기본 케이스</text>
+  <text x="103" y="237" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#3B82F6">여전히 주요 패턴</text>
+  <!-- 예시 -->
+  <text x="103" y="268" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">예) get_weather("서울")</text>
+  <text x="103" y="281" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">search_web("query")</text>
+
+  <!-- 화살표 1→2 -->
+  <line x1="183" y1="175" x2="213" y2="175" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Stage 2: 다중 도구 병렬 -->
+  <rect x="213" y="60" width="158" height="230" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <rect x="213" y="60" width="158" height="40" rx="10" fill="#2563EB"/>
+  <rect x="213" y="86" width="158" height="14" rx="0" fill="#2563EB"/>
+  <text x="292" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#BFDBFE" font-weight="bold">단계 2</text>
+  <text x="292" y="90" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#ffffff" font-weight="bold">다중 도구 병렬</text>
+  <text x="292" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">특징</text>
+  <text x="292" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">병렬/순차 실행</text>
+  <text x="292" y="153" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">중간 상태 관리</text>
+  <!-- 병렬 다이어그램 -->
+  <rect x="224" y="168" width="44" height="22" rx="5" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="246" y="183" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF">LLM</text>
+  <line x1="268" y1="175" x2="280" y2="168" stroke="#3B82F6" stroke-width="1" marker-end="url(#arrow-sm)"/>
+  <line x1="268" y1="179" x2="280" y2="184" stroke="#3B82F6" stroke-width="1" marker-end="url(#arrow-sm)"/>
+  <rect x="281" y="160" width="34" height="18" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="298" y="173" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#1E40AF">도구A</text>
+  <rect x="281" y="179" width="34" height="18" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="298" y="192" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#1E40AF">도구B</text>
+  <!-- 태그 -->
+  <rect x="227" y="212" width="130" height="30" rx="6" fill="#DBEAFE"/>
+  <text x="292" y="225" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF">복잡한 정보 수집</text>
+  <text x="292" y="237" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#3B82F6">파이프라인</text>
+  <text x="292" y="268" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">parallel_tool_calls</text>
+  <text x="292" y="281" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">활성화/비활성화</text>
+
+  <!-- 화살표 2→3 -->
+  <line x1="372" y1="175" x2="402" y2="175" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Stage 3: 도구 조합 전략 -->
+  <rect x="402" y="60" width="158" height="230" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <rect x="402" y="60" width="158" height="40" rx="10" fill="#1E40AF"/>
+  <rect x="402" y="86" width="158" height="14" rx="0" fill="#1E40AF"/>
+  <text x="481" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#93C5FD" font-weight="bold">단계 3</text>
+  <text x="481" y="90" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#ffffff" font-weight="bold">도구 조합 전략</text>
+  <text x="481" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">특징</text>
+  <text x="481" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">DAG 기반 오케스트레이션</text>
+  <text x="481" y="153" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">코드 기반 조합</text>
+  <!-- DAG 다이어그램 -->
+  <rect x="414" y="165" width="28" height="18" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="428" y="178" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1E40AF">A</text>
+  <line x1="442" y1="171" x2="452" y2="167" stroke="#3B82F6" stroke-width="1" marker-end="url(#arrow-sm)"/>
+  <line x1="442" y1="175" x2="452" y2="181" stroke="#3B82F6" stroke-width="1" marker-end="url(#arrow-sm)"/>
+  <rect x="452" y="160" width="26" height="16" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="465" y="172" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1E40AF">B</text>
+  <rect x="452" y="178" width="26" height="16" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="465" y="190" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1E40AF">C</text>
+  <line x1="478" y1="168" x2="490" y2="175" stroke="#3B82F6" stroke-width="1" marker-end="url(#arrow-sm)"/>
+  <line x1="478" y1="186" x2="490" y2="180" stroke="#3B82F6" stroke-width="1" marker-end="url(#arrow-sm)"/>
+  <rect x="490" y="168" width="26" height="18" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="503" y="181" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="7" fill="#1E40AF">D</text>
+  <!-- 태그 -->
+  <rect x="416" y="212" width="130" height="30" rx="6" fill="#DBEAFE"/>
+  <text x="481" y="225" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF">에이전트 워크플로우</text>
+  <text x="481" y="237" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#3B82F6">설계 단계</text>
+  <text x="481" y="268" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">Programmatic Tool</text>
+  <text x="481" y="281" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">Calling, 코드 실행</text>
+
+  <!-- 화살표 3→4 -->
+  <line x1="561" y1="175" x2="591" y2="175" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Stage 4: 도구 자동 생성 -->
+  <rect x="591" y="60" width="163" height="230" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.5"/>
+  <rect x="591" y="60" width="163" height="40" rx="10" fill="#7C3AED"/>
+  <rect x="591" y="86" width="163" height="14" rx="0" fill="#7C3AED"/>
+  <text x="672" y="75" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#DDD6FE" font-weight="bold">단계 4</text>
+  <text x="672" y="90" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#ffffff" font-weight="bold">도구 자동 생성</text>
+  <text x="672" y="120" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">특징</text>
+  <text x="672" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">자연어로 도구 생성</text>
+  <text x="672" y="153" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">에이전트 동적 확장</text>
+  <!-- 자동생성 다이어그램 -->
+  <text x="625" y="176" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#5B21B6">"도구 만들어줘"</text>
+  <line x1="670" y1="183" x2="670" y2="197" stroke="#8B5CF6" stroke-width="1.2" marker-end="url(#arrow-sm)"/>
+  <rect x="641" y="197" width="58" height="20" rx="5" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="670" y="211" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#5B21B6">새 도구 ✓</text>
+  <!-- 태그 -->
+  <rect x="605" y="227" width="130" height="30" rx="6" fill="#EDE9FE"/>
+  <text x="670" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#5B21B6">현재 실험적 단계</text>
+  <text x="670" y="252" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#8B5CF6">연구 영역</text>
+  <text x="670" y="275" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">Tool Search Tool</text>
+  <text x="670" y="288" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">85% 토큰 절감</text>
+
+  <!-- 하단 레이블 -->
+  <text x="390" y="330" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" font-weight="bold">진화 방향: 더 적은 토큰, 더 복잡한 조합, 더 높은 자율성</text>
+
+  <!-- 타임라인 -->
+  <line x1="40" y1="355" x2="740" y2="355" stroke="#E5E7EB" stroke-width="1.5"/>
+  <text x="103" y="375" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">2023</text>
+  <text x="103" y="388" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">Function Calling</text>
+  <circle cx="103" cy="355" r="4" fill="#3B82F6"/>
+
+  <text x="292" y="375" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">2023~2024</text>
+  <text x="292" y="388" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">parallel_tool_calls</text>
+  <circle cx="292" cy="355" r="4" fill="#3B82F6"/>
+
+  <text x="481" y="375" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">2024~2025</text>
+  <text x="481" y="388" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">MCP / 에이전트 프레임워크</text>
+  <circle cx="481" cy="355" r="4" fill="#1E40AF"/>
+
+  <text x="672" y="375" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">2025~</text>
+  <text x="672" y="388" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">Tool Search / 자동화</text>
+  <circle cx="672" cy="355" r="4" fill="#8B5CF6"/>
+</svg>

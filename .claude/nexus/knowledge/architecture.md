@@ -29,6 +29,7 @@ moreih29-blog/
 │       ├── constants.ts    # categoryColors (Web/AI/MLOps/DevOps/General)
 │       ├── types.ts        # Post 인터페이스
 │       └── utils.ts        # formatDate, getCategoryColor
+├── scripts/fix-mdx-bold.mjs  # MDX bold 렌더링 자동 교정 (prebuild)
 ├── scripts/patch-velite.mjs  # velite 빌드 후 JSON import 패치
 ├── public/                   # 정적 에셋 (images/, static/)
 ├── .velite/                  # velite 빌드 출력 (posts.json 등)

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 340" fill="none">
+  <!-- Background transparent -->
+
+  <!-- Title -->
+  <text x="390" y="28" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#374151" font-weight="bold">프롬프트 기법 진화 타임라인 (2020–2026)</text>
+
+  <!-- Timeline base line -->
+  <line x1="60" y1="170" x2="730" y2="170" stroke="#D1D5DB" stroke-width="2"/>
+  <!-- Arrow at end -->
+  <polygon points="730,164 730,176 742,170" fill="#D1D5DB"/>
+
+  <!-- ===== 2020 ===== -->
+  <!-- Marker -->
+  <circle cx="90" cy="170" r="7" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <!-- Year label -->
+  <text x="90" y="198" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" font-weight="bold">2020</text>
+  <!-- Card (above) -->
+  <rect x="40" y="60" width="100" height="68" rx="6" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="1.2"/>
+  <text x="90" y="80" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">L1</text>
+  <text x="90" y="95" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">GPT-3</text>
+  <text x="90" y="110" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">In-Context</text>
+  <text x="90" y="123" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">Learning</text>
+  <!-- Connector -->
+  <line x1="90" y1="128" x2="90" y2="163" stroke="#DBEAFE" stroke-width="1.2"/>
+
+  <!-- ===== 2022 ===== -->
+  <circle cx="210" cy="170" r="7" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="210" y="198" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" font-weight="bold">2022</text>
+  <!-- Card (below) -->
+  <rect x="150" y="210" width="120" height="82" rx="6" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="1.2"/>
+  <text x="210" y="228" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">L1</text>
+  <text x="210" y="243" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">CoT + RLHF</text>
+  <text x="210" y="258" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">ReAct</text>
+  <text x="210" y="271" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">ChatGPT 출시</text>
+  <text x="210" y="284" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">InstructGPT</text>
+  <!-- Connector -->
+  <line x1="210" y1="177" x2="210" y2="210" stroke="#DBEAFE" stroke-width="1.2"/>
+
+  <!-- ===== 2023 ===== -->
+  <circle cx="350" cy="170" r="7" fill="#BFDBFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="350" y="198" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" font-weight="bold">2023</text>
+  <!-- Card (above) -->
+  <rect x="285" y="50" width="130" height="90" rx="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.2"/>
+  <text x="350" y="70" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">L1–L3</text>
+  <text x="350" y="86" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">ToT + FC</text>
+  <text x="350" y="101" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">DSPy</text>
+  <text x="350" y="116" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">RAG 폭발</text>
+  <text x="350" y="131" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">GPT-4 출시</text>
+  <!-- Connector -->
+  <line x1="350" y1="140" x2="350" y2="163" stroke="#93C5FD" stroke-width="1.2"/>
+
+  <!-- ===== 2024 ===== -->
+  <circle cx="490" cy="170" r="7" fill="#93C5FD" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="490" y="198" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" font-weight="bold">2024</text>
+  <!-- Card (below) -->
+  <rect x="430" y="210" width="120" height="82" rx="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.2"/>
+  <text x="490" y="228" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">L3–L4</text>
+  <text x="490" y="243" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">MCP + o1</text>
+  <text x="490" y="258" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">에이전트 프레임워크</text>
+  <text x="490" y="271" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">추론 모델 등장</text>
+  <text x="490" y="284" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">Meta-Prompting</text>
+  <!-- Connector -->
+  <line x1="490" y1="177" x2="490" y2="210" stroke="#93C5FD" stroke-width="1.2"/>
+
+  <!-- ===== 2025 ===== -->
+  <circle cx="615" cy="170" r="7" fill="#60A5FA" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="615" y="198" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" font-weight="bold">2025</text>
+  <!-- Card (above) -->
+  <rect x="550" y="50" width="130" height="90" rx="6" fill="#BFDBFE" stroke="#60A5FA" stroke-width="1.2"/>
+  <text x="615" y="70" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">L2–L4</text>
+  <text x="615" y="86" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">컨텍스트</text>
+  <text x="615" y="101" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">엔지니어링</text>
+  <text x="615" y="116" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">DeepSeek R1</text>
+  <text x="615" y="131" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">MCP 표준화</text>
+  <!-- Connector -->
+  <line x1="615" y1="140" x2="615" y2="163" stroke="#60A5FA" stroke-width="1.2"/>
+
+  <!-- ===== 2026 ===== -->
+  <circle cx="720" cy="170" r="7" fill="#2563EB" stroke="#1E40AF" stroke-width="1.5"/>
+  <text x="720" y="198" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" font-weight="bold">2026</text>
+  <!-- Card (below) -->
+  <rect x="660" y="210" width="110" height="68" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="715" y="228" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">L5</text>
+  <text x="715" y="243" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">하네스</text>
+  <text x="715" y="258" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">엔지니어링</text>
+  <text x="715" y="273" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">NLAH 논문</text>
+  <!-- Connector -->
+  <line x1="720" y1="177" x2="715" y2="210" stroke="#2563EB" stroke-width="1.2"/>
+
+  <!-- Bottom note -->
+  <text x="390" y="322" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#9CA3AF">색상 밝기: 계층 높을수록 진한 파란색 (L1 연하늘 → L5 진파랑)</text>
+</svg>

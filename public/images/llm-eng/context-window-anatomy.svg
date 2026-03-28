@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" fill="none">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- OS Analogy label (left) -->
+  <text x="18" y="22" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">LLM = CPU</text>
+  <text x="18" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">컨텍스트 창 = RAM</text>
+  <text x="18" y="54" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#1E40AF">엔지니어 = OS</text>
+
+  <!-- Title -->
+  <text x="420" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#1E40AF" text-anchor="middle">컨텍스트 창 구성 요소</text>
+
+  <!-- Outer context window box -->
+  <rect x="160" y="55" width="520" height="420" rx="12" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <text x="420" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF" text-anchor="middle">Context Window (컨텍스트 창)</text>
+  <text x="420" y="96" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">← 엔지니어가 무엇을 담을지 설계하는 공간 →</text>
+
+  <!-- Block 1: System Prompt (large) -->
+  <rect x="175" y="108" width="490" height="58" rx="8" fill="#1E40AF"/>
+  <text x="420" y="132" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">시스템 프롬프트 (System Prompt)</text>
+  <text x="420" y="150" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#BFDBFE" text-anchor="middle">역할 정의 · 지시 · 제약 조건 — 가장 앞에 위치, 높은 우선순위</text>
+
+  <!-- Block 2: Few-shot examples (medium) -->
+  <rect x="175" y="174" width="490" height="48" rx="8" fill="#3B82F6"/>
+  <text x="420" y="196" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">Few-shot 예시 (In-context Examples)</text>
+  <text x="420" y="212" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#BFDBFE" text-anchor="middle">패턴 제시 — 모델이 원하는 출력 형식을 학습</text>
+
+  <!-- Block 3: RAG results (large) -->
+  <rect x="175" y="230" width="490" height="65" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="420" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF" text-anchor="middle">RAG 검색 결과 (Retrieved Context)</text>
+  <text x="420" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">외부 지식 주입 — 벡터 DB에서 검색한 관련 청크</text>
+  <text x="420" y="286" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">크기 가변 · 가장 관련성 높은 것을 앞뒤에 배치 (Position Engineering)</text>
+
+  <!-- Block 4: Tool outputs (medium) -->
+  <rect x="175" y="303" width="237" height="55" rx="8" fill="#D1FAE5" stroke="#10B981" stroke-width="1.2"/>
+  <text x="293" y="325" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#065F46" text-anchor="middle">도구 출력 (Tool Results)</text>
+  <text x="293" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Function Calling 결과</text>
+  <text x="293" y="356" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">API · 코드 실행 · DB 조회</text>
+
+  <!-- Block 5: Memory (medium, same row) -->
+  <rect x="420" y="303" width="245" height="55" rx="8" fill="#E0E7FF" stroke="#6366F1" stroke-width="1.2"/>
+  <text x="542" y="325" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#3730A3" text-anchor="middle">메모리 (Memory)</text>
+  <text x="542" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">세션 간 지속 정보</text>
+  <text x="542" y="356" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">Semantic · Episodic · Procedural</text>
+
+  <!-- Block 6: Conversation History (large) -->
+  <rect x="175" y="366" width="490" height="60" rx="8" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.2"/>
+  <text x="420" y="390" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#374151" text-anchor="middle">대화 히스토리 (Conversation History)</text>
+  <text x="420" y="408" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">이전 User / Assistant 메시지 — 길어질수록 비용 증가</text>
+  <text x="420" y="422" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">관리 전략: Sliding Window · Recursive Summarization · Assertion DB</text>
+
+  <!-- Block 7: Current Input (at the bottom) -->
+  <rect x="175" y="434" width="490" height="30" rx="8" fill="#374151"/>
+  <text x="420" y="453" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">현재 사용자 입력 (Current User Message) ← 모델이 응답할 대상</text>
+
+  <!-- Left side labels for size indication -->
+  <line x1="152" y1="108" x2="152" y2="166" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="148" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280" text-anchor="middle" transform="rotate(-90, 148, 138)">정적</text>
+
+  <line x1="152" y1="174" x2="152" y2="300" stroke="#10B981" stroke-width="1.5"/>
+  <text x="148" y="238" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280" text-anchor="middle" transform="rotate(-90, 148, 238)">동적</text>
+
+  <line x1="152" y1="303" x2="152" y2="464" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="148" y="390" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280" text-anchor="middle" transform="rotate(-90, 148, 390)">동적</text>
+</svg>

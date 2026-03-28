@@ -1,0 +1,108 @@
+<svg viewBox="0 0 760 580" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L8,3.5 L0,7 L2,3.5 Z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow-b" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L8,3.5 L0,7 L2,3.5 Z" fill="#3B82F6"/>
+    </marker>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="760" height="580" fill="#F9FAFB" rx="10"/>
+
+  <!-- 제목 -->
+  <text x="380" y="36" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">프레임워크 선택 의사결정 플로우</text>
+  <text x="380" y="55" text-anchor="middle" font-size="12" fill="#6B7280">어떤 에이전트 프레임워크를 선택할 것인가?</text>
+
+  <!-- 시작 노드 -->
+  <rect x="295" y="72" width="170" height="38" rx="8" fill="#1E40AF"/>
+  <text x="380" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="white">에이전트 시스템 구축</text>
+
+  <line x1="380" y1="110" x2="380" y2="132" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Q1: 복잡한 분기/상태? -->
+  <polygon points="380,133 470,165 380,197 290,165" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="380" y="161" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">복잡한</text>
+  <text x="380" y="175" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">분기/상태?</text>
+
+  <!-- Yes 분기 → LangGraph -->
+  <line x1="470" y1="165" x2="560" y2="165" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-b)"/>
+  <text x="515" y="158" text-anchor="middle" font-size="10" fill="#3B82F6" font-weight="600">Yes</text>
+  <rect x="560" y="148" width="120" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="620" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#1E40AF">LangGraph</text>
+  <text x="620" y="178" text-anchor="middle" font-size="9" fill="#3B82F6">그래프 기반 상태 머신</text>
+
+  <!-- No 분기 → Q2 -->
+  <line x1="380" y1="197" x2="380" y2="222" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="392" y="213" font-size="10" fill="#6B7280">No</text>
+
+  <!-- Q2: 역할 기반 협업? -->
+  <polygon points="380,223 470,255 380,287 290,255" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="380" y="251" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">역할 기반</text>
+  <text x="380" y="265" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">협업?</text>
+
+  <!-- Yes → CrewAI -->
+  <line x1="470" y1="255" x2="560" y2="255" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-b)"/>
+  <text x="515" y="248" text-anchor="middle" font-size="10" fill="#3B82F6" font-weight="600">Yes</text>
+  <rect x="560" y="238" width="120" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="620" y="254" text-anchor="middle" font-size="12" font-weight="700" fill="#1E40AF">CrewAI</text>
+  <text x="620" y="268" text-anchor="middle" font-size="9" fill="#3B82F6">역할·목표·배경 부여</text>
+
+  <!-- No → Q3 -->
+  <line x1="380" y1="287" x2="380" y2="312" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="392" y="303" font-size="10" fill="#6B7280">No</text>
+
+  <!-- Q3: OpenAI 빠른 프로토타입? -->
+  <polygon points="380,313 480,350 380,387 280,350" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="380" y="344" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">OpenAI 스택</text>
+  <text x="380" y="358" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">빠른 프로토타입?</text>
+
+  <!-- Yes → OpenAI Agents SDK -->
+  <line x1="480" y1="350" x2="560" y2="350" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-b)"/>
+  <text x="520" y="343" text-anchor="middle" font-size="10" fill="#3B82F6" font-weight="600">Yes</text>
+  <rect x="560" y="333" width="130" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="625" y="349" text-anchor="middle" font-size="11" font-weight="700" fill="#1E40AF">OpenAI Agents SDK</text>
+  <text x="625" y="363" text-anchor="middle" font-size="9" fill="#3B82F6">Handoffs · Guardrails</text>
+
+  <!-- No → Q4 분기 (3갈래) -->
+  <line x1="380" y1="387" x2="380" y2="412" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="392" y="403" font-size="10" fill="#6B7280">No</text>
+
+  <!-- Q4 중심 분기 노드 -->
+  <rect x="317" y="412" width="126" height="32" rx="6" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1.3"/>
+  <text x="380" y="432" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">우선 순위는?</text>
+
+  <!-- 좌 분기 → LlamaIndex -->
+  <line x1="317" y1="428" x2="200" y2="462" stroke="#6B7280" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="232" y="452" text-anchor="middle" font-size="9" fill="#6B7280">RAG 중심</text>
+  <rect x="80" y="462" width="120" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="140" y="478" text-anchor="middle" font-size="12" font-weight="700" fill="#1E40AF">LlamaIndex</text>
+  <text x="140" y="492" text-anchor="middle" font-size="9" fill="#3B82F6">검색 증강 에이전트</text>
+
+  <!-- 중 분기 → AutoGen -->
+  <line x1="380" y1="444" x2="380" y2="462" stroke="#6B7280" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="395" y="456" font-size="9" fill="#6B7280">분산/비동기</text>
+  <rect x="310" y="462" width="140" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="380" y="478" text-anchor="middle" font-size="12" font-weight="700" fill="#1E40AF">AutoGen v0.4</text>
+  <text x="380" y="492" text-anchor="middle" font-size="9" fill="#3B82F6">액터 모델 · 비동기</text>
+
+  <!-- 우 분기 → Claude Agent SDK -->
+  <line x1="443" y1="428" x2="560" y2="462" stroke="#6B7280" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="528" y="452" text-anchor="middle" font-size="9" fill="#6B7280">MCP 퍼스트</text>
+  <rect x="560" y="462" width="140" height="34" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="630" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#1E40AF">Claude Agent SDK</text>
+  <text x="630" y="489" text-anchor="middle" font-size="9" fill="#3B82F6">MCP · 서브에이전트</text>
+
+  <!-- 하단 범례/노트 -->
+  <rect x="30" y="528" width="700" height="36" rx="8" fill="white" stroke="#E5E7EB" stroke-width="1.2"/>
+  <polygon points="60,541 75,548 60,555 45,548" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="85" y="551" font-size="10" fill="#374151">결정 질문</text>
+  <rect x="185" y="540" width="12" height="12" rx="3" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="203" y="551" font-size="10" fill="#374151">프레임워크 선택</text>
+  <rect x="340" y="540" width="12" height="12" rx="3" fill="#1E40AF"/>
+  <text x="358" y="551" font-size="10" fill="#374151">시작점</text>
+  <text x="530" y="551" font-size="10" fill="#9CA3AF">실무 권장: 2~3일 POC 후 결정</text>
+
+  <text x="380" y="575" text-anchor="middle" font-size="10" fill="#9CA3AF">출처: Anthropic · Microsoft · OpenAI · CrewAI · LangChain 공식 문서 (2025)</text>
+</svg>

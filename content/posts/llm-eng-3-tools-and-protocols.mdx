@@ -1,0 +1,250 @@
+---
+title: "도구와 프로토콜 — LLM이 세상과 연결되는 방법"
+slug: llm-eng-3-tools-and-protocols
+date: 2026-03-27
+description: "Function Calling에서 MCP까지, Structured Output부터 A2A까지 — LLM의 도구 통합 기술과 표준화 흐름을 정리합니다."
+tags: ["llm", "ai", "function-calling", "mcp", "structured-output", "a2a", "tool-use"]
+published: true
+series: "LLM 엔지니어링"
+seriesOrder: 3
+category: "AI"
+---
+
+LLM은 혼자서는 생각만 한다.
+
+계산기 없이 수식을 풀고, 인터넷 없이 최신 정보를 가져오고, 데이터베이스 없이 기업 데이터를 조회하는 것 — 이런 일을 LLM 단독으로 하려면 환각(hallucination)을 감수해야 한다. 모델이 모르는 것을 아는 척하는 것은 도구가 없을 때 가장 많이 발생한다.
+
+그래서 "LLM이 세상과 연결되는 방법"이 L3의 핵심 질문이다. 2023년에 Function Calling이 등장하면서 이 연결이 공식화됐고, 2024~2025년에 MCP라는 표준 프로토콜이 업계 수준으로 확산됐다. 2025년에는 에이전트끼리 통신하는 A2A 프로토콜도 등장했다.
+
+이 글은 그 흐름을 실무 관점에서 추적한다.
+
+---
+
+## 이 글의 위치
+
+1편(프롬프트 엔지니어링)에서 우리는 LLM에게 무엇을 어떻게 요청할지를 다뤘다. 2편(컨텍스트 엔지니어링)에서는 컨텍스트 창에 무엇을 넣을지를 다뤘다. 3편인 이 글은 LLM이 컨텍스트 창 밖의 세계 — 외부 API, 데이터베이스, 다른 에이전트 — 와 어떻게 연결되는지를 다룬다.
+
+도구 통합(L3)에서 엔지니어가 다루는 핵심 질문들:
+
+- 모델이 언제 어떤 도구를 호출할지 어떻게 결정하게 할 것인가?
+- 도구 호출 결과가 구조화된 형식으로 돌아오게 하려면?
+- 수천 개의 도구가 있을 때 어떻게 효율적으로 관리할 것인가?
+- 도구와 에이전트를 표준화된 방식으로 연결하는 방법은?
+
+---
+
+## 기원: ReAct에서 Function Calling으로
+
+도구 사용의 개념적 시작은 2022년 ReAct 논문이다. "LLM이 생각하고(Reason), 행동한다(Act)"는 루프 — Thought → Action → Observation — 가 에이전트 패러다임의 원형이 됐다. 당시에는 프롬프트로 이 패턴을 유도했고, 도구 호출은 자연어로 서술됐다. "위키피디아에서 검색한다"를 모델이 텍스트로 출력하면, 별도 파서가 그것을 API 호출로 변환하는 방식이었다.
+
+이 접근은 작동하긴 했지만 지저분했다. 출력 파싱이 불안정했고, 도구 인터페이스가 모델마다 달랐으며, 파라미터 형식이 제각각이었다.
+
+OpenAI가 2023년 6월에 Function Calling을 출시하면서 이것이 공식화됐다 [T2]. gpt-4-0613과 함께 등장한 이 기능은 모델이 자연어 대신 구조화된 JSON으로 도구 호출 의도를 표현하게 했다. 파서 없이도 안정적인 도구 통합이 가능해진 첫 순간이었다.
+
+초기 `functions` 파라미터는 2023년 11월 `tools`로 확장됐다. 단일 도구 호출에서 시작해, 여러 도구를 병렬로 호출하는 `parallel_tool_calls`가 추가됐고, 도구 조합 전략이 복잡해졌다.
+
+Function Calling의 내부 메커니즘 — JSON Schema 구조, 모델이 어떻게 도구 선택을 학습했는지 — 은 "LLM 해부학 8편"에서 다룬다.
+
+---
+
+## 전환점 1: Function Calling 실무 정착 (2023~2024)
+
+Function Calling이 등장한 것과 그것을 잘 쓰는 것은 다른 문제였다.
+
+### 함수 설명이 계약서다
+
+가장 흔한 실수는 함수 설명을 대충 쓰는 것이다. 모델은 함수 이름과 설명, 파라미터 설명을 읽고 호출 여부와 파라미터 값을 결정한다. 이 설명이 명확하지 않으면 모델은 잘못된 도구를 고르거나, 파라미터를 잘못 채운다.
+
+OpenAI 공식 문서 [T2]는 함수 설명을 "계약서처럼" 작성하라고 권장한다. 목적, 예시, 타입을 명확히 — 모호하게 쓴 설명은 모델의 판단을 오염시킨다. 그리고 한 가지 중요한 원칙: 이미 알고 있는 인수를 모델에게 채우게 하지 말 것. 사용자 ID처럼 시스템이 이미 갖고 있는 값을 모델에게 "추론"하게 하는 것은 오류 원인이 된다.
+
+### 병렬 호출 vs 순차 호출
+
+`parallel_tool_calls`를 활성화하면 모델이 여러 도구를 동시에 호출할 수 있다. 독립적인 정보 수집에는 효율적이다. 하지만 순서가 중요한 작업 — A의 결과를 B의 입력으로 써야 하는 경우 — 에는 순차 호출로 제한해야 한다. `parallel_tool_calls`를 비활성화하면 정확히 0개 또는 1개 호출이 보장된다.
+
+### 도구가 수천 개라면
+
+단일 에이전트가 수십 개 도구를 갖는 것은 흔해졌다. 수백, 수천 개 도구를 가진 시스템도 등장하기 시작했다. 이때 모든 도구 스키마를 컨텍스트에 넣는 것은 토큰 낭비이자 성능 저하다.
+
+Anthropic이 2025년에 공개한 고급 도구 기법들이 이 문제를 다룬다 [T2]:
+
+**Tool Search Tool**: 수천 개 도구를 자연어로 검색해 관련 도구를 먼저 필터링한다. 77,000 토큰의 도구 스키마를 8,700 토큰으로 줄였다 — 85% 감소.
+
+**Programmatic Tool Calling**: 도구 자체를 Python 코드로 오케스트레이션한다. 모델이 코드를 작성해 여러 도구를 조합하는 방식으로, 토큰 37% 감소, 추론 단계 19회 이상 절감이 보고됐다.
+
+**Tool Use Examples**: 함수 설명과 함께 사용 예시를 제공한다. 파라미터 정확도가 72%에서 90%로 향상됐다.
+
+### 벤더별 Function Calling 성능
+
+Berkeley Function-Calling Leaderboard(BFCL) V4 기준 [T2] — 2026년 3월 기준 —, Claude Opus 4.1이 70.36%, Claude Sonnet 4가 70.29%로 상위권이다. GPT-5는 59.22%다. 비용 측면에서는 Claude Sonnet 4가 GPT-5 대비 약 2배 더 든다($127 vs $252 per benchmark run). 벤치마크 순위는 빈번히 변동하므로 최신 리더보드를 확인하는 것이 실무 결정의 기준이 돼야 한다.
+
+---
+
+## 전환점 2: Structured Output — 출력 형식의 표준화 (2024)
+
+Function Calling이 "어떤 도구를 호출할지"를 구조화했다면, Structured Output은 "모델이 내놓는 응답 자체"를 구조화한다.
+
+### JSON Mode에서 Structured Outputs로
+
+2023년의 JSON Mode는 유효한 JSON을 보장했지만 스키마를 강제하지 않았다. 원하는 필드가 없어도, 타입이 달라도, JSON이기만 하면 통과했다. LLM 출력을 파싱해 다음 단계로 넘기는 파이프라인에서 이것은 치명적이었다. 형식 오류가 파이프라인을 깨뜨리는 것이 가장 흔한 장애 원인이었다.
+
+OpenAI가 2024년 8월 gpt-4o-2024-08-06에서 Structured Outputs를 출시하면서 이 문제를 모델 수준에서 해결했다 [T2]. JSON Schema를 API에 직접 전달하면 모델이 그 스키마에 완전히 준수하는 출력을 생성한다. Grammar 기반 마스킹(Grammar-Constrained Decoding)으로 스키마를 위반하는 토큰을 디코딩 단계에서 차단하는 방식이다.
+
+실무에서의 변화: Pydantic(Python)이나 Zod(JavaScript)로 데이터 모델을 정의하면 JSON Schema로 자동 변환돼 API에 전달된다. 파싱 코드를 따로 쓸 필요가 없어졌다. `refusal` 필드로 모델이 요청을 거부했을 때 감지도 가능해졌다.
+
+### 오픈소스 생태계: Grammar-Constrained Decoding
+
+자체 호스팅 환경에서 같은 기능을 구현하려면 Grammar-Constrained Decoding 라이브러리가 필요하다. 현재 주요 구현체들 [T2]:
+
+**Outlines**(dottxt-ai): JSON Schema와 정규식을 유한 상태 기계(FSM)로 컴파일해 디코딩을 제약한다. 가장 널리 알려진 구현체다.
+
+**XGrammar**(CMU/MLC): Pushdown Automaton(PDA) 기반. 2025년 vLLM의 기본값이 됐다.
+
+**llguidance**: 2025년 3월 vLLM v0.8.2에 통합됐다.
+
+vLLM에서는 `guided_json`, `guided_regex`, `guided_choice`, `guided_grammar` 파라미터로 각 방식을 선택할 수 있다.
+
+---
+
+## 전환점 3: MCP — 도구 통합의 표준화 (2024~2025)
+
+Function Calling이 "API 수준의" 도구 통합이라면, MCP(Model Context Protocol)는 "생태계 수준의" 표준화 시도다.
+
+### 왜 MCP가 필요했나
+
+에이전트가 점점 더 많은 외부 도구와 연결되면서 통합 방식이 파편화됐다. Slack 연결, GitHub 연결, 데이터베이스 연결 — 각각이 다른 인터페이스, 다른 인증 방식, 다른 오류 처리를 가졌다. 에이전트 프레임워크마다 도구 인터페이스가 달라서, 한 프레임워크용으로 만든 도구가 다른 프레임워크에서 재사용이 안 됐다.
+
+USB가 다양한 주변기기를 하나의 표준 포트로 연결하듯, MCP는 LLM 애플리케이션과 외부 도구 사이에 표준 인터페이스를 정의하려 했다.
+
+### 채택 경과
+
+Anthropic이 2024년 11월에 Python, TypeScript, C#, Java SDK와 함께 출시했다 [T2]. 처음에는 자사 Claude 에코시스템을 위한 것이었지만, 2025년 3월에 OpenAI가 Agents SDK와 Responses API에 공식 채택했다. 같은 해 4월에 Google DeepMind Gemini도 지원을 추가했다.
+
+2025년 12월, Anthropic이 MCP를 Linux Foundation에 기증하면서 AAIF(Agentic AI Foundation)의 창립 프로젝트가 됐다 [T2]. Anthropic, Block, OpenAI가 공동 창립했고, Google, Microsoft, AWS, Cloudflare가 지원사로 참여했다. 업계 표준으로의 전환이 완성된 순간이다.
+
+전송 방식도 진화했다. 초기에는 stdio(로컬)와 SSE였는데, 2025년 3월 스펙 업데이트에서 Streamable HTTP가 SSE를 대체했다. 현재 공식 전송 방식은 stdio(로컬)와 Streamable HTTP(원격) 둘이다.
+
+MCP의 3계층 아키텍처(Host/Client/Server) 내부 구조는 "LLM 해부학 8편"을 참고하라.
+
+### MCP의 현실적 한계
+
+채택이 빠르게 확산됐지만, 실무에서 MCP를 쓸 때 알아야 할 문제들이 있다.
+
+**보안**이 가장 심각한 이슈다. OWASP MCP Top 10에 "MCP07:2025 – Insufficient Authentication & Authorization"이 공식 분류됐다 [T2]. 실제 분석에서 드러난 수치들은 우려스럽다: 43%의 MCP 서버가 커맨드 인젝션을 허용하고, 22%는 경로 탐색으로 임의 파일을 읽을 수 있으며, 30%는 SSRF 취약점을 갖는다 [T2: Microsoft]. CVE-2025-6514는 mcp-remote OAuth 프록시 공격으로 437,000개 이상의 개발자 환경이 침해된 사례다. OAuth 채택률이 불과 8.5%인데, 88%가 장기 정적 시크릿(API 키, PAT)에 의존한다.
+
+"Secure by default" 설계 원칙이 부재한 채로 빠르게 확산된 것이 근본 원인이다. 5,800개 이상의 MCP 서버 중 품질 편차가 심하다. 프로덕션에 MCP를 도입할 때는 서버 소스를 직접 검토하거나, 신뢰할 수 있는 공급자의 서버만 사용해야 한다.
+
+**성능 트레이드오프**도 있다. MCP는 네트워크 레이어를 추가한다. 단순한 단일 도구 통합에는 직접 API 호출이 더 효율적인 경우가 많다. MCP의 가치는 여러 도구를 표준화된 방식으로 관리하거나, 여러 에이전트 프레임워크에서 같은 도구를 재사용할 때 드러난다.
+
+---
+
+## 현재: A2A와 에이전트 간 통신 (2025)
+
+MCP가 에이전트와 도구 사이의 수직 통신을 표준화했다면, A2A(Agent-to-Agent) 프로토콜은 에이전트들 사이의 수평 통신을 표준화하려 했다.
+
+### A2A 등장
+
+Google이 2025년 4월에 50개 이상의 기술 파트너와 함께 A2A를 발표했다 [T2]. HTTPS + JSON-RPC 2.0을 전송 방식으로 사용하고, "Agent Card"라는 메커니즘으로 에이전트가 자신의 역할과 기능을 광고한다. 한 에이전트가 다른 에이전트를 동적으로 발견하고 협업하는 구조다.
+
+2025년 6월, A2A도 Linux Foundation에 기증됐다 [T2]. AWS, Cisco, Google, Microsoft, Salesforce, SAP, ServiceNow가 참여하고 Apache 2.0 오픈소스로 공개됐다.
+
+Google은 MCP와 A2A의 관계를 "보완적"이라고 공식 표현했다. MCP는 수직 — 에이전트와 도구. A2A는 수평 — 에이전트와 에이전트.
+
+<figure>
+  <img src="/images/llm-eng/tool-ecosystem.svg" alt="도구 통합 생태계 — MCP vs A2A 관계 다이어그램" />
+  <figcaption>MCP(수직: 에이전트↔도구)와 A2A(수평: 에이전트↔에이전트)의 보완 관계</figcaption>
+</figure>
+
+### A2A의 현재 위치
+
+A2A는 출발이 좋았지만 2025년 하반기부터 모멘텀이 줄었다 [T3]. 개발자 경험 면에서 MCP가 더 빠르게 자리를 잡았고, Google 자체 서비스도 MCP 호환성을 추가하기 시작했다. 현재 시점에서 A2A는 "가능성 있는 실험"에 가깝다. MCP가 멀티 에이전트 협업 패턴까지 흡수할지, A2A가 별도 표준으로 자리 잡을지는 열린 질문이다.
+
+실무에서는 당장 A2A를 써야 할 이유보다 MCP를 먼저 안정적으로 적용하는 것이 우선이다.
+
+---
+
+## 현재: 코드 실행 — LLM의 계산기
+
+Structured Output, Function Calling, MCP가 "데이터를 가져오고 명령을 보내는" 방향의 도구 통합이라면, 코드 실행 환경은 "모델이 직접 계산한다"는 다른 방향의 통합이다.
+
+OpenAI의 Code Interpreter는 Kubernetes 샌드박스에서 Python을 실행한다. 모델이 코드를 작성하고, 실행하고, 결과를 보고, 다시 코드를 수정하는 루프다. Anthropic의 Programmatic Tool Calling에는 Code Execution Tool이 포함된다. E2B는 이 패턴을 독립 런타임으로 제공해 LangChain, LlamaIndex, OpenAI, Anthropic 등 여러 프레임워크와 통합된다.
+
+2025년의 트렌드 중 하나는 CLI 에이전트의 급증이다. GitHub Copilot CLI, Amp, OpenCode, OpenHands CLI — 이들은 터미널 환경에서 코드 실행을 핵심 도구로 쓰는 에이전트다. "LLM이 코드를 쓴다"는 것을 넘어 "LLM이 코드를 실행하고 환경을 제어한다"는 쪽으로 이동했다.
+
+---
+
+## 도구 패턴의 진화 — 어디로 가고 있나
+
+도구 통합 패턴의 진화를 단계로 정리하면 이렇다 [T1: arXiv:2603.22862]:
+
+<figure>
+  <img src="/images/llm-eng/tool-pattern-evolution.svg" alt="도구 패턴 진화 4단계 플로우차트" />
+  <figcaption>단일 도구 호출에서 도구 자동 생성까지 — 복잡도와 자율성이 함께 높아지는 진화 경로</figcaption>
+</figure>
+
+| 단계 | 특징 | 실무 적용 시기 |
+|------|------|--------------|
+| 단일 도구 호출 | 맞는 도구 선택, 파라미터 채우기 | 여전히 대부분의 기본 케이스 |
+| 다중 도구 호출 | 병렬/순차 실행, 중간 상태 관리 | 복잡한 정보 수집 파이프라인 |
+| 도구 조합 전략 | DAG 기반 오케스트레이션, 코드 기반 조합 | 에이전트 워크플로우 설계 |
+| 도구 자동 생성 | 자연어로 도구/에이전트 생성 | 현재 실험적 단계 |
+
+주목할 흐름은 "표준화"다. Function Calling이 모델 수준의 표준화였다면, MCP는 에코시스템 수준의 표준화다. 그리고 Linux Foundation 기증은 "특정 벤더의 표준"에서 "업계 공통 인프라"로의 전환을 의미한다. USB나 HTTP처럼, LLM 도구 통합도 인프라가 되어가고 있다.
+
+---
+
+## L3 실무 의사결정 가이드
+
+도구 통합을 설계할 때 실무에서 자주 맞닥뜨리는 선택들:
+
+**언제 직접 API 호출 vs MCP를 쓸까?**
+단일 도구, 간단한 통합이라면 직접 API가 더 단순하다. 여러 도구를 표준화된 방식으로 관리해야 하거나, 여러 에이전트 프레임워크에서 재사용해야 한다면 MCP가 장점을 발휘한다. 보안 검토 없이 공개 MCP 서버를 프로덕션에 바로 쓰는 것은 피해야 한다.
+
+**Function Calling 함수 설명을 어떻게 쓸까?**
+함수의 목적, 언제 써야 하는지, 각 파라미터의 타입과 예시 값을 명확히 쓴다. "계약서처럼" — 읽는 모델이 판단 실수를 하지 않도록. 파라미터가 많다면 Tool Use Examples를 함께 제공한다.
+
+**Structured Output을 언제 쓸까?**
+LLM 출력이 다음 단계 코드의 입력이 되는 경우에는 항상 쓰는 것이 좋다. "JSON으로 써달라"는 프롬프트 지시보다 스키마 직접 전달이 훨씬 안정적이다.
+
+**코드 실행 샌드박스를 언제 쓸까?**
+수치 계산, 데이터 분석, 파일 변환처럼 모델의 추론만으로는 정확도가 보장되지 않는 작업에 써야 한다. 실행 환경에 대한 보안 설계(파일 시스템 접근, 네트워크 접근 제한)는 필수다.
+
+---
+
+## 3편 정리 — L3에서 L4로
+
+L3(도구 통합)에서 다룬 것:
+
+- Function Calling: 모델이 구조화된 형식으로 도구를 호출하는 공식 인터페이스
+- Structured Output: 모델 출력 자체를 스키마에 맞게 제약하는 방법
+- MCP: 에이전트와 도구 사이의 생태계 수준 표준화 프로토콜
+- A2A: 에이전트 간 통신의 표준화 시도
+- 코드 실행: 모델이 직접 계산 환경을 다루는 패턴
+
+L3으로 해결하기 어려운 것:
+
+- 여러 에이전트가 병렬로 작업하며 결과를 조율하는 것
+- 복잡한 다단계 워크플로우를 안정적으로 실행하는 것
+- 에이전트 실패 시 복구 전략과 상태 관리
+
+이것이 L4, 에이전트 오케스트레이션의 영역이다. 4편에서는 에이전트 프레임워크와 멀티 에이전트 시스템 설계를 다룬다.
+
+---
+
+## 참고 자료
+
+- [T1] arXiv:2603.22862. The Evolution of Tool Use in LLM Agents (2026)
+- [T1] Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models. [arXiv:2210.03629](https://arxiv.org/abs/2210.03629)
+- [T2] OpenAI. Function Calling API (2023.06) — [openai.com](https://openai.com/index/function-calling-and-other-api-updates/)
+- [T2] OpenAI. Structured Outputs (2024.08) — [openai.com](https://openai.com/index/introducing-structured-outputs-in-the-api/)
+- [T2] Anthropic. Advanced Tool Use (2025.11) — [anthropic.com/engineering](https://www.anthropic.com/engineering/advanced-tool-use)
+- [T2] BFCL V4 리더보드 — [gorilla.cs.berkeley.edu](https://gorilla.cs.berkeley.edu/leaderboard.html)
+- [T2] vLLM. Structured Outputs 공식 문서 — [docs.vllm.ai](https://docs.vllm.ai/en/latest/features/structured_outputs/)
+- [T2] Anthropic. MCP 발표 (2024.11) — [anthropic.com](https://www.anthropic.com/news/model-context-protocol)
+- [T2] OWASP MCP Top 10 — [owasp.org](https://owasp.org/www-project-mcp-top-10/)
+- [T2] Microsoft. MCP 보안 위협 분석 — [techcommunity.microsoft.com](https://techcommunity.microsoft.com/blog/microsoft-security-blog/understanding-and-mitigating-security-risks-in-mcp-implementations/4404667)
+- [T2] Linux Foundation. AAIF 창립 발표 (2025.12) — [linuxfoundation.org](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation)
+- [T2] Google Developers. A2A 발표 (2025.04) — [developers.googleblog.com](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)
+- [T2] Google Developers. A2A Linux Foundation 기증 (2025.06) — [developers.googleblog.com](https://developers.googleblog.com/en/google-cloud-donates-a2a-to-linux-foundation/)
+- [T3] A2A 개발 모멘텀 감소 (2025.09 관측)
+
+> **출처 티어**: [T1] 동료 심사 논문 또는 공식 기술 보고서 — 높은 신뢰도. [T2] 공신력 있는 기관의 공식 문서/블로그 — 중간-높은 신뢰도. [T3] 개인 소셜 미디어 등 — 방향성 참고용, 독립 검증 필요.

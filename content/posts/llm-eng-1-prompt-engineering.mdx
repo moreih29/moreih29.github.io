@@ -1,0 +1,278 @@
+---
+title: "프롬프트 엔지니어링의 진화 — 질문의 기술에서 시스템 설계로"
+slug: llm-eng-1-prompt-engineering
+date: 2026-03-27
+description: "Zero-shot에서 시작된 프롬프트 엔지니어링이 CoT, ReAct, 시스템 프롬프트 설계를 거쳐 어떻게 더 큰 엔지니어링의 일부가 되었는지 추적합니다."
+tags: ["llm", "ai", "prompt-engineering", "chain-of-thought", "react", "system-prompt"]
+published: true
+series: "LLM 엔지니어링"
+seriesOrder: 1
+category: "AI"
+---
+
+"프롬프트를 잘 쓰면 된다"는 말이 한때 진지하게 통했다. 2023년쯤에는 "프롬프트 엔지니어"라는 직함이 실제로 채용 공고에 올라왔다. 그리고 2025년이 되자 "프롬프트 엔지니어링은 죽었다"는 말이 유행했다.
+
+둘 다 반은 맞고 반은 틀렸다.
+
+프롬프트를 잘 쓰는 것은 여전히 중요하다. 달라진 것은 그게 "전부"가 아니라 더 큰 시스템 설계의 **일부**가 됐다는 점이다. 이 글은 그 전환 과정을 추적한다.
+
+---
+
+## 이 시리즈가 다루는 것
+
+LLM을 실제로 쓰다 보면 "어디서부터 어디까지가 내 책임인가"라는 질문이 생긴다. 모델을 고르고, 프롬프트를 쓰고, 외부 도구를 연결하고, 여러 에이전트를 조율하고, 그 전체 시스템이 잘 돌아가는지 모니터링하는 것 — 이 모든 게 "LLM을 쓴다"는 말 안에 들어 있다.
+
+이 시리즈는 그 영역 전체를 다섯 계층으로 나눠 다룬다.
+
+| 계층 | 명칭 | 핵심 |
+|------|------|------|
+| L1 | 프롬프트 엔지니어링 | 입력 설계 — zero-shot, few-shot, CoT, 시스템 프롬프트 |
+| L2 | 컨텍스트 엔지니어링 | 전체 컨텍스트 창 전략 — RAG, 메모리, context window 관리 |
+| L3 | 도구 통합 | 외부 도구 연결 — Function Calling, MCP, Structured Output |
+| L4 | 에이전트 오케스트레이션 | 시스템 수준 설계 — 프레임워크, 멀티 에이전트, 워크플로우 |
+| L5 | 하네스 엔지니어링 | 런타임 환경 — Skill/Plugin, Guardrails, 평가, 모니터링 |
+
+각 계층은 독립적으로 보이지만 연결되어 있다. L1을 잘 이해해야 L2가 왜 필요한지 직관이 생기고, L2를 이해해야 L3의 설계 결정이 자연스럽게 따라온다.
+
+<img src="/images/llm-eng/llm-eng-5layers.svg" alt="LLM 엔지니어링 5계층 프레임워크 스택 다이어그램" />
+
+1편은 L1, 프롬프트 엔지니어링이다.
+
+### 2020~2026 시간축 지형도
+
+| 연도 | 주요 전환점 | 계층 |
+|------|------------|------|
+| 2020 | GPT-3 in-context learning (Brown et al.) | L1 |
+| 2022 | Chain-of-Thought (Wei et al.), ChatGPT 출시, InstructGPT+RLHF, ReAct | L1 |
+| 2023 | Tree-of-Thought, RAG 폭발, GPT-4 Function Calling, DSPy | L1–L3 |
+| 2024 | 에이전트 프레임워크 부상, MCP 등장, 추론 모델(o1) | L3–L4 |
+| 2025 | 컨텍스트 엔지니어링 부상, DeepSeek R1, Extended Thinking, MCP 업계 표준화 | L2–L4 |
+| 2026 | 하네스 엔지니어링 부상, OpenAI 하네스 블로그, NLAH 논문 | L5 |
+
+<img src="/images/llm-eng/prompt-evolution-timeline.svg" alt="프롬프트 기법 진화 타임라인 2020-2026" />
+
+---
+
+## 기원: GPT-3와 In-Context Learning
+
+프롬프트 엔지니어링의 시작은 GPT-3가 공개된 2020년이다.
+
+Brown et al.(2020)의 "Language Models are Few-Shot Learners"는 단순한 기술 논문이 아니었다. 파라미터를 업데이트하지 않고 — 즉, 파인튜닝 없이 — 프롬프트 안의 예시만으로 모델이 새로운 태스크를 수행할 수 있음을 보였다. 이것이 <strong>in-context learning(문맥 내 학습)</strong>이다.
+
+당시 이 발견이 놀라웠던 이유는 기존 ML 패러다임을 뒤집었기 때문이다. "태스크를 가르치려면 데이터를 모아 파인튜닝해야 한다"는 것이 상식이었는데, 프롬프트 몇 줄로 그게 불필요해질 수 있다는 가능성이 생겼다.
+
+세 가지 기본 형태가 이때 등장했다.
+
+**Zero-shot**: 예시 없이 태스크 설명만으로 수행한다. "다음 텍스트를 긍정/부정으로 분류하라: ..." 형태다.
+
+**Few-shot**: 2~10개 예시를 프롬프트에 포함한다. 입력-출력 쌍을 보여주면 모델이 패턴을 파악한다.
+
+**Role prompting**: "당신은 X 전문가입니다" 형식으로 맥락을 설정한다.
+
+흥미로운 발견이 하나 있다. Min et al.(2022)은 few-shot 예시에서 **라벨의 정확도**보다 **입력 분포와 라벨 공간**이 더 중요하다는 것을 보였다. 예시의 답이 틀려도 입력 형식이 적절하면 성능이 유지됐다. 프롬프트가 "정답 전달"이 아니라 "문제 공간 정의"에 가깝다는 해석이다.
+
+---
+
+## 첫 번째 전환점: CoT, RLHF, ReAct (2022)
+
+2022년은 세 가지가 동시에 터진 해다. 각각이 독립적으로 중요했고, 조합이 프롬프트 엔지니어링의 성격을 바꿨다.
+
+### Chain-of-Thought — 답이 아니라 과정을 요청한다
+
+Wei et al.(2022)이 제안한 Chain-of-Thought(CoT, 연쇄 추론)는 단순하다. "단계별로 생각하라"고 요청하거나, 예시에 중간 추론 과정을 포함한다.
+
+효과는 극적이었다. 산술 추론, 상식 추론, 기호 추론 등에서 성능이 크게 향상됐다. 특히 작은 모델보다 큰 모델에서 더 강력하게 작동했다 — CoT가 모델의 잠재 능력을 끌어내는 기법임을 시사한다.
+
+왜 작동하는가에 대해서는 "LLM 해부학 3편"에서 다루므로 여기서는 생략한다. 실무에서 중요한 것은 **언제 CoT가 필요한가**다.
+
+CoT가 유효한 경우:
+- 여러 단계가 필요한 수학/논리 문제
+- 복잡한 분류 기준을 적용할 때
+- 에러 분석, 코드 리뷰 등 근거 제시가 중요한 경우
+
+CoT가 불필요하거나 역효과인 경우:
+- 단순 분류나 추출 태스크
+- 추론 모델(o1, DeepSeek R1, Extended Thinking)을 쓸 때 — 이 모델들은 내부적으로 CoT를 이미 수행한다. 외부에서 추가로 CoT를 유도하면 개선폭이 미미하고(2.9~3.1%) 응답 시간은 20~80% 늘어난다는 연구 결과가 있다 [T2: Meincke et al., 2025]
+
+### InstructGPT + RLHF — "좋은 프롬프트"의 전제가 달라졌다
+
+Ouyang et al.(2022)의 InstructGPT는 GPT-3의 기본 모델에 RLHF(Reinforcement Learning from Human Feedback, 인간 피드백 강화학습)를 적용했다. 결과가 놀라웠다. 1.3B 파라미터 InstructGPT가 175B GPT-3를 인간 평가자 기준으로 능가했다.
+
+이것이 프롬프트 엔지니어링에 갖는 함의는 단순하다. 프롬프트는 "모델 위에서" 작동한다. 모델이 instruction-following에 잘 정렬되어 있어야 프롬프트가 의도대로 작동한다. "좋은 프롬프트"는 "좋은 모델"을 전제한다.
+
+RLHF/DPO 내부 메커니즘은 "LLM 해부학 2편"을 참고하라.
+
+### ReAct — 추론과 행동의 결합
+
+Yao et al.(2022)의 ReAct(Reason+Act)는 LLM이 Thought → Action → Observation 사이클을 반복하며 문제를 푸는 방식이다. 위키피디아 검색 같은 외부 도구를 쓰면서 동시에 추론을 이어간다.
+
+ALFWorld 벤치마크에서 기존 RL 대비 34% 절대 성공률 향상을 기록했다.
+
+ReAct는 단순한 프롬프팅 기법이 아니다. "LLM이 도구를 쓴다"는 개념의 원형이다. L3(도구 통합), L4(에이전트 오케스트레이션)로 이어지는 흐름의 시작점이다. ReAct의 내부 메커니즘은 "LLM 해부학 8편"을 참고하라.
+
+ReAct 패턴이 실무에서 의미 있는 이유: 단순 프롬프트는 모델의 학습된 지식에 의존한다. ReAct는 모델이 "모르면 찾고, 찾은 걸 바탕으로 다시 생각한다"는 루프를 구성할 수 있게 한다. 이것이 2023년 이후 에이전트 폭발의 개념적 기반이다.
+
+---
+
+## 심화: 도구 통합과 프롬프트 자동화 (2023~2024)
+
+2023년은 프롬프트 엔지니어링이 "개인 기술"에서 "시스템 설계 문제"로 전환되기 시작한 시점이다.
+
+### Tree-of-Thought — CoT의 선형 구조를 넘어서
+
+Yao et al.(2023)의 Tree-of-Thought(ToT)는 CoT의 선형 추론을 트리 구조로 확장했다. 여러 추론 경로를 탐색하고 평가해 가장 유망한 방향을 선택한다.
+
+Game of 24(네 숫자로 24 만들기) 같은 탐색 문제에서 기존 CoT 대비 성능이 크게 향상됐다. ToT가 효과적인 맥락과 원리는 "LLM 해부학 3편"에서 다룬다.
+
+실무 관점에서 ToT는 특수 용도다. 복잡한 계획 수립, 코드 디버깅, 설계 결정처럼 여러 가능성을 탐색해야 할 때 유효하다. 일반적인 텍스트 생성이나 분류에는 과잉이다.
+
+### Function Calling — 프롬프트와 도구의 공식 결합
+
+OpenAI가 2023년 6월에 출시한 Function Calling은 ReAct의 아이디어를 API 수준에서 공식화했다. 모델이 자연어 대신 구조화된 형식으로 외부 도구를 호출한다.
+
+이것이 프롬프트 엔지니어링에 갖는 의미: 이제 프롬프트는 단순히 텍스트 출력을 제어하는 것이 아니라, 어떤 도구를 어떤 상황에서 호출할지 결정하는 **라우팅 로직**의 역할도 한다. 시스템 프롬프트에 도구 사용 지침이 포함되기 시작했다.
+
+### Meta-Prompting — LLM이 LLM을 조율한다
+
+Suzgun & Kalai(2024)의 Meta-Prompting은 단일 LLM을 "지휘자"로 설정하고, 같은 모델의 여러 인스턴스를 "전문가"로 동적으로 호출한다. 지휘자는 태스크를 분해하고, 각 전문가에게 위임하고, 결과를 통합한다.
+
+Python 인터프리터와 결합했을 때 표준 프롬프팅 대비 +17.1%의 성능 향상을 기록했다. 이 기법의 위치는 프롬프트 진화 서사에서 중간 지점이다. 수동 프롬프팅 → 추론 유도(CoT) → Meta-Prompting → 자동 최적화(DSPy) → 추론 모델 내재화.
+
+### DSPy — "프롬프팅이 아니라 프로그래밍"
+
+Stanford NLP의 DSPy는 프롬프트를 수작업으로 쓰는 대신, 프로그래밍 방식으로 정의하고 자동으로 최적화한다. MIPROv2, COPRO 같은 옵티마이저가 검증 세트 기준으로 프롬프트를 반복 개선한다.
+
+DSPy가 등장했다는 사실이 1편에서 갖는 의미는 하나다. "수동 프롬프팅의 한계가 분명해졌다"는 것이다. 파이프라인이 복잡해지면 각 단계의 프롬프트를 손으로 튜닝하는 것은 비효율적이 됐다. DSPy 자체는 2편(컨텍스트 엔지니어링)과 4편(에이전트 오케스트레이션)에서 더 자세히 다룬다.
+
+---
+
+## 현재: 추론 모델과 프롬프팅의 변화 (2025~2026)
+
+2025년 이후 프롬프트 엔지니어링 실무에서 가장 큰 변화는 **추론 모델**의 등장이다.
+
+### 추론 모델에서 달라지는 것
+
+o1, o3(OpenAI), DeepSeek R1, Claude Extended Thinking은 외부에서 CoT를 유도하지 않아도 된다. 내부적으로 강화학습(RL)으로 학습된 추론 과정을 거친다.
+
+이 모델들에게 프롬프트를 쓸 때 바뀌는 것들:
+
+**하지 않는 것들:**
+- "단계별로 생각하라" (이미 하고 있다)
+- 복잡한 CoT 예시 포함 (역효과 가능)
+- 과도하게 구체적인 추론 지침
+
+**여전히 중요한 것들:**
+- 태스크의 명확한 정의
+- 출력 형식 지정
+- 컨텍스트 제공 (도메인 지식, 제약 조건)
+
+단순 태스크에 추론 모델을 쓰는 것은 비용 낭비다. 복잡한 수학, 코딩, 다단계 분석에 쓰고, 단순 분류나 요약에는 일반 모델을 쓰는 것이 실무적 선택이다.
+
+### Structured Outputs — 출력 형식의 표준화
+
+JSON Schema 기반 구조화 출력이 현재는 범용 기능이 됐다. 프롬프트에 "JSON으로 답하라"고 지시하는 대신, 스키마를 직접 지정하면 모델이 그에 맞는 출력을 보장한다.
+
+실무에서 이것이 중요한 이유: LLM 출력을 파싱해서 다음 단계로 넘길 때 형식 오류가 파이프라인을 깨뜨리는 것이 가장 흔한 장애 원인 중 하나였다. Structured Outputs는 그 문제를 모델 수준에서 해결한다.
+
+---
+
+## 시스템 프롬프트 설계 — 실무 원칙
+
+단일 API 호출에서 복잡한 에이전트까지, 프롬프트 설계의 핵심은 시스템 프롬프트다. 지금까지 정리된 실무 원칙들을 정리한다.
+
+### 구조와 명확성
+
+**명확하고 직접적으로 서술한다.** Anthropic의 Claude Best Practices [T2]는 "골든 룰"을 제시한다. 컨텍스트 없는 동료가 이해할 수 있는 수준으로 쓰라는 것이다. 모호함은 모델이 스스로 해석하게 만들고, 그 해석이 의도와 다를 수 있다.
+
+**이유를 함께 설명한다.** 규칙만 제시하는 것보다 이유를 설명할 때 성능이 향상된다. "JSON으로 답하라"보다 "파싱 자동화를 위해 JSON으로 답하라"가 모델의 일관성을 높인다.
+
+**XML 태그로 구조화한다.** `<instructions>`, `<context>`, `<input>`, `<example>` 같은 태그는 시스템 프롬프트의 가독성과 모델 이해도를 모두 높인다.
+
+**Few-shot 예시는 3~5개가 최적이다.** 더 많아도 성능이 단조롭게 높아지지 않는다. 예시를 XML 태그(`<example>`)로 구분하면 모델이 예시와 실제 입력을 혼동하지 않는다.
+
+**긴 문서는 프롬프트 상단에 배치한다.** Long Context 환경에서 참조 문서를 프롬프트 상단에 놓으면 응답 품질이 최대 30% 향상된다는 결과가 있다 [T2: Anthropic Best Practices].
+
+**"하지 말 것"보다 "할 것"으로 지시한다.** 부정형 지시는 모델이 무엇을 해야 할지 불명확하게 만든다.
+
+### 우선순위 계층: Instruction Hierarchy
+
+멀티턴 대화나 에이전트 시스템에서는 충돌하는 지시가 생긴다. OpenAI의 Instruction Hierarchy는 이 우선순위를 명시한다.
+
+System(Developer) > User > Assistant
+
+Wallace et al.(2024) [T1]의 "The Instruction Hierarchy" 논문이 이 체계를 이론적으로 정립했다. 이 계층 구조를 학습한 모델은 prompt injection 공격에 대한 견고성이 크게 향상됐다. 실용적 함의는 단순하다. 시스템 프롬프트는 사용자가 바꿀 수 없어야 하는 규칙을 담는다. 사용자에게 덮어쓸 수 없는 절대 금지 사항이나 모델 정체성을 여기에 넣는다.
+
+GPT-4o 이후에는 System과 User 사이에 Developer Message라는 중간 신뢰 레이어가 추가됐다. 이는 애플리케이션 레이어가 사용자보다 높은 신뢰를 갖되 시스템 수준 규칙은 넘지 못하는 구조다.
+
+---
+
+## "프롬프트 엔지니어링은 죽었다" 논쟁
+
+2025년 Andrej Karpathy가 "context engineering"이라는 용어를 지지하며 촉발된 논쟁이다 [T3]. 이후 Anthropic, Google, Gartner 등이 공식적으로 이 용어를 채택하면서 "프롬프트 엔지니어링 vs. 컨텍스트 엔지니어링" 구도가 됐다.
+
+논쟁의 주요 논거들:
+
+**"프롬프트 엔지니어링은 낡았다" 진영:**
+- 추론 모델에서 CoT의 가치가 줄었다 (Meincke et al., 2025 [T2])
+- 중요한 것은 전체 컨텍스트 창 전략이지, 개별 프롬프트 기법이 아니다
+- Karpathy: "LLM은 CPU, 컨텍스트 창은 RAM, 엔지니어는 OS"
+
+**"프롬프트 엔지니어링은 여전히 핵심이다" 진영:**
+- 시스템 프롬프트 설계는 더 중요해졌다
+- Few-shot 예시, 역할 설정, 지시 명확성은 모든 모델에서 여전히 유효하다
+- 자동화(DSPy)조차 평가 기준이 되는 예시 프롬프트가 필요하다
+
+이 논쟁의 본질은 무엇인가.
+
+"죽었다"고 말하는 사람들은 **개인 기술로서의 프롬프트 작성**을 말하는 것이다. 특이한 표현 방식, 마법 같은 문구, 개인의 직관에 의존하는 프롬프팅 — 이것의 가치는 실제로 줄었다.
+
+"살아있다"고 말하는 사람들은 **시스템 설계의 일부로서의 프롬프트 엔지니어링**을 말하는 것이다. 시스템 프롬프트 설계, 에이전트 지시 체계, Instruction Hierarchy — 이것의 중요성은 오히려 높아졌다.
+
+요약하면: 추상화 수준이 올라갔다. 수동 CoT가 모델 내부로 내재화됐고, 개인 기술이 시스템 설계 역량으로 흡수됐다. 프롬프트는 사라지지 않았다. 더 큰 엔지니어링의 일부가 됐다.
+
+---
+
+## 1편 정리 — L1에서 L2로
+
+프롬프트 엔지니어링(L1)이 다루는 것:
+- 입력 형식 설계: zero-shot, few-shot, role prompting
+- 추론 유도: CoT, ToT (어떤 모델에 언제 쓸지)
+- 시스템 프롬프트 설계: 구조, 우선순위 계층, Instruction Hierarchy
+- 출력 형식 지정: Structured Outputs
+
+L1으로 해결하기 어려운 것:
+- 모델의 학습 데이터 날짜 이후 정보
+- 긴 문서를 컨텍스트로 활용할 때의 전략
+- 대화 히스토리 관리
+- 여러 소스에서 관련 정보를 선택적으로 주입하는 것
+
+이 한계를 다루는 것이 L2, 컨텍스트 엔지니어링이다. 2편에서는 RAG, 메모리, 컨텍스트 창 전략을 다룬다.
+
+---
+
+## 참고 자료
+
+- [T1] Brown et al. (2020). Language Models are Few-Shot Learners. [arXiv:2005.14165](https://arxiv.org/abs/2005.14165)
+- [T1] Min et al. (2022). Rethinking the Role of Demonstrations for Few-Shot Learning. [arXiv:2202.04824](https://arxiv.org/abs/2202.04824)
+- [T1] Wei et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. [arXiv:2201.11903](https://arxiv.org/abs/2201.11903)
+- [T1] Ouyang et al. (2022). Training language models to follow instructions with human feedback (InstructGPT). [arXiv:2203.02155](https://arxiv.org/abs/2203.02155)
+- [T1] Yao et al. (2022). ReAct: Synergizing Reasoning and Acting in Language Models. [arXiv:2210.03629](https://arxiv.org/abs/2210.03629)
+- [T1] Yao et al. (2023). Tree of Thoughts: Deliberate Problem Solving with Large Language Models. [arXiv:2305.10601](https://arxiv.org/abs/2305.10601)
+- [T1] Suzgun & Kalai (2024). Meta-Prompting: Enhancing Language Models with Task-Agnostic Scaffolding. [arXiv:2401.12954](https://arxiv.org/abs/2401.12954)
+- [T1] Wallace et al. (2024). The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions. [arXiv:2404.13208](https://arxiv.org/abs/2404.13208)
+- [T1] DeepSeek-AI (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948)
+- [T1] arXiv:2510.04618. Agentic Context Engineering (2025.10)
+- [T2] OpenAI, Function Calling API (2023)
+- [T2] Stanford NLP, DSPy GitHub
+- [T2] OpenAI o1 발표 (2024.09)
+- [T2] Anthropic, Extended Thinking 공식 문서
+- [T2] Anthropic, MCP 발표 (2024.11)
+- [T2] Anthropic, Claude 4 Best Practices — [platform.claude.com](https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
+- [T2] OpenAI, Prompt Engineering Guide — [platform.openai.com](https://platform.openai.com/docs/guides/prompt-engineering)
+- [T2] OpenAI Model Spec (2025.12.18)
+- [T2] Meincke et al. (2025). Chain-of-Thought Prompting in Reasoning Models. SSRN — [papers.ssrn.com](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5285532)
+- [T2] Anthropic 엔지니어링 블로그 (2025.09) — [anthropic.com/engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [T2] Gartner (2025.07). "Context engineering is in, and prompt engineering is out"
+- [T3] Karpathy, X 포스트 (2025.06) — "context engineering" 지지
+
+> **출처 티어**: [T1] 동료 심사 논문 또는 공식 기술 보고서 — 높은 신뢰도. [T2] 공신력 있는 기관의 공식 문서/블로그 — 중간-높은 신뢰도. [T3] 개인 소셜 미디어 등 — 방향성 참고용, 독립 검증 필요.

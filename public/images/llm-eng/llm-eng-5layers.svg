@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 460" fill="none">
+  <!-- Background transparent -->
+
+  <!-- Title -->
+  <text x="350" y="32" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#374151" font-weight="bold">LLM 엔지니어링 5계층 프레임워크</text>
+
+  <!-- L5: 하네스 엔지니어링 (top, widest, darkest) -->
+  <rect x="40" y="55" width="620" height="62" rx="8" fill="#1E40AF" stroke="#1E3A8A" stroke-width="1.5"/>
+  <text x="90" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#BFDBFE" font-weight="bold">L5</text>
+  <text x="115" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#ffffff" font-weight="bold">하네스 엔지니어링</text>
+  <text x="115" y="100" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#BFDBFE">런타임 환경 — Skill/Plugin, Guardrails, 평가, 모니터링</text>
+
+  <!-- L4: 에이전트 오케스트레이션 -->
+  <rect x="65" y="132" width="570" height="62" rx="8" fill="#2563EB" stroke="#1E40AF" stroke-width="1.5"/>
+  <text x="115" y="157" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#BFDBFE" font-weight="bold">L4</text>
+  <text x="140" y="157" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#ffffff" font-weight="bold">에이전트 오케스트레이션</text>
+  <text x="140" y="177" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#BFDBFE">시스템 수준 설계 — 프레임워크, 멀티 에이전트, 워크플로우</text>
+
+  <!-- L3: 도구 통합 -->
+  <rect x="95" y="209" width="510" height="62" rx="8" fill="#3B82F6" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="145" y="234" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#DBEAFE" font-weight="bold">L3</text>
+  <text x="170" y="234" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#ffffff" font-weight="bold">도구 통합</text>
+  <text x="170" y="254" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#DBEAFE">외부 도구 연결 — Function Calling, MCP, Structured Output</text>
+
+  <!-- L2: 컨텍스트 엔지니어링 -->
+  <rect x="125" y="286" width="450" height="62" rx="8" fill="#60A5FA" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="175" y="311" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E3A8A" font-weight="bold">L2</text>
+  <text x="200" y="311" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E3A8A" font-weight="bold">컨텍스트 엔지니어링</text>
+  <text x="200" y="331" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E3A8A">전체 컨텍스트 창 전략 — RAG, 메모리, context window 관리</text>
+
+  <!-- L1: 프롬프트 엔지니어링 (bottom, narrowest, lightest) -->
+  <rect x="160" y="363" width="380" height="62" rx="8" fill="#DBEAFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="210" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E40AF" font-weight="bold">L1</text>
+  <text x="235" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E40AF" font-weight="bold">프롬프트 엔지니어링</text>
+  <text x="235" y="408" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151">입력 설계 — zero-shot, few-shot, CoT, 시스템 프롬프트</text>
+
+  <!-- Bottom label -->
+  <text x="350" y="448" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#9CA3AF">아래 계층을 이해해야 위 계층의 설계 결정이 자연스럽게 따라온다</text>
+</svg>

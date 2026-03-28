@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" fill="none">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8B5CF6"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="360" y="30" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#374151" font-weight="bold">도구 통합 생태계 — MCP vs A2A 관계</text>
+
+  <!-- Center: LLM 에이전트 -->
+  <rect x="280" y="210" width="160" height="70" rx="10" fill="#1E40AF" stroke="#1E3A8A" stroke-width="1.5"/>
+  <text x="360" y="241" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#ffffff" font-weight="bold">LLM 에이전트</text>
+  <text x="360" y="261" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#BFDBFE">Function Calling</text>
+  <text x="360" y="275" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#BFDBFE">/ MCP Client</text>
+
+  <!-- MCP 수직 축 레이블 -->
+  <text x="360" y="70" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#3B82F6" font-weight="bold">MCP (Model Context Protocol)</text>
+  <text x="360" y="86" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">에이전트 ↔ 도구 (수직 통신)</text>
+
+  <!-- A2A 수평 축 레이블 -->
+  <text x="360" y="430" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#8B5CF6" font-weight="bold">A2A (Agent-to-Agent Protocol)</text>
+  <text x="360" y="446" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">에이전트 ↔ 에이전트 (수평 통신)</text>
+
+  <!-- MCP 위쪽 도구들 -->
+  <!-- DB -->
+  <rect x="100" y="100" width="110" height="48" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.3"/>
+  <text x="155" y="121" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E40AF" font-weight="bold">데이터베이스</text>
+  <text x="155" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">PostgreSQL, Redis</text>
+
+  <!-- API -->
+  <rect x="305" y="100" width="110" height="48" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.3"/>
+  <text x="360" y="121" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E40AF" font-weight="bold">외부 API</text>
+  <text x="360" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">Slack, GitHub, Web</text>
+
+  <!-- 파일시스템 -->
+  <rect x="510" y="100" width="110" height="48" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.3"/>
+  <text x="565" y="121" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E40AF" font-weight="bold">파일시스템</text>
+  <text x="565" y="138" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">로컬 / 클라우드</text>
+
+  <!-- MCP 화살표: 에이전트 → DB -->
+  <line x1="295" y1="230" x2="210" y2="155" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+  <!-- MCP 화살표: DB → 에이전트 -->
+  <line x1="205" y1="160" x2="290" y2="228" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+
+  <!-- MCP 화살표: 에이전트 ↕ API -->
+  <line x1="355" y1="210" x2="355" y2="153" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+  <line x1="365" y1="148" x2="365" y2="210" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+
+  <!-- MCP 화살표: 에이전트 → 파일시스템 -->
+  <line x1="425" y1="230" x2="515" y2="155" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+  <line x1="510" y1="160" x2="430" y2="228" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+
+  <!-- MCP Server 레이블 박스들 위 -->
+  <rect x="94" y="93" width="122" height="62" rx="8" fill="none" stroke="#DBEAFE" stroke-width="1"/>
+  <rect x="299" y="93" width="122" height="62" rx="8" fill="none" stroke="#DBEAFE" stroke-width="1"/>
+  <rect x="504" y="93" width="122" height="62" rx="8" fill="none" stroke="#DBEAFE" stroke-width="1"/>
+
+  <!-- MCP badge -->
+  <rect x="118" y="94" width="74" height="16" rx="4" fill="#DBEAFE"/>
+  <text x="155" y="106" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">MCP Server</text>
+  <rect x="323" y="94" width="74" height="16" rx="4" fill="#DBEAFE"/>
+  <text x="360" y="106" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">MCP Server</text>
+  <rect x="528" y="94" width="74" height="16" rx="4" fill="#DBEAFE"/>
+  <text x="565" y="106" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1E40AF" font-weight="bold">MCP Server</text>
+
+  <!-- A2A 수평 축: 다른 에이전트들 -->
+  <!-- 왼쪽 에이전트 -->
+  <rect x="60" y="325" width="140" height="60" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.3"/>
+  <text x="130" y="349" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" font-weight="bold">전문 에이전트 A</text>
+  <text x="130" y="366" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED">검색 / 분석</text>
+  <text x="130" y="379" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#8B5CF6">Agent Card</text>
+
+  <!-- 오른쪽 에이전트 -->
+  <rect x="520" y="325" width="140" height="60" rx="10" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.3"/>
+  <text x="590" y="349" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" font-weight="bold">전문 에이전트 B</text>
+  <text x="590" y="366" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED">코드 실행 / 생성</text>
+  <text x="590" y="379" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#8B5CF6">Agent Card</text>
+
+  <!-- A2A 화살표: 중앙 에이전트 ↔ 왼쪽 -->
+  <line x1="280" y1="258" x2="200" y2="335" stroke="#8B5CF6" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+  <line x1="197" y1="338" x2="278" y2="262" stroke="#8B5CF6" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+
+  <!-- A2A 화살표: 중앙 에이전트 ↔ 오른쪽 -->
+  <line x1="440" y1="258" x2="520" y2="335" stroke="#8B5CF6" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+  <line x1="523" y1="338" x2="442" y2="262" stroke="#8B5CF6" stroke-width="1.3" marker-end="url(#arrow-purple)"/>
+
+  <!-- A2A 화살표: 에이전트 A ↔ 에이전트 B (수평) -->
+  <line x1="200" y1="355" x2="520" y2="355" stroke="#8B5CF6" stroke-width="1.2" stroke-dasharray="6,3" marker-end="url(#arrow-purple)"/>
+
+  <!-- Function Calling 레이블 (MCP 이전) -->
+  <rect x="44" y="200" width="120" height="38" rx="7" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.2"/>
+  <text x="104" y="217" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" font-weight="bold">Function Calling</text>
+  <text x="104" y="230" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280">MCP 이전 방식</text>
+  <!-- 화살표: FC → 에이전트 -->
+  <line x1="164" y1="219" x2="278" y2="242" stroke="#9CA3AF" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+
+  <!-- HTTPS+JSON-RPC 레이블 -->
+  <rect x="556" y="200" width="120" height="38" rx="7" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="616" y="217" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#5B21B6" font-weight="bold">A2A 전송</text>
+  <text x="616" y="230" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#8B5CF6">HTTPS + JSON-RPC 2.0</text>
+
+  <!-- 수직 구분선 (참고용 희미하게) -->
+  <line x1="360" y1="92" x2="360" y2="205" stroke="#BFDBFE" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="360" y1="285" x2="360" y2="390" stroke="#DDD6FE" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- 범례 -->
+  <rect x="44" y="463" width="632" height="44" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="64" y1="485" x2="94" y2="485" stroke="#3B82F6" stroke-width="1.3" stroke-dasharray="5,3"/>
+  <text x="100" y="489" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">MCP (에이전트↔도구)</text>
+  <line x1="234" y1="485" x2="264" y2="485" stroke="#8B5CF6" stroke-width="1.3" stroke-dasharray="5,3"/>
+  <text x="270" y="489" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151">A2A (에이전트↔에이전트)</text>
+  <text x="470" y="489" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280">MCP = 수직 통합 / A2A = 수평 통합 (보완 관계)</text>
+</svg>

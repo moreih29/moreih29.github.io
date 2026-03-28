@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 480" fill="none">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#1E40AF" text-anchor="middle">RAG 4단계 진화</text>
+
+  <!-- Stage 1: Naive RAG -->
+  <g transform="translate(20, 55)">
+    <rect x="0" y="0" width="158" height="175" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <rect x="12" y="12" width="134" height="28" rx="6" fill="#3B82F6"/>
+    <text x="79" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">1단계</text>
+    <text x="79" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF" text-anchor="middle">Naive RAG</text>
+    <text x="79" y="76" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">2020~2022</text>
+
+    <rect x="15" y="90" width="128" height="35" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="79" y="113" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">쿼리 → 벡터 검색 → 생성</text>
+
+    <text x="79" y="148" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">단순 코사인 유사도</text>
+    <text x="79" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">낮은 정밀도/재현율</text>
+  </g>
+
+  <!-- Arrow 1->2 -->
+  <path d="M190 143 L215 143" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="202" y="133" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">진화</text>
+
+  <!-- Stage 2: Advanced RAG -->
+  <g transform="translate(223, 55)">
+    <rect x="0" y="0" width="158" height="175" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+    <rect x="12" y="12" width="134" height="28" rx="6" fill="#2563EB"/>
+    <text x="79" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">2단계</text>
+    <text x="79" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#1E40AF" text-anchor="middle">Advanced RAG</text>
+    <text x="79" y="76" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">2023~2024</text>
+
+    <rect x="15" y="90" width="128" height="35" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.2"/>
+    <text x="79" y="108" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">쿼리 최적화 + Reranking</text>
+    <text x="79" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">+ Hybrid Search</text>
+
+    <text x="79" y="148" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">HyDE, Query Rewriting</text>
+    <text x="79" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">검색 전후 최적화 단계 추가</text>
+  </g>
+
+  <!-- Arrow 2->3 -->
+  <path d="M393 143 L418 143" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="405" y="133" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">진화</text>
+
+  <!-- Stage 3: Modular RAG -->
+  <g transform="translate(426, 55)">
+    <rect x="0" y="0" width="158" height="175" rx="10" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+    <rect x="12" y="12" width="134" height="28" rx="6" fill="#10B981"/>
+    <text x="79" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">3단계</text>
+    <text x="79" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#065F46" text-anchor="middle">Modular RAG</text>
+    <text x="79" y="76" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">2024</text>
+
+    <rect x="15" y="90" width="128" height="35" rx="6" fill="white" stroke="#6EE7B7" stroke-width="1.2"/>
+    <text x="79" y="108" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">모듈 교체 가능 설계</text>
+    <text x="79" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">에이전트 오케스트레이션</text>
+
+    <text x="79" y="148" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">Retriever / Generator</text>
+    <text x="79" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">독립 모듈로 분리</text>
+  </g>
+
+  <!-- Arrow 3->4 -->
+  <path d="M596 143 L621 143" stroke="#374151" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="608" y="133" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#6B7280" text-anchor="middle">진화</text>
+
+  <!-- Stage 4: Agentic RAG -->
+  <g transform="translate(629, 55)">
+    <rect x="0" y="0" width="111" height="175" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+    <rect x="8" y="12" width="95" height="28" rx="6" fill="#F59E0B"/>
+    <text x="55.5" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">4단계</text>
+    <text x="55.5" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="bold" fill="#92400E" text-anchor="middle">Agentic RAG</text>
+    <text x="55.5" y="76" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">2025~</text>
+
+    <rect x="8" y="90" width="95" height="35" rx="6" fill="white" stroke="#FCD34D" stroke-width="1.2"/>
+    <text x="55.5" y="108" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">에이전트 주도</text>
+    <text x="55.5" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">동적 검색 제어</text>
+
+    <text x="55.5" y="148" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">자기 반성 + RL</text>
+    <text x="55.5" y="163" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">멀티 에이전트 협업</text>
+  </g>
+
+  <!-- Bottom: Key improvements timeline -->
+  <rect x="20" y="262" width="720" height="190" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/>
+  <text x="380" y="286" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#374151" text-anchor="middle">단계별 핵심 개선 포인트</text>
+
+  <!-- Row headers -->
+  <text x="55" y="316" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#6B7280" text-anchor="middle">단계</text>
+  <text x="200" y="316" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#6B7280" text-anchor="middle">주요 기술</text>
+  <text x="420" y="316" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#6B7280" text-anchor="middle">해결한 문제</text>
+  <text x="635" y="316" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" fill="#6B7280" text-anchor="middle">한계</text>
+  <line x1="30" y1="322" x2="730" y2="322" stroke="#CBD5E1" stroke-width="1"/>
+
+  <!-- Row 1 -->
+  <text x="55" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#3B82F6" text-anchor="middle" font-weight="600">Naive</text>
+  <text x="200" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">임베딩 + 벡터 DB + 코사인 유사도</text>
+  <text x="420" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">외부 지식 주입 기본 구조 확립</text>
+  <text x="635" y="342" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">어휘 불일치, 문맥 손실</text>
+
+  <!-- Row 2 -->
+  <text x="55" y="368" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#2563EB" text-anchor="middle" font-weight="600">Advanced</text>
+  <text x="200" y="368" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">HyDE, Hybrid Search, Reranking</text>
+  <text x="420" y="368" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">검색 실패율 49~67% 감소 (Anthropic)</text>
+  <text x="635" y="368" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">파이프라인 경직</text>
+
+  <!-- Row 3 -->
+  <text x="55" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#10B981" text-anchor="middle" font-weight="600">Modular</text>
+  <text x="200" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Retriever / Generator 독립 모듈화</text>
+  <text x="420" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">태스크별 최적 전략 선택 가능</text>
+  <text x="635" y="394" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">검색 여부 판단 하드코딩</text>
+
+  <!-- Row 4 -->
+  <text x="55" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#F59E0B" text-anchor="middle" font-weight="600">Agentic</text>
+  <text x="200" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">RL 기반 검색 정책, MCTS, 자기 반성</text>
+  <text x="420" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">동적 검색 결정, 복잡 쿼리 자동 분해</text>
+  <text x="635" y="420" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">높은 복잡도, 지연</text>
+</svg>

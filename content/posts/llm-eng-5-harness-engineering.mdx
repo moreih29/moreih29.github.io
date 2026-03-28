@@ -1,0 +1,212 @@
+---
+title: "하네스 엔지니어링 — LLM에 고삐를 채우다"
+slug: llm-eng-5-harness-engineering
+date: 2026-03-27
+description: "Skill/Plugin, Guardrails, 평가 시스템, 런타임 제어까지 — LLM의 행동을 결정론적으로 만드는 하네스 엔지니어링의 모든 것을 정리합니다."
+tags: ["llm", "ai", "harness-engineering", "guardrails", "skills", "evaluation", "runtime"]
+published: true
+series: "LLM 엔지니어링"
+seriesOrder: 5
+category: "AI"
+---
+
+"에이전트를 만들었는데 뭘 할지 모르겠다"는 말이 한동안 유행했다. 모델은 강력해졌고, 도구 연결도 어렵지 않아졌는데, 막상 프로덕션에 올리면 예측 불가능했다. 같은 프롬프트에 다른 답을 하고, 쓰면 안 되는 도구를 쓰고, 루프에 빠졌다.
+
+문제는 모델이 아니었다. 모델을 **감싸는 시스템**이 없었다.
+
+하네스 엔지니어링(harness engineering)은 그 시스템을 만드는 일이다. 비결정론적인 LLM을, 결정론적으로 행동하는 에이전트로 바꾸는 오케스트레이션 인프라 전체가 하네스다.
+
+---
+
+## 이 시리즈의 마지막 계층
+
+1편부터 여기까지 흐름을 짧게 복기하면 이렇다.
+
+**L1 — 프롬프트 엔지니어링**: 모델에게 무엇을 물을 것인가. Zero-shot, few-shot, CoT, 시스템 프롬프트 설계.
+
+**L2 — 컨텍스트 엔지니어링**: 모델에게 무엇을 보낼 것인가. RAG, 메모리, 컨텍스트 창 전략.
+
+**L3 — 도구 통합**: 모델이 외부와 어떻게 연결할 것인가. Function Calling, MCP, Structured Output.
+
+**L4 — 에이전트 오케스트레이션**: 여러 에이전트를 어떻게 조율할 것인가. 프레임워크, 멀티 에이전트, 워크플로우.
+
+**L5 — 하네스 엔지니어링**: 이 전체 시스템이 어떻게 작동할 것인가. Skill/Plugin, Guardrails, 평가, 런타임 제어.
+
+L5는 아래 계층을 감싸는 껍데기가 아니다. **에이전트 시스템 전체의 신뢰성을 책임지는 계층**이다.
+
+---
+
+## 기원: 왜 "하네스"인가
+
+하네스(harness)는 두 가지 이미지를 동시에 갖는다. 소프트웨어 테스팅의 "test harness" — 코드를 제어된 환경에서 실행하기 위한 인프라. 그리고 말(馬)에 채우는 마구(馬具) — 강력한 동물을 방향을 잃지 않게 하는 장치.
+
+둘 다 LLM에 정확히 맞는 비유다.
+
+용어의 출처를 보면 수렴 과정이 흥미롭다. 2025년 말 Ghostty 창업자 Mitchell Hashimoto가 실무 커뮤니티에서 처음 사용했다 [T3]. 2026년 2월 OpenAI가 공식 블로그에서 "하네스 엔지니어링: 에이전트 우선 세계에서 Codex 활용하기"를 발표하면서 용어가 확산됐다 [T2]. 같은 달 Martin Fowler는 "AI 에이전트를 제어하고 신뢰할 수 있도록 하는 도구와 관행"으로 정의했다 [T2]. 2026년 3월에는 arXiv에 "Natural-Language Agent Harnesses(NLAH)"라는 학술 논문이 나왔다 [T1].
+
+2025년 말에서 2026년 3월 사이, 실무 커뮤니티에서 학계까지 6개월 안에 수렴한 용어다.
+
+> **투명 표기**: 2025년 말부터 실무 커뮤니티에서 사용되기 시작한 용어로, 2026년 3월 기준 완전히 정립된 것은 아니다. OpenAI·Martin Fowler 등이 공식 채택하면서 수렴 중이다.
+
+---
+
+## 전환점: OpenAI의 100만 줄 실험
+
+하네스 엔지니어링이 왜 지금인가를 보여주는 사례가 있다.
+
+OpenAI 엔지니어링 팀은 3명의 엔지니어가 5개월 동안 100만 줄의 코드베이스를 운영했다. 수동 코드 한 줄 없이. ~1,500 PR, 1인당 하루 3.5 PR [T2].
+
+어떻게 가능했는가. 모델이 좋아서가 아니었다. 하네스가 있어서였다.
+
+그들이 구성한 하네스는 세 층으로 나뉜다.
+
+**컨텍스트 엔지니어링**: 코드베이스 지식 기반 + 관찰성 데이터와 브라우저 등 동적 컨텍스트. 에이전트가 항상 필요한 정보를 볼 수 있게 했다.
+
+**아키텍처 제약**: LLM 에이전트와 결정론적 린터와 구조적 테스트의 조합. 아키텍처는 Types → Config → Repo → Service → Runtime → UI 순서로, 역방향 의존은 린터가 자동으로 막는다.
+
+**엔트로피 관리**: "Garbage Collection"이라 부른 정기적 에이전트. 문서 불일치, 아키텍처 위반을 찾아 제거한다. 에이전트가 오래 작동하면 코드베이스가 조금씩 어긋나는데, 이를 주기적으로 교정하는 장치다.
+
+여기서 핵심을 하나 짚어야 한다. 이 팀에게 린터와 테스트는 "코드 품질 도구"가 아니었다. **에이전트 행동을 제약하는 하네스의 일부**였다. 결정론적 도구로 비결정론적 에이전트를 감싼 것이다.
+
+---
+
+## 하네스 엔지니어링의 네 기둥
+
+![하네스 엔지니어링 4기둥 블록 다이어그램](/images/llm-eng/harness-4pillars.svg)
+
+### 1. Skill/Plugin — 에이전트의 능력 경계를 정의한다
+
+에이전트가 무엇을 할 수 있는지를 정의하는 것이 Skill/Plugin 시스템이다.
+
+역사는 ChatGPT Plugins(2023.03)에서 시작됐다. LLM이 외부 서비스를 직접 호출하는 첫 공식 메커니즘이었다. 그러나 2024년 3월 공식 종료됐다. 보안 문제, 개발 복잡성, 사용성 한계가 이유였다. Custom GPTs와 GPT Actions가 그 자리를 대체했다. GPT Actions는 자연어 → JSON Schema → RESTful API 자동 변환으로 단순화했다 [T2].
+
+2026년 현재 가장 주목할 것은 Claude Skills다. SKILL.md 파일 기반으로, YAML frontmatter에 트리거 조건을 정의하고 Markdown으로 지시문을 쓴다. 설계의 핵심은 3단계 점진적 로딩이다. 메타데이터만 로드(~100 tokens) → 매칭 시 전체 지시 로드(~5k tokens) → 필요 시 번들 리소스 로드. 컨텍스트를 낭비하지 않는다 [T2]. 오픈 표준으로 공개되어 Cursor, VS Code Copilot, Gemini CLI, OpenAI Codex 등 30개 이상의 도구가 채택했다.
+
+OpenAI Responses API(2025)는 다른 방향으로 단순화했다. 웹 검색, 파일 검색, 코드 실행, Computer Use, 원격 MCP 같은 도구를 단일 API에서 멀티턴으로 호출한다. 연결 설정 없이 내장 도구를 바로 쓴다.
+
+**실무에서 중요한 것**: Skill/Plugin은 "에이전트가 할 수 있는 것"을 정의하는 동시에 "에이전트가 할 수 없는 것"을 경계 짓는다. 도구 목록이 길수록 좋은 것이 아니다. 태스크에 필요한 최소한의 능력 집합을 명확히 정의하는 것이 하네스 설계의 첫 번째 원칙이다.
+
+### 2. Guardrails — 에이전트의 행동 범위를 실시간으로 제한한다
+
+Guardrails(가드레일)는 에이전트의 입력과 출력을 검증하고 필터링하는 레이어다. 시스템 프롬프트에 "이것은 하지 마라"고 쓰는 것은 Guardrails가 아니다. **실행 경로에서 직접 개입하는 구조적 제약**이다.
+
+NVIDIA NeMo Guardrails(2023)가 이 개념을 정립했다. Colang DSL로 정책을 정의하고, 5단계 파이프라인에서 개입한다. EMNLP 2023에 논문이 게재됐고 [T1], GPU 가속으로 서브 100ms 응답을 구현했다. Guardrails AI는 오픈소스 프로그래매틱 검증으로 다른 방향을 잡았다. 유효하지 않은 출력을 감지하면 자동으로 수정하거나 재프롬프팅한다.
+
+Guardrails 유형을 네 가지로 정리하면 이렇다 [T2]:
+
+| 유형 | 역할 |
+|------|------|
+| Input validation | 사용자 입력 전 검증, 프롬프트 인젝션 차단 |
+| Output filtering | 모델 응답 후 검증, 유해 콘텐츠/민감정보 제거 |
+| Topic restriction | 특정 주제 외 대화 차단 |
+| Hallucination detection | 사실 불일치 감지, 재프롬프팅 |
+
+언제 어떤 Guardrails를 쓸 것인가. 이것이 실무에서 가장 중요한 판단이다.
+
+**고객 대면 서비스**: Output filtering + Topic restriction 우선. 사용자가 보는 것을 통제하는 것이 핵심이다. 지연 시간 허용치는 300~500ms 정도다.
+
+**내부 코딩 에이전트**: Guardrails를 최소화한다. OpenAI 팀의 사례처럼 린터·테스트·아키텍처 제약이 실질적인 Guardrails 역할을 한다. LLM 기반 검증을 추가하면 오히려 속도만 느려진다.
+
+**규제 산업**: 모든 계층 + 리스크 기반 라우팅. 특정 요청을 고위험으로 분류하면 더 강한 검증 경로로 보낸다.
+
+성능 오버헤드는 구현 방식에 따라 차이가 크다. 패턴 매칭은 1ms 이하, LLM 기반 검증은 50~200ms, LlamaGuard는 100~300ms, 전체 파이프라인은 일반적으로 100~500ms가 추가된다 [T2]. Guardrails는 공짜가 아니다. 필요한 곳에 필요한 수준만 적용해야 한다.
+
+### 3. 평가 시스템 — "잘 되고 있는가"를 측정하는 인프라
+
+에이전트가 잘 작동하는지 어떻게 아는가. 인간이 모든 출력을 검토할 수 없다. 그래서 평가 시스템이 필요하다.
+
+주요 프레임워크 세 가지:
+
+**DeepEval**: Pytest 스타일의 평가 프레임워크. 14개 이상의 메트릭을 제공한다. 기존 테스트 코드와 통합하기 쉬운 것이 장점이다.
+
+**LangSmith**: LangChain 생태계의 관찰성 플랫폼. 에이전트의 모든 호출을 로깅하고 분석한다. A/B 테스트, 프롬프트 버전 관리와 통합된다.
+
+**OpenAI Evals**: 평가 데이터셋 관리와 실행 자동화. 모델 업그레이드 시 회귀 테스트에 특히 유용하다.
+
+**LLM-as-a-Judge**: 평가 자체를 LLM에게 맡기는 방식이다. 인간 리뷰 대비 500배~5,000배 비용이 절감된다. 인간 선호도와 80% 수준의 일치를 보인다 [T3, 교차검증 권장]. 다만 평가자 LLM 자체의 편향이 들어가는 문제가 있다. 중요한 판단에는 인간 검토와 병행하는 것이 실무 원칙이다.
+
+평가 시스템에서 최근 가장 중요해진 개념은 **추적 가능성**이다. 평가 점수 하락이 발생했을 때, 프롬프트 버전이 바뀐 것인지, 모델이 바뀐 것인지, 데이터 분포가 달라진 것인지를 추적할 수 있어야 한다. 평가 점수를 프롬프트/모델/데이터셋 버전과 연결하는 것이 현재의 표준 접근이다.
+
+에이전트 특화 메트릭도 기존 텍스트 생성 메트릭과 다르다. 태스크 완수율, 도구 호출 정확도, MCP 상호작용 품질 같은 것들이 중요해졌다. "답변이 좋다"가 아니라 "에이전트가 목표를 달성했는가"가 핵심 측정 지점이다.
+
+### 4. 런타임 제어 — 실행 중인 에이전트를 관리한다
+
+에이전트가 실행 중에 무슨 일이 생기는가. 실패, 루프, 예외, 장시간 작업. 이것을 다루는 것이 런타임 제어다.
+
+**LangGraph v1.0**(2025.09)는 상태 머신 기반 워크플로우를 제공한다. 핵심은 영구적 상태 지속성과 중단-재개 기능이다. 에이전트가 중간에 멈춰도 상태를 복구할 수 있다. v1.1(2025.12)에는 지수 백오프 재시도와 콘텐츠 모더레이션 미들웨어가 추가됐다 [T2].
+
+**Temporal**은 다른 철학으로 접근한다. 결정론적 워크플로우 코드와 비결정론적 LLM 결과를 명시적으로 분리한다. 어떤 단계가 실패했는지, 어디서 재시작해야 하는지를 시스템이 보장한다. 복잡한 비즈니스 워크플로우에 에이전트를 끼워넣을 때 적합하다.
+
+Anthropic이 공개한 장기 에이전트 하네스 패턴 [T2]도 참고할 만하다. 2단계 구조다. 초기화 에이전트가 init.sh를 실행하고 claude-progress.txt와 JSON 기능 목록을 준비한다. 그러면 코딩 에이전트가 한 번에 기능 하나씩 처리한다. 기능 단위로 나누는 것이 상태 관리와 실패 복구를 단순하게 만든다.
+
+---
+
+## 하네스가 성능에 미치는 영향 — 모델보다 하네스
+
+LangChain의 Terminal Bench 2.0 결과가 하네스의 효과를 가장 직접적으로 보여준다 [T2].
+
+deepagents-cli 팀은 모델을 고정(gpt-5.2-codex)하고 하네스만 바꿨다. system prompt, tools, middleware 세 가지를 변경했다. 결과: 52.8%에서 66.5%로 +13.7포인트.
+
+어떤 기법이 작동했는가. reasoning sandwich(입력-추론-출력 구조화), LocalContextMiddleware(로컬 파일 컨텍스트 자동 주입), PreCompletionChecklistMiddleware(출력 전 체크리스트 검증), LoopDetectionMiddleware(반복 감지 및 중단). 모두 하네스 수준의 개입이다.
+
+Windsurf(Cognition AI 제품)의 SWE-1.5는 더 나아갔다 [T2]. 모델을 하네스를 위해 훈련했다. Cascade 하네스 위에서 강화학습을 적용했다. "모델을 단독으로 훈련하는 것이 아니라 완전한 에이전트를 구축한다"는 철학이다. Cerebras 협력으로 최대 950 tok/s, Claude Haiku 4.5 대비 6배 빠른 처리 속도를 달성했다.
+
+함의는 단순하다. **하네스는 모델 성능을 그대로 가져오지 않는다. 하네스가 모델 성능을 만든다.**
+
+---
+
+## Fine-tuning vs. 하네스 — 결정 가이드
+
+시리즈를 마무리하는 자리에서 가장 자주 받는 질문에 답한다. "파인튜닝은 언제 하는가?"
+
+먼저 핵심 구분. RAG는 "모델이 지금 볼 수 있는 것"을 변경한다. Fine-tuning은 "모델이 매번 행동하는 방식"을 변경한다. 둘은 목적 자체가 다른 아키텍처 방법이다.
+
+결정 순서를 단순하게 정리하면:
+
+**1단계 — 프롬프트 엔지니어링으로 시작한다.** 수 시간에서 수 일이면 충분하다. 많은 경우 여기서 끝난다.
+
+**2단계 — 실시간 데이터나 조직 지식이 필요하면 RAG다.** 월 $70~1,000 수준의 비용으로 운영할 수 있다. 모델 재훈련 없이 지식을 업데이트한다.
+
+**3단계 — 깊은 전문화나 엄격한 정책 준수가 필요하면 Fine-tuning이다.** 수개월의 시간과 추론 비용 6배 증가를 감수할 이유가 있는가를 먼저 묻는다.
+
+하네스는 이 결정과 직교한다. 어떤 단계를 선택하든 하네스는 필요하다. Fine-tuning을 했다고 하네스가 필요 없어지지 않는다. 파인튜닝된 모델도 Guardrails, 평가, 런타임 제어 없이는 프로덕션에서 예측 불가능하게 행동한다.
+
+LoRA/양자화 같은 효율적 파인튜닝 원리는 "LLM 해부학 5편"을, RLHF/DPO 메커니즘은 "LLM 해부학 2편"을 참고하라.
+
+---
+
+## 시리즈 전체 서사를 마무리하며
+
+![프롬프트→컨텍스트→하네스 3단계 진화](/images/llm-eng/engineering-evolution.svg)
+
+5편에 걸쳐 LLM 엔지니어링의 계층을 다뤘다.
+
+2022년의 핵심 질문은 "어떻게 물을 것인가"였다. 프롬프트가 전부였다. 좋은 프롬프트는 좋은 답을 냈고, 나쁜 프롬프트는 나쁜 답을 냈다.
+
+2025년 질문이 바뀌었다. "무엇을 보낼 것인가." 컨텍스트 창 전체를 설계하는 일이 됐다. 어떤 메모리를, 어떤 문서를, 어떤 형태로 주입할 것인가.
+
+2026년 질문은 다시 확장됐다. "전체 시스템이 어떻게 작동할 것인가." 하네스가 그 질문에 답하는 계층이다.
+
+이 세 질문은 서로를 대체하지 않는다. 쌓인다. 좋은 프롬프트 없는 좋은 컨텍스트 설계는 없다. 좋은 컨텍스트 없는 좋은 에이전트는 없다. 그리고 좋은 하네스 없는 신뢰할 수 있는 시스템은 없다.
+
+"LLM을 쓴다"는 말이 처음에는 API 호출 한 번이었다. 지금은 다섯 계층의 엔지니어링 스택을 설계하는 일이 됐다. 앞으로도 이 스택은 더 깊어질 것이다. 하지만 각 계층이 왜 존재하는지를 이해하면, 다음 전환점이 왜 필요한지도 따라서 읽힌다.
+
+프롬프트에서 컨텍스트로, 컨텍스트에서 하네스로. 그 다음이 무엇인지는 아직 모른다. 다만 방향은 분명하다. 모델을 더 잘 쓰는 것이 아니라, 모델을 믿을 수 있게 만드는 일로.
+
+---
+
+## 참고 자료
+
+- [T1] arXiv:2603.25723 (2026.03). Natural-Language Agent Harnesses (NLAH)
+- [T1] NVIDIA NeMo Guardrails. Park et al. (2023). EMNLP. [arXiv:2310.10501](https://arxiv.org/abs/2310.10501)
+- [T2] OpenAI Engineering Blog (2026.02.11). Harness engineering: leveraging Codex in an agent-first world — [openai.com/index/harness-engineering](https://openai.com/index/harness-engineering/)
+- [T2] Martin Fowler (2026.02). Harness Engineering — [martinfowler.com/articles/exploring-gen-ai/harness-engineering.html](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html)
+- [T2] LangChain Blog (2026.02.17). Improving Deep Agents with Harness Engineering — [blog.langchain.com/improving-deep-agents-with-harness-engineering](https://blog.langchain.com/improving-deep-agents-with-harness-engineering/)
+- [T2] Windsurf Blog. SWE-1.5 — [windsurf.com/blog/swe-1-5](https://windsurf.com/blog/swe-1-5)
+- [T2] Cognition AI Blog. SWE-1.5 — [cognition.ai/blog/swe-1-5](https://cognition.ai/blog/swe-1-5)
+- [T2] Anthropic Engineering Blog. Effective Harnesses for Long-Running Agents — [anthropic.com/engineering/effective-harnesses-for-long-running-agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
+- [T2] Anthropic. Claude Skills — [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills)
+- [T2] NVIDIA Technical Blog. Guardrails 유형 분류 및 성능 오버헤드
+- [T3] Mitchell Hashimoto. Harness Engineering (2025년 말 블로그 포스트)
+
+> **출처 티어**: [T1] 동료 심사 논문 또는 공식 기술 보고서 — 높은 신뢰도. [T2] 공신력 있는 기관의 공식 문서/블로그 — 중간-높은 신뢰도. [T3] 개인 소셜 미디어 및 블로그 등 — 방향성 참고용, 독립 검증 필요.

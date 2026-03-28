@@ -11,7 +11,7 @@ RootLayout (layout.tsx)
 ├── Header (nav: Posts, Series, Tags + ThemeToggle)
 ├── Main
 │   ├── Home: HeroSlider + CategoryFilter
-│   ├── PostPage: 카테고리 뱃지 + 태그 링크 + SeriesToc + MDXContent + SeriesPrevNext
+│   ├── PostPage: 카테고리 뱃지 + 태그 링크 + SeriesToc + MDXContent + SeriesPrevNext + ImageModal + TOC
 │   ├── SeriesPage: SeriesView (카테고리 필터 + SeriesCard/StandaloneCard)
 │   ├── TagsPage: 태그 클라우드 + 알파벳 목록
 │   └── TagPage: PostCard 그리드

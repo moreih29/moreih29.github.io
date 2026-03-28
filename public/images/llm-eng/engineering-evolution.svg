@@ -1,0 +1,112 @@
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrow2" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#6366F1"/>
+    </marker>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="760" height="460" fill="#F8FAFC"/>
+
+  <!-- 제목 -->
+  <text x="380" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#374151">LLM 엔지니어링의 진화</text>
+  <text x="380" y="54" text-anchor="middle" font-size="11" fill="#6B7280">각 단계는 이전을 대체하지 않고 쌓인다</text>
+
+  <!-- 단계 1 박스 (좁음) -->
+  <!-- 배경 후광 원 -->
+  <circle cx="140" cy="260" r="85" fill="#DBEAFE" opacity="0.5"/>
+  <rect x="60" y="90" width="160" height="280" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+
+  <!-- 단계 1 헤더 -->
+  <rect x="60" y="90" width="160" height="48" rx="10" fill="#3B82F6"/>
+  <rect x="60" y="118" width="160" height="20" rx="0" fill="#3B82F6"/>
+  <text x="140" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="white">프롬프트 엔지니어링</text>
+  <text x="140" y="130" text-anchor="middle" font-size="10" fill="#BFDBFE">2020 ~ 2024</text>
+
+  <!-- 단계 1 핵심 질문 -->
+  <rect x="75" y="155" width="130" height="36" rx="6" fill="#DBEAFE"/>
+  <text x="140" y="170" text-anchor="middle" font-size="10" fill="#1E40AF" font-weight="600">"무엇을</text>
+  <text x="140" y="184" text-anchor="middle" font-size="10" fill="#1E40AF" font-weight="600">물을 것인가"</text>
+
+  <!-- 단계 1 세부 -->
+  <text x="140" y="218" text-anchor="middle" font-size="10" fill="#374151">Zero-shot</text>
+  <text x="140" y="234" text-anchor="middle" font-size="10" fill="#374151">Few-shot</text>
+  <text x="140" y="250" text-anchor="middle" font-size="10" fill="#374151">CoT</text>
+  <text x="140" y="266" text-anchor="middle" font-size="10" fill="#374151">시스템 프롬프트</text>
+
+  <!-- 단계 1 범위 표시 -->
+  <rect x="75" y="300" width="130" height="50" rx="6" fill="#3B82F6" opacity="0.1" stroke="#3B82F6" stroke-width="1"/>
+  <text x="140" y="322" text-anchor="middle" font-size="9" fill="#1E40AF">범위: 단일 호출</text>
+  <text x="140" y="338" text-anchor="middle" font-size="9" fill="#1E40AF">입력 텍스트 설계</text>
+
+  <!-- 화살표 1→2 -->
+  <line x1="228" y1="230" x2="262" y2="230" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 단계 2 박스 (중간) -->
+  <circle cx="370" cy="260" r="115" fill="#DBEAFE" opacity="0.4"/>
+  <rect x="260" y="70" width="200" height="300" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+
+  <!-- 단계 2 헤더 -->
+  <rect x="260" y="70" width="200" height="48" rx="10" fill="#2563EB"/>
+  <rect x="260" y="98" width="200" height="20" rx="0" fill="#2563EB"/>
+  <text x="360" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="white">컨텍스트 엔지니어링</text>
+  <text x="360" y="110" text-anchor="middle" font-size="10" fill="#BFDBFE">2025</text>
+
+  <!-- 단계 2 핵심 질문 -->
+  <rect x="278" y="136" width="164" height="36" rx="6" fill="#DBEAFE"/>
+  <text x="360" y="151" text-anchor="middle" font-size="10" fill="#1E40AF" font-weight="600">"무엇을</text>
+  <text x="360" y="165" text-anchor="middle" font-size="10" fill="#1E40AF" font-weight="600">보여줄 것인가"</text>
+
+  <!-- 단계 2 세부 -->
+  <text x="360" y="200" text-anchor="middle" font-size="10" fill="#374151">RAG</text>
+  <text x="360" y="216" text-anchor="middle" font-size="10" fill="#374151">메모리 관리</text>
+  <text x="360" y="232" text-anchor="middle" font-size="10" fill="#374151">컨텍스트 창 전략</text>
+  <text x="360" y="248" text-anchor="middle" font-size="10" fill="#374151">Function Calling</text>
+  <text x="360" y="264" text-anchor="middle" font-size="10" fill="#374151">도구 통합</text>
+
+  <!-- 단계 2 범위 표시 -->
+  <rect x="278" y="290" width="164" height="56" rx="6" fill="#3B82F6" opacity="0.1" stroke="#3B82F6" stroke-width="1"/>
+  <text x="360" y="312" text-anchor="middle" font-size="9" fill="#1E40AF">범위: 멀티턴 + RAG</text>
+  <text x="360" y="326" text-anchor="middle" font-size="9" fill="#1E40AF">컨텍스트 창 전체 설계</text>
+  <text x="360" y="340" text-anchor="middle" font-size="9" fill="#1E40AF">L1 위에 쌓임</text>
+
+  <!-- 화살표 2→3 -->
+  <line x1="468" y1="230" x2="502" y2="230" stroke="#6366F1" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- 단계 3 박스 (넓음) -->
+  <circle cx="620" cy="260" r="145" fill="#E0E7FF" opacity="0.4"/>
+  <rect x="500" y="50" width="240" height="340" rx="10" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
+
+  <!-- 단계 3 헤더 -->
+  <rect x="500" y="50" width="240" height="48" rx="10" fill="#6366F1"/>
+  <rect x="500" y="78" width="240" height="20" rx="0" fill="#6366F1"/>
+  <text x="620" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="white">하네스 엔지니어링</text>
+  <text x="620" y="90" text-anchor="middle" font-size="10" fill="#E0E7FF">2026 ~</text>
+
+  <!-- 단계 3 핵심 질문 -->
+  <rect x="518" y="116" width="204" height="44" rx="6" fill="#E0E7FF"/>
+  <text x="620" y="132" text-anchor="middle" font-size="10" fill="#3730A3" font-weight="600">"전체 시스템이</text>
+  <text x="620" y="148" text-anchor="middle" font-size="10" fill="#3730A3" font-weight="600">어떻게 작동할 것인가"</text>
+
+  <!-- 단계 3 세부 -->
+  <text x="620" y="184" text-anchor="middle" font-size="10" fill="#374151">Skill / Plugin 시스템</text>
+  <text x="620" y="200" text-anchor="middle" font-size="10" fill="#374151">Guardrails</text>
+  <text x="620" y="216" text-anchor="middle" font-size="10" fill="#374151">평가 (Eval) 시스템</text>
+  <text x="620" y="232" text-anchor="middle" font-size="10" fill="#374151">런타임 제어</text>
+  <text x="620" y="248" text-anchor="middle" font-size="10" fill="#374151">에이전트 오케스트레이션</text>
+
+  <!-- 단계 3 범위 표시 -->
+  <rect x="518" y="268" width="204" height="96" rx="6" fill="#6366F1" opacity="0.1" stroke="#6366F1" stroke-width="1"/>
+  <text x="620" y="290" text-anchor="middle" font-size="9" fill="#3730A3">범위: 전체 에이전트 시스템</text>
+  <text x="620" y="306" text-anchor="middle" font-size="9" fill="#3730A3">신뢰성 + 예측 가능성</text>
+  <text x="620" y="322" text-anchor="middle" font-size="9" fill="#3730A3">L1 + L2 + L3 + L4 위에 쌓임</text>
+  <text x="620" y="338" text-anchor="middle" font-size="9" fill="#3730A3">모델을 믿을 수 있게 만드는 일</text>
+
+  <!-- 하단 서사 -->
+  <rect x="40" y="410" width="680" height="35" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="380" y="428" text-anchor="middle" font-size="10" fill="#6B7280">프롬프트 → 컨텍스트 → 하네스 — 각 전환은 이전 계층을 흡수하며 더 넓은 문제를 다룬다</text>
+  <text x="380" y="442" text-anchor="middle" font-size="10" fill="#6B7280">좋은 하네스 없는 신뢰할 수 있는 시스템은 없다</text>
+</svg>

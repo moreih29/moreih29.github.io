@@ -1,4 +1,5 @@
 import { defineConfig, defineCollection, s } from 'velite'
+import remarkGfm from 'remark-gfm'
 import rehypeSlug from 'rehype-slug'
 import rehypePrettyCode from 'rehype-pretty-code'
 
@@ -27,6 +28,10 @@ export default defineConfig({
     }),
   },
   mdx: {
+    gfm: false,
+    remarkPlugins: [
+      [remarkGfm, { singleTilde: false }],
+    ],
     rehypePlugins: [
       rehypeSlug,
       [rehypePrettyCode, {

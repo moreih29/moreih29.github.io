@@ -20,6 +20,7 @@ s.object({
   cover: s.string().optional(),
   metadata: s.metadata(),
   excerpt: s.excerpt(),
+  toc: s.toc(),            // Table of Contents 자동 생성 → toc.tsx에서 사용
   body: s.mdx(),
 })
 ```
@@ -72,7 +73,9 @@ cover: "/images/cover.jpg" # optional
 | 시리즈 | 편수 | 카테고리 |
 |--------|------|----------|
 | 언어를 이해하는 기계의 여정 | 6편 | AI |
-| LLM 해부학 | 5편 | AI |
+| LLM 해부학 | 9편 | AI |
+| 공장에 심은 지능 | 4편 | AI |
+| LLM 엔지니어링 | 5편 | AI |
 
 ## MDX 주의사항
 
@@ -83,6 +86,7 @@ Velite의 MDX 컴파일러는 내부적으로 JSX 파서를 사용한다. 다음
 - 마크다운 이미지 `![alt](src)`는 Velite가 제거함 → `<img src="..." alt="..." />` 사용
 - `$...$`, `$$...$$` LaTeX 문법은 지원하지 않음 → 코드 블록으로 대체
 - `**텍스트)**조사` 패턴 (bold가 `)`, `%`, `"`로 끝나고 공백 없이 다음 글자가 오면) bold가 렌더링되지 않음 → `<strong>텍스트)</strong>조사` 사용
+- `~`는 GFM에서 취소선으로 해석될 수 있음 → 취소선은 반드시 `~~이중 틸드~~`만 사용. 단일 `~`는 일반 텍스트로 안전 (`velite.config.ts`에서 `remark-gfm`의 `singleTilde: false` 설정됨)
 
 ## 파일 네이밍 컨벤션
 
