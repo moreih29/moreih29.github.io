@@ -15,6 +15,9 @@ out/
 .env
 .env*.local
 
+# playwright
+.playwright-mcp/
+
 # misc
 .DS_Store
 *.pem
