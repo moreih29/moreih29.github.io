@@ -34,7 +34,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <article className="mx-auto max-w-3xl">
+      <article className="mx-auto max-w-[65ch]">
         <header className="mb-8">
           <div className="mb-3 flex items-center gap-2">
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${color.bg} ${color.text} ${color.darkBg} ${color.darkText}`}>

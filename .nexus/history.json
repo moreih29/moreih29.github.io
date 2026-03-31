@@ -211,6 +211,218 @@
           "created_at": "2026-03-31T03:13:30.777Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T04:34:18.542Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "블로그 전체 디자인 개편",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 시각적 정체성/톤 — 미니멀 유지 vs 개성 강화 (히어로, 브랜딩, elevation)",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. 색상 체계 — primary 확장, SVG 다크모드 핵, 카테고리 접근성",
+            "status": "decided"
+          },
+          {
+            "id": 3,
+            "title": "3. 정보 구조 — 홈/Series 역할 중복, 검색 도입 여부",
+            "status": "decided"
+          },
+          {
+            "id": 4,
+            "title": "4. 타이포그래피 — 폰트 로딩, 헤딩 위계, 한글 prose 조정",
+            "status": "decided"
+          },
+          {
+            "id": 5,
+            "title": "5. 레이아웃/반응형 — FloatingToc, 모바일 경험, 본문 폭",
+            "status": "decided"
+          },
+          {
+            "id": 6,
+            "title": "6. 컴포넌트 품질/접근성 — 모달, 슬라이더, 코드 복사, 페이지네이션",
+            "status": "decided"
+          },
+          {
+            "id": 7,
+            "title": "7. 상호작용/모션 — 트랜지션, 애니메이션, user-select",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "C안 (대폭 리디자인) 선택. 커스텀 로고 마크, 강한 시각적 위계, 글래스모피즘/모던 스타일 카드, 풀 그라디언트 히어로, 체계적 elevation 시스템 등 전면적 디자인 개편. 사용자 의지: \"엔지니어의 한계를 넘어보고 싶다.\"",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "Slate/Steel 톤 (#94a3b8) 선택. 단일 primary 톤 기반, 무채색 중심의 절제된 전문성. 카테고리 뱃지는 다양한 색 유지 (AI/Web/MLOps/DevOps 각각 구분). SVG 다크모드 CSS 필터 핵은 제거 필요. 사용자 코멘트: \"결국 내 취향은 이런 쪽.\"",
+          "consult": 2
+        },
+        {
+          "id": 3,
+          "summary": "C안 (통합 재설계) 선택. 홈을 원페이지 랜딩으로 재설계 (히어로 + 최신 + 시리즈 프리뷰 + 인기 태그). 글로벌 검색 도입 (Cmd+K, Fuse.js + 빌드 타임 인덱스). 시리즈 전용 페이지 유지하되 홈에서도 프리뷰. 정적 사이트 검색 한계는 현재 규모(25개)에서 무관, 수백 개 시점에 아키텍처 전환 검토.",
+          "consult": 3
+        },
+        {
+          "id": 4,
+          "summary": "세 소논점 모두 B안 채택. (4-1) next/font 로컬 호스팅 — Pretendard/JetBrains Mono woff2 로컬 포함, FOUT 방지. (4-2) 체계적 타입 스케일 도입 — CSS 변수 기반 h1~h4 크기/weight 위계 정의. (4-3) 한글 prose 최적화 — line-height 1.7, word-break: keep-all, letter-spacing 미세 조정.",
+          "consult": 4
+        },
+        {
+          "id": 5,
+          "summary": "세 소논점 모두 추천안 채택. (5-1) FloatingToc를 CSS Grid 기반 재구성 — 하드코딩 제거, grid-cols로 본문+TOC 안전 배치. (5-2) 모바일 우선 재설계 — 햄버거 메뉴, 터치 친화적 타겟 크기 44px+, 모바일 전용 히어로, 브레드크럼 추가. (5-3) 본문 폭 max-w-[65ch] — 타이포그래피 기반 최적 줄 길이, Slate/Steel 저널 톤과 일관.",
+          "consult": 5
+        },
+        {
+          "id": 6,
+          "summary": "네 소논점 모두 추천안 채택. (6-1) 이미지 모달: 직접 aria 속성 + 포커스 트래핑 + X 닫기 버튼 추가, 외부 의존성 없이. (6-2) 히어로 슬라이더 제거 → 정적 피처 포스트로 대체. Slate/Steel 절제 톤과 일관, 접근성 이슈 원천 제거. (6-3) 코드 블록 복사 버튼: 커스텀 클라이언트 컴포넌트로 pre 태그에 복사 버튼 오버레이. (6-4) 페이지네이션 말줄임 로직 추가.",
+          "consult": 6
+        },
+        {
+          "id": 7,
+          "summary": "세 소논점 결정. (7-1) 페이지 전환: NProgress 스타일 상단 프로그레스 바 — 절제된 톤에 적합. (7-2) 마이크로 인터랙션: 체계적 인터랙션 세트 도입 (카드 lift, 링크 underline transition, 버튼 press, 뱃지 배경 전환) — 모두 은은하고 절제된 수준. (7-3) user-select: none 전체 제거 + 비텍스트 영역에 cursor: default 적용. 커서 깜박임은 cursor 속성으로 해결, 텍스트 선택 차단은 안티패턴이므로 제거.",
+          "consult": 7
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "B/C 디자인 비교 HTML 목업 파일 생성",
+          "context": "블로그 디자인 방안 B(미묘한 개성)와 C(대폭 리디자인)를 좌우 분할로 비교하는 단일 HTML 파일 생성. 외부 의존성 없이 인라인 CSS만 사용. 대상 파일: /Users/kih/workspaces/areas/moreih29-blog/design-mockup.html",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "designer",
+          "created_at": "2026-03-31T03:37:31.936Z"
+        },
+        {
+          "id": 2,
+          "title": "색상 체계 A/B/C안 비교 HTML 목업 생성",
+          "context": "색상 체계 3가지 방안(A: Blue, B: Purple, C: Purple+Cyan)을 가로 3분할로 비교하는 단일 HTML 파일 생성. 대상: /Users/kih/workspaces/areas/moreih29-blog/color-mockup.html",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "designer",
+          "created_at": "2026-03-31T03:47:28.074Z"
+        },
+        {
+          "id": 3,
+          "title": "6가지 색상 톤 비교 HTML 목업 생성",
+          "context": "Emerald, Amber, Rose, Slate, Blue, Violet 6가지 primary 색상 톤을 2행x3열 그리드로 비교하는 단일 HTML 파일 생성. 대상: /Users/kih/workspaces/areas/moreih29-blog/color-mockup-v2.html",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "designer",
+          "created_at": "2026-03-31T03:52:42.181Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T04:44:14.269Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "색상 체계 전환 (Slate/Steel)",
+          "context": "globals.css의 CSS 변수를 Slate/Steel 톤으로 전환. primary #94a3b8 기반. 다크/라이트 모드 모두 변경. SVG 다크모드 CSS 필터 핵(invert+hue-rotate) 제거. constants.ts 카테고리 컬러맵 WCAG AA 대비 보정. elevation 3단계 CSS 변수 정의 (card/raised/overlay).",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2
+          ],
+          "owner": "engineer-1",
+          "created_at": "2026-03-31T04:35:41.636Z"
+        },
+        {
+          "id": 2,
+          "title": "타이포그래피 개선",
+          "context": "next/font로 Pretendard + JetBrains Mono 로컬 호스팅. CSS 변수 기반 타입 스케일 정의 (h1~h4). prose 한글 최적화: line-height 1.7, word-break: keep-all. layout.tsx에서 next/font 적용.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            4
+          ],
+          "owner": "engineer-2",
+          "created_at": "2026-03-31T04:35:43.969Z"
+        },
+        {
+          "id": 3,
+          "title": "레이아웃 기반 변경",
+          "context": "본문 폭 max-w-[65ch] 적용. user-select: none 전체 제거 + 비텍스트 영역에 cursor: default. 포스트 페이지 기반 조정.",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "decisions": [
+            5,
+            7
+          ],
+          "owner": "engineer-1",
+          "created_at": "2026-03-31T04:35:46.134Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 검증",
+          "context": "Phase 1 변경사항 빌드 성공 확인 + 브라우저에서 시각적 검증",
+          "status": "completed",
+          "deps": [
+            1,
+            2,
+            3
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:35:47.989Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T04:54:40.617Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "긴급 수정: h1-h4 전역 스타일을 .prose 스코프로 제한",
+          "context": "타입 스케일이 전역 h1-h4에 적용되어 카드 제목 등 비prose 영역의 폰트 크기가 의도치 않게 커짐. .prose 내부로 스코프 제한 필요.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:48:35.878Z"
+        },
+        {
+          "id": 2,
+          "title": "히어로 슬라이더 높이 고정",
+          "context": "min-h를 h로 변경하여 높이 고정. 제목에 line-clamp-2 추가하여 2줄 초과 방지.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:50:31.639Z"
+        },
+        {
+          "id": 3,
+          "title": "히어로 description 높이 고정",
+          "context": "description 줄 수에 따라 제목 위치가 밀리는 문제. description p 태그에 min-h 고정.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:53:29.680Z"
+        }
+      ]
     }
   ]
 }

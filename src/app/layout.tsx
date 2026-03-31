@@ -1,7 +1,24 @@
 import type { Metadata } from 'next'
+import localFont from 'next/font/local'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
+
+const pretendard = localFont({
+  src: '../fonts/PretendardVariable.woff2',
+  variable: '--font-pretendard',
+  display: 'swap',
+  weight: '100 900',
+})
+
+const jetbrainsMono = localFont({
+  src: [
+    { path: '../fonts/JetBrainsMono-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../fonts/JetBrainsMono-Bold.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'moreih29 blog',
@@ -22,7 +39,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen antialiased">
+      <body className={`${pretendard.variable} ${jetbrainsMono.variable} min-h-screen antialiased`}>
         <ThemeProvider>
           <div className="mx-auto max-w-5xl px-4 py-8">
             <Header />
