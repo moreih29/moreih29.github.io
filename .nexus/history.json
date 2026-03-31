@@ -833,6 +833,24 @@
           "created_at": "2026-03-31T06:24:58.289Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T06:35:09.744Z",
+      "branch": "main",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "포스트 콘텐츠 영역 수평 스크롤 원인 파악 및 수정",
+          "context": "목차 아래 prose 영역에서 수평 스크롤 발생. overflow-x: auto를 prose에 적용했는데 이것이 오히려 스크롤을 허용하게 만들었을 가능성. 테이블, 코드 블록, 이미지 등이 뷰포트를 넘는 요소를 찾아야 함.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T06:32:36.911Z"
+        }
+      ]
     }
   ]
 }

@@ -107,7 +107,17 @@ pre > code {
 .prose {
   line-height: 1.7;
   word-break: keep-all;
+  overflow-x: hidden;
+}
+
+.prose pre,
+.prose table {
   overflow-x: auto;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
 }
 
 .prose a {
