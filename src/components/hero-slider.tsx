@@ -31,7 +31,7 @@ export function HeroSlider({ posts }: { posts: Post[] }) {
   return (
     <div className="relative mb-12 overflow-hidden rounded-2xl border border-border bg-card">
       <Link href={`/posts/${post.slug}`} className="block">
-        <div className="flex min-h-[280px] flex-col justify-end px-16 py-8 md:px-20 md:py-12">
+        <div className="flex h-[280px] flex-col justify-end px-16 py-8 md:px-20 md:py-12">
           <div className="mb-3 flex items-center gap-2">
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${color.bg} ${color.text} ${color.darkBg} ${color.darkText}`}>
               {post.category}
@@ -42,10 +42,10 @@ export function HeroSlider({ posts }: { posts: Post[] }) {
               </span>
             )}
           </div>
-          <h2 className="mb-2 text-2xl font-bold md:text-3xl">
+          <h2 className="mb-2 text-2xl font-bold md:text-3xl line-clamp-2">
             {post.title}
           </h2>
-          <p className="mb-3 max-w-2xl text-sm text-muted line-clamp-2">
+          <p className="mb-3 max-w-2xl text-sm text-muted line-clamp-2 min-h-[2.5rem]">
             {post.description}
           </p>
           <p className="text-xs text-muted">{formatDate(post.date)}</p>

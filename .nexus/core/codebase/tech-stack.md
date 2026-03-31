@@ -1,4 +1,5 @@
 <!-- tags: tech-stack, dependencies -->
+<!-- tags: tech-stack, dependencies -->
 # Tech Stack
 
 ## Core
@@ -26,6 +27,18 @@
 | Tailwind CSS 4 | 유틸리티 CSS |
 | @tailwindcss/typography | prose 스타일 |
 | PostCSS | Tailwind 통합 |
+
+## 검색
+
+| 기술 | 용도 |
+|------|------|
+| Fuse.js | 클라이언트 사이드 퍼지 검색 (Cmd+K 검색 모달) |
+
+## 폰트
+
+| 기술 | 용도 |
+|------|------|
+| next/font/local | 로컬 호스팅 (Pretendard, JetBrains Mono woff2) |
 
 ## 개발 도구
 

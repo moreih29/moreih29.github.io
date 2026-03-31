@@ -211,6 +211,581 @@
           "created_at": "2026-03-31T03:13:30.777Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T04:34:18.542Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "블로그 전체 디자인 개편",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 시각적 정체성/톤 — 미니멀 유지 vs 개성 강화 (히어로, 브랜딩, elevation)",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. 색상 체계 — primary 확장, SVG 다크모드 핵, 카테고리 접근성",
+            "status": "decided"
+          },
+          {
+            "id": 3,
+            "title": "3. 정보 구조 — 홈/Series 역할 중복, 검색 도입 여부",
+            "status": "decided"
+          },
+          {
+            "id": 4,
+            "title": "4. 타이포그래피 — 폰트 로딩, 헤딩 위계, 한글 prose 조정",
+            "status": "decided"
+          },
+          {
+            "id": 5,
+            "title": "5. 레이아웃/반응형 — FloatingToc, 모바일 경험, 본문 폭",
+            "status": "decided"
+          },
+          {
+            "id": 6,
+            "title": "6. 컴포넌트 품질/접근성 — 모달, 슬라이더, 코드 복사, 페이지네이션",
+            "status": "decided"
+          },
+          {
+            "id": 7,
+            "title": "7. 상호작용/모션 — 트랜지션, 애니메이션, user-select",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "C안 (대폭 리디자인) 선택. 커스텀 로고 마크, 강한 시각적 위계, 글래스모피즘/모던 스타일 카드, 풀 그라디언트 히어로, 체계적 elevation 시스템 등 전면적 디자인 개편. 사용자 의지: \"엔지니어의 한계를 넘어보고 싶다.\"",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "Slate/Steel 톤 (#94a3b8) 선택. 단일 primary 톤 기반, 무채색 중심의 절제된 전문성. 카테고리 뱃지는 다양한 색 유지 (AI/Web/MLOps/DevOps 각각 구분). SVG 다크모드 CSS 필터 핵은 제거 필요. 사용자 코멘트: \"결국 내 취향은 이런 쪽.\"",
+          "consult": 2
+        },
+        {
+          "id": 3,
+          "summary": "C안 (통합 재설계) 선택. 홈을 원페이지 랜딩으로 재설계 (히어로 + 최신 + 시리즈 프리뷰 + 인기 태그). 글로벌 검색 도입 (Cmd+K, Fuse.js + 빌드 타임 인덱스). 시리즈 전용 페이지 유지하되 홈에서도 프리뷰. 정적 사이트 검색 한계는 현재 규모(25개)에서 무관, 수백 개 시점에 아키텍처 전환 검토.",
+          "consult": 3
+        },
+        {
+          "id": 4,
+          "summary": "세 소논점 모두 B안 채택. (4-1) next/font 로컬 호스팅 — Pretendard/JetBrains Mono woff2 로컬 포함, FOUT 방지. (4-2) 체계적 타입 스케일 도입 — CSS 변수 기반 h1~h4 크기/weight 위계 정의. (4-3) 한글 prose 최적화 — line-height 1.7, word-break: keep-all, letter-spacing 미세 조정.",
+          "consult": 4
+        },
+        {
+          "id": 5,
+          "summary": "세 소논점 모두 추천안 채택. (5-1) FloatingToc를 CSS Grid 기반 재구성 — 하드코딩 제거, grid-cols로 본문+TOC 안전 배치. (5-2) 모바일 우선 재설계 — 햄버거 메뉴, 터치 친화적 타겟 크기 44px+, 모바일 전용 히어로, 브레드크럼 추가. (5-3) 본문 폭 max-w-[65ch] — 타이포그래피 기반 최적 줄 길이, Slate/Steel 저널 톤과 일관.",
+          "consult": 5
+        },
+        {
+          "id": 6,
+          "summary": "네 소논점 모두 추천안 채택. (6-1) 이미지 모달: 직접 aria 속성 + 포커스 트래핑 + X 닫기 버튼 추가, 외부 의존성 없이. (6-2) 히어로 슬라이더 제거 → 정적 피처 포스트로 대체. Slate/Steel 절제 톤과 일관, 접근성 이슈 원천 제거. (6-3) 코드 블록 복사 버튼: 커스텀 클라이언트 컴포넌트로 pre 태그에 복사 버튼 오버레이. (6-4) 페이지네이션 말줄임 로직 추가.",
+          "consult": 6
+        },
+        {
+          "id": 7,
+          "summary": "세 소논점 결정. (7-1) 페이지 전환: NProgress 스타일 상단 프로그레스 바 — 절제된 톤에 적합. (7-2) 마이크로 인터랙션: 체계적 인터랙션 세트 도입 (카드 lift, 링크 underline transition, 버튼 press, 뱃지 배경 전환) — 모두 은은하고 절제된 수준. (7-3) user-select: none 전체 제거 + 비텍스트 영역에 cursor: default 적용. 커서 깜박임은 cursor 속성으로 해결, 텍스트 선택 차단은 안티패턴이므로 제거.",
+          "consult": 7
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "B/C 디자인 비교 HTML 목업 파일 생성",
+          "context": "블로그 디자인 방안 B(미묘한 개성)와 C(대폭 리디자인)를 좌우 분할로 비교하는 단일 HTML 파일 생성. 외부 의존성 없이 인라인 CSS만 사용. 대상 파일: /Users/kih/workspaces/areas/moreih29-blog/design-mockup.html",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "designer",
+          "created_at": "2026-03-31T03:37:31.936Z"
+        },
+        {
+          "id": 2,
+          "title": "색상 체계 A/B/C안 비교 HTML 목업 생성",
+          "context": "색상 체계 3가지 방안(A: Blue, B: Purple, C: Purple+Cyan)을 가로 3분할로 비교하는 단일 HTML 파일 생성. 대상: /Users/kih/workspaces/areas/moreih29-blog/color-mockup.html",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "designer",
+          "created_at": "2026-03-31T03:47:28.074Z"
+        },
+        {
+          "id": 3,
+          "title": "6가지 색상 톤 비교 HTML 목업 생성",
+          "context": "Emerald, Amber, Rose, Slate, Blue, Violet 6가지 primary 색상 톤을 2행x3열 그리드로 비교하는 단일 HTML 파일 생성. 대상: /Users/kih/workspaces/areas/moreih29-blog/color-mockup-v2.html",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "designer",
+          "created_at": "2026-03-31T03:52:42.181Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T04:44:14.269Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "색상 체계 전환 (Slate/Steel)",
+          "context": "globals.css의 CSS 변수를 Slate/Steel 톤으로 전환. primary #94a3b8 기반. 다크/라이트 모드 모두 변경. SVG 다크모드 CSS 필터 핵(invert+hue-rotate) 제거. constants.ts 카테고리 컬러맵 WCAG AA 대비 보정. elevation 3단계 CSS 변수 정의 (card/raised/overlay).",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2
+          ],
+          "owner": "engineer-1",
+          "created_at": "2026-03-31T04:35:41.636Z"
+        },
+        {
+          "id": 2,
+          "title": "타이포그래피 개선",
+          "context": "next/font로 Pretendard + JetBrains Mono 로컬 호스팅. CSS 변수 기반 타입 스케일 정의 (h1~h4). prose 한글 최적화: line-height 1.7, word-break: keep-all. layout.tsx에서 next/font 적용.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            4
+          ],
+          "owner": "engineer-2",
+          "created_at": "2026-03-31T04:35:43.969Z"
+        },
+        {
+          "id": 3,
+          "title": "레이아웃 기반 변경",
+          "context": "본문 폭 max-w-[65ch] 적용. user-select: none 전체 제거 + 비텍스트 영역에 cursor: default. 포스트 페이지 기반 조정.",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "decisions": [
+            5,
+            7
+          ],
+          "owner": "engineer-1",
+          "created_at": "2026-03-31T04:35:46.134Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 검증",
+          "context": "Phase 1 변경사항 빌드 성공 확인 + 브라우저에서 시각적 검증",
+          "status": "completed",
+          "deps": [
+            1,
+            2,
+            3
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:35:47.989Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T04:54:40.617Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "긴급 수정: h1-h4 전역 스타일을 .prose 스코프로 제한",
+          "context": "타입 스케일이 전역 h1-h4에 적용되어 카드 제목 등 비prose 영역의 폰트 크기가 의도치 않게 커짐. .prose 내부로 스코프 제한 필요.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:48:35.878Z"
+        },
+        {
+          "id": 2,
+          "title": "히어로 슬라이더 높이 고정",
+          "context": "min-h를 h로 변경하여 높이 고정. 제목에 line-clamp-2 추가하여 2줄 초과 방지.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:50:31.639Z"
+        },
+        {
+          "id": 3,
+          "title": "히어로 description 높이 고정",
+          "context": "description 줄 수에 따라 제목 위치가 밀리는 문제. description p 태그에 min-h 고정.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:53:29.680Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T05:05:19.881Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "히어로 슬라이더 → 정적 피처 포스트로 교체",
+          "context": "design-rules 섹션 6: 히어로 슬라이더 제거 → 정적 피처 포스트. 최신 1개 포스트를 피처로 표시. hero-slider.tsx를 feature-post.tsx로 교체. Slate/Steel 절제 톤에 맞는 정적 히어로.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T04:55:25.832Z"
+        },
+        {
+          "id": 2,
+          "title": "홈 페이지 랜딩 재설계",
+          "context": "design-rules 섹션 3: 홈을 원페이지 랜딩으로. 구성: 피처 포스트(태스크1) + 최신 포스트 3-4개 + 시리즈 프리뷰 + 인기 태그. 기존 CategoryFilter의 전체 포스트 그리드를 축소하고, 각 섹션을 명확히 분리. page.tsx 재설계.",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "decisions": [
+            3
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T04:55:30.346Z"
+        },
+        {
+          "id": 3,
+          "title": "글로벌 검색 (Cmd+K) 구현",
+          "context": "design-rules 섹션 3: Fuse.js 기반 클라이언트 사이드 검색. Cmd+K로 검색 모달 오픈. 빌드 타임에 검색 인덱스 JSON 생성. 헤더에 검색 아이콘 추가. 검색 결과: 제목, 설명, 태그 매칭.",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "decisions": [
+            3
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T04:55:33.055Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 + 브라우저 검증",
+          "context": "Phase 2 변경사항 빌드 성공 확인 + 홈 랜딩, 검색 기능 브라우저 검증",
+          "status": "completed",
+          "deps": [
+            3
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:55:35.135Z"
+        },
+        {
+          "id": 5,
+          "title": "검색 힌트 OS별 표시 (⌘K / Ctrl+K)",
+          "context": "Mac은 ⌘K, Windows/Linux는 Ctrl+K 표시",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:03:06.859Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T05:12:21.804Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "이미지 모달 접근성 보완",
+          "context": "design-rules 섹션 6: aria 속성 + 포커스 트래핑 + X 닫기 버튼 추가. 외부 의존성 없이. 대상: src/components/image-modal.tsx",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer-a",
+          "created_at": "2026-03-31T05:05:57.784Z"
+        },
+        {
+          "id": 2,
+          "title": "코드 블록 복사 버튼",
+          "context": "design-rules 섹션 6: 커스텀 클라이언트 컴포넌트로 pre 태그에 복사 버튼 오버레이. Slate/Steel 톤에 맞는 은은한 디자인. 복사 성공 시 체크 아이콘 피드백.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer-a",
+          "created_at": "2026-03-31T05:06:03.825Z"
+        },
+        {
+          "id": 3,
+          "title": "페이지네이션 말줄임 로직",
+          "context": "design-rules 섹션 6: 말줄임 로직 (1 2 ... 5 6 7 ... 12 13). 대상: src/components/pagination.tsx",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer-b",
+          "created_at": "2026-03-31T05:06:04.448Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 검증",
+          "context": "Phase 3 빌드 성공 확인",
+          "status": "completed",
+          "deps": [
+            1,
+            2,
+            3
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:06:05.016Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T05:23:09.923Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "NProgress 스타일 프로그레스 바",
+          "context": "design-rules 섹션 7: 페이지 전환 시 상단 프로그레스 바. Next.js App Router의 라우트 변경 감지 + 얇은 상단 바 애니메이션. 외부 nprogress 패키지 사용 가능 또는 커스텀 구현.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            7
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T05:12:46.353Z"
+        },
+        {
+          "id": 2,
+          "title": "마이크로 인터랙션 체계화",
+          "context": "design-rules 섹션 7: 카드 lift(호버 시 미묘한 translateY + shadow), 링크 underline transition, 버튼 press effect(active:scale-[0.98]), 뱃지/태그 배경 전환. globals.css에 유틸리티 클래스 또는 기존 컴포넌트에 직접 적용. 모두 은은하고 절제된 수준.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            7
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T05:12:50.514Z"
+        },
+        {
+          "id": 3,
+          "title": "빌드 검증",
+          "context": "Phase 4 빌드 성공 확인",
+          "status": "completed",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:12:51.581Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T05:32:21.883Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "Phase 5: Posts 페이지 + 비주얼 폴리싱",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 비주얼 폴리싱 — 배경/피쳐/카드/섹션 톤 밸런싱",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "2. Posts 페이지 디자인",
+            "status": "pending"
+          }
+        ]
+      },
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "비주얼 폴리싱 6가지 방안 비교 HTML 목업 생성",
+          "description": "polish-mockup.html 단일 파일로 6가지 비주얼 폴리싱 방안을 좌(라이트)/우(다크) 분할로 비교 표시",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T05:37:01.840Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "Phase 5: Posts 페이지 + 비주얼 폴리싱",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 비주얼 폴리싱 — 배경/피쳐/카드/섹션 톤 밸런싱",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. Posts 페이지 디자인",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "방안 4 \"Shadow Journal\" 선택. 배경: 라이트 #fafbfc / 다크 #111215. 카드: #ffffff / #191b20. 피처 포스트: 그라디언트 제거 → 카드형 + 상단 2px #94a3b8 악센트 + slate 톤 섀도. 카드: 보더 + slate 섀도. 섹션: border 제거, 여백만. 섀도에 slate RGB를 섞어 아이덴티티 유지. to-steel-100 유령 클래스 수정 필요.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "B안 (새 리스트 뷰) 선택. /posts 페이지 신설, 리스트형 목차 뷰 (날짜 | 카테고리 뱃지 | 제목 | 설명). 카테고리 필터 + 검색바 통합. Shadow Journal 톤에 맞는 정보 밀도 높은 탐색 경험.",
+          "consult": 2
+        }
+      ],
+      "tasks": []
+    },
+    {
+      "completed_at": "2026-03-31T06:03:42.475Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "히어로 구성 + Posts 라우팅",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 피쳐 포스트 1개 vs 슬라이드 N개 — 객관적 판단",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. Posts 버튼 라우팅 수정 (/ → /posts)",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "현행 유지 — 피처 1개 + 최신 글 4개. 슬라이더 복원 불필요. 사용자가 텍스트 목업으로 대안을 검토한 결과, 현재 구조로 충분히 만족. 최신 글 섹션에서 다수 포스트가 표현됨.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "Posts 헤더 링크 href=\"/\" → href=\"/posts\" 수정. 단순 버그 수정.",
+          "consult": 2
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Shadow Journal 비주얼 폴리싱",
+          "context": "배경: 라이트 #fafbfc / 다크 #111215. 카드: #ffffff / #191b20. 보더: 다크 #262a33. 피처 포스트: 그라디언트 제거 → 카드형 + 상단 2px #94a3b8 악센트 + slate 섀도. 카드: 보더 + slate 섀도. 섹션 border 제거, 여백만. 섀도 변수에 slate RGB 적용. to-steel-100 유령 클래스 수정.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            1
+          ],
+          "owner": "engineer-1",
+          "created_at": "2026-03-31T05:37:20.888Z"
+        },
+        {
+          "id": 2,
+          "title": "/posts 페이지 신설 (리스트형 목차 뷰)",
+          "context": "src/app/posts/page.tsx 신설. 리스트형 목차 뷰: 날짜 | 카테고리 뱃지 | 제목 | 설명 한 줄. 상단에 카테고리 필터 + 검색바. Shadow Journal 톤. 정보 밀도 높은 탐색 경험.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2
+          ],
+          "owner": "engineer-2",
+          "created_at": "2026-03-31T05:37:22.963Z"
+        },
+        {
+          "id": 3,
+          "title": "빌드 + 브라우저 검증",
+          "context": "Phase 5 빌드 성공 + 시각 검증",
+          "status": "completed",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:37:25.380Z"
+        },
+        {
+          "id": 4,
+          "title": "Posts 헤더 링크 라우팅 수정",
+          "context": "href=\"/\" → href=\"/posts\"",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2
+          ],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:53:06.443Z"
+        },
+        {
+          "id": 5,
+          "title": "다크모드 깜빡임 수정 — body transition 제거",
+          "context": "body의 전역 transition: background-color 0.2s 제거. 테마 토글 시에만 transition 적용하도록 변경.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:55:25.709Z"
+        },
+        {
+          "id": 6,
+          "title": "헤더 a 태그 → Link 컴포넌트 전환",
+          "context": "헤더의 a 태그가 풀 페이지 리로드를 유발하여 다크모드 깜빡임 발생. Next.js Link 컴포넌트로 전환하여 클라이언트 사이드 네비게이션으로 변경.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:59:14.228Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T06:06:17.586Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "코어 메모리 기록: Next.js Link 필수",
+          "context": "내부 링크에 a 대신 Link 사용 피드백 메모리 저장",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T06:04:01.173Z"
+        },
+        {
+          "id": 2,
+          "title": "dev-rules에 Link 컴포넌트 규칙 추가",
+          "context": "내부 링크 Link 필수 규칙을 dev-rules.md 코드 규칙에 추가",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T06:05:32.140Z"
+        }
+      ]
     }
   ]
 }

@@ -12,6 +12,7 @@
 - Path alias 사용: `@/*` (src), `#content` (.velite)
 - 컴포넌트는 `src/components/`, 유틸리티는 `src/lib/`
 - Tailwind 유틸리티 클래스 사용, 다크모드는 `dark:` prefix
+- **내부 링크는 반드시 `next/link`의 `<Link>` 사용** — `<a href>` 금지. 풀 페이지 리로드로 다크모드 FOUC 발생. 외부 URL만 `<a>` 허용.
 
 ---
 
