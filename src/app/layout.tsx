@@ -72,7 +72,7 @@ function Header({ searchPosts }: { searchPosts: import('@/components/search-trig
   return (
     <header className="mb-12 border-b border-border pb-4">
       <nav className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           <Link href="/" className="flex items-center gap-1 text-xl font-bold">
             <img src="/icon.png" alt="moreih29" width={24} height={24} className="rounded-full dark:hidden" />
             <img src="/icon-dark.png" alt="moreih29" width={24} height={24} className="rounded-full hidden dark:block" />
