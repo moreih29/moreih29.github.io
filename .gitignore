@@ -8,9 +8,6 @@ out/
 # velite
 .velite/
 
-# nexus
-.nexus/
-
 # env
 .env
 .env*.local
