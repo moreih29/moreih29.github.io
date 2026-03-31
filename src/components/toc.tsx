@@ -129,7 +129,7 @@ export function FloatingToc({ toc }: { toc: TocItem[] }) {
   if (!toc || toc.length === 0) return null
 
   return (
-    <div className="hidden xl:block fixed top-24 w-52 max-h-[calc(100vh-8rem)] overflow-y-auto" style={{ left: 'calc(50% + 420px)' }}>
+    <div className="hidden xl:block fixed top-24 w-52 max-h-[calc(100vh-8rem)] overflow-y-auto pointer-events-none xl:pointer-events-auto" style={{ left: 'calc(50% + 420px)' }}>
       <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted">목차</p>
       <TocList items={toc} activeId={activeId} />
     </div>

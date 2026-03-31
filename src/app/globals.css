@@ -46,6 +46,7 @@
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
+  overflow-x: hidden;
 }
 
 /* 테마 토글 시에만 트랜지션 적용 — 페이지 전환 시 깜빡임 방지 */
@@ -106,6 +107,7 @@ pre > code {
 .prose {
   line-height: 1.7;
   word-break: keep-all;
+  overflow-x: auto;
 }
 
 .prose a {

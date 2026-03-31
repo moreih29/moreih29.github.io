@@ -786,6 +786,53 @@
           "created_at": "2026-03-31T06:05:32.140Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T06:26:52.980Z",
+      "branch": "hotfix/mobile-ui",
+      "consult": {
+        "topic": "모바일 UI 핫픽스",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 포스트 페이지 모바일 줄아웃/우측 빈 공간",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. Tags와 검색 버튼 간격",
+            "status": "decided"
+          }
+        ],
+        "researchSummary": "이슈 1 근본 원인: FloatingToc가 `position: fixed; left: calc(50% + 420px)`로 하드코딩. xl(1280px) 이상에서만 표시(hidden xl:block)이지만, 모바일에서도 DOM에 존재하며 레이아웃에 영향을 줌. 또한 prose 내 테이블/코드 블록이 max-w-none으로 오버플로 가능. 추가로 `max-w-[65ch]`는 모바일에서 뷰포트보다 클 수 있음 — 65ch는 폰트 크기에 따라 다르지만 보통 ~1000px. 이슈 2: 헤더 nav에서 gap-6이 네비 링크 간격이고, 검색 트리거와 네비 링크 사이 간격이 부족."
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "방어적 다중 레이어 수정: FloatingToc 모바일 렌더링 제외, prose overflow-x: auto, 루트 overflow-x: hidden. 세 가지 모두 적용.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "헤더 nav 링크와 검색 버튼 사이 간격 확보. gap 조정 또는 구분 마진 추가.",
+          "consult": 2
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "모바일 오버플로 + 헤더 간격 수정",
+          "context": "1) 루트 overflow-x: hidden 2) prose overflow-x: auto 3) FloatingToc 모바일 제외 강화 4) 헤더 Tags-검색 간격",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            1,
+            2
+          ],
+          "owner": "lead",
+          "created_at": "2026-03-31T06:24:58.289Z"
+        }
+      ]
     }
   ]
 }
