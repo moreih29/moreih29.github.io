@@ -5,6 +5,7 @@ import { MDXContent } from '@/components/mdx-content'
 import { categoryColors } from '@/lib/constants'
 import { SeriesToc, SeriesPrevNext } from '@/components/series-nav'
 import { InlineToc, FloatingToc } from '@/components/toc'
+import { CodeCopyButton } from '@/components/code-copy-button'
 
 export function generateStaticParams() {
   return posts
@@ -66,6 +67,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
         <div className="prose max-w-none dark:prose-invert">
           <MDXContent code={post.body} />
+          <CodeCopyButton />
         </div>
 
         {post.series && seriesPosts.length > 0 && (

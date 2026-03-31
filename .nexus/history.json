@@ -493,6 +493,64 @@
           "created_at": "2026-03-31T05:03:06.859Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T05:12:21.804Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "이미지 모달 접근성 보완",
+          "context": "design-rules 섹션 6: aria 속성 + 포커스 트래핑 + X 닫기 버튼 추가. 외부 의존성 없이. 대상: src/components/image-modal.tsx",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer-a",
+          "created_at": "2026-03-31T05:05:57.784Z"
+        },
+        {
+          "id": 2,
+          "title": "코드 블록 복사 버튼",
+          "context": "design-rules 섹션 6: 커스텀 클라이언트 컴포넌트로 pre 태그에 복사 버튼 오버레이. Slate/Steel 톤에 맞는 은은한 디자인. 복사 성공 시 체크 아이콘 피드백.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer-a",
+          "created_at": "2026-03-31T05:06:03.825Z"
+        },
+        {
+          "id": 3,
+          "title": "페이지네이션 말줄임 로직",
+          "context": "design-rules 섹션 6: 말줄임 로직 (1 2 ... 5 6 7 ... 12 13). 대상: src/components/pagination.tsx",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer-b",
+          "created_at": "2026-03-31T05:06:04.448Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 검증",
+          "context": "Phase 3 빌드 성공 확인",
+          "status": "completed",
+          "deps": [
+            1,
+            2,
+            3
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:06:05.016Z"
+        }
+      ]
     }
   ]
 }

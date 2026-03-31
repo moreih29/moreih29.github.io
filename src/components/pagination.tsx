@@ -6,8 +6,40 @@ interface PaginationProps {
   onPageChange: (page: number) => void
 }
 
+type PageItem = number | '...'
+
+function getPageItems(currentPage: number, totalPages: number): PageItem[] {
+  const visible = new Set<number>()
+
+  // 항상 표시: 처음 2개, 끝 2개
+  visible.add(1)
+  visible.add(2)
+  visible.add(totalPages - 1)
+  visible.add(totalPages)
+
+  // 항상 표시: 현재 페이지 주변 1개씩
+  visible.add(currentPage - 1)
+  visible.add(currentPage)
+  visible.add(currentPage + 1)
+
+  const sorted = Array.from(visible)
+    .filter((p) => p >= 1 && p <= totalPages)
+    .sort((a, b) => a - b)
+
+  const items: PageItem[] = []
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+      items.push('...')
+    }
+    items.push(sorted[i])
+  }
+  return items
+}
+
 export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   if (totalPages <= 1) return null
+
+  const items = getPageItems(currentPage, totalPages)
 
   return (
     <div className="mt-10 flex items-center justify-center gap-2">
@@ -18,19 +50,28 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
       >
         이전
       </button>
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
-            page === currentPage
-              ? 'bg-primary text-white'
-              : 'border border-border hover:bg-card-hover'
-          }`}
-        >
-          {page}
-        </button>
-      ))}
+      {items.map((item, idx) =>
+        item === '...' ? (
+          <span
+            key={`ellipsis-${idx}`}
+            className="px-1 py-1.5 text-sm text-muted-foreground select-none"
+          >
+            ...
+          </span>
+        ) : (
+          <button
+            key={item}
+            onClick={() => onPageChange(item)}
+            className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+              item === currentPage
+                ? 'bg-primary text-white'
+                : 'border border-border hover:bg-card-hover'
+            }`}
+          >
+            {item}
+          </button>
+        )
+      )}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
