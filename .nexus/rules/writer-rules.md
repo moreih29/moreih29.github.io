@@ -1,5 +1,5 @@
-<!-- tags: writing, posting, tone, series, image, svg, mdx -->
-<!-- tags: writing, posting, tone, series, image, svg, mdx -->
+<!-- tags: writing, posting, content, tone, series, image, svg, mdx -->
+<!-- tags: writing, posting, content, tone, series, image, svg, mdx -->
 # Writer Rules
 
 라이터가 리서처의 조사 리포트를 블로그 포스트로 변환할 때 따르는 규칙.
@@ -89,15 +89,23 @@
 
 ### 사용 기준
 
-시각화가 이해에 기여할 때 권장 (필수 아님). 참고 매핑:
+아래 주제 유형에 해당하는 포스트는 **최소 1개 SVG 필수**. 해당하지 않는 단순 글(짧은 뉴스, 공지 등)은 면제.
 
-| 주제 유형 | 권장 이미지 |
+| 주제 유형 | 필수 이미지 |
 |-----------|------------|
 | 아키텍처 설명 | 블록 다이어그램 |
 | 알고리즘/프로세스 | 플로우차트 |
 | 기술 비교 | 비교 도식 |
 | 시대별 흐름 | 타임라인 |
 | 수식 직관화 | 개념 도식 |
+
+### 셀프 체크
+
+작성 완료 전 반드시 확인:
+
+- [ ] 위 주제 유형 매핑에 해당하는가? → 해당하면 SVG가 포함되어 있는지 확인
+- [ ] SVG 스타일 가이드(색상, 배경, 다크모드 호환) 준수 여부
+- [ ] alt 텍스트가 도식 내용을 서술형으로 설명하는지 확인
 
 ### 저장
 

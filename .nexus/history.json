@@ -1,0 +1,164 @@
+{
+  "cycles": [
+    {
+      "completed_at": "2026-03-31T02:06:35.295Z",
+      "branch": "research/google-turbo-quant",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Google Turbo Quant 기술 리서치",
+          "context": "구글이 발표한 Turbo Quant 기술에 대해 웹 리서치 수행. 기술 개요, 원리, 기존 양자화 대비 차별점, 성능 벤치마크, 적용 사례, 업계 반응 등을 조사. 2026년 3월 기준 최신 정보 수집.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "researcher",
+          "created_at": "2026-03-31T01:44:14.166Z"
+        },
+        {
+          "id": 2,
+          "title": "블로그 포스트 작성",
+          "context": "리서치 결과를 바탕으로 content/posts/ 디렉토리에 MDX 블로그 포스트 작성. 기존 블로그 스타일(한글, 기술적 깊이, 시리즈 형태가 아닌 단독 포스트)에 맞춰 작성. frontmatter 형식 준수.",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "decisions": [],
+          "owner": "writer",
+          "created_at": "2026-03-31T01:44:17.394Z"
+        },
+        {
+          "id": 3,
+          "title": "포스트 리뷰 및 검증",
+          "context": "작성된 포스트의 기술적 정확성, 문법, 포맷 검증. MDX 빌드 오류 확인.",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "decisions": [],
+          "owner": "reviewer",
+          "created_at": "2026-03-31T01:44:19.468Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T03:00:07.336Z",
+      "branch": "research/google-turbo-quant",
+      "consult": {
+        "topic": "콘텐츠 파이프라인에서 다이어그램/SVG 누락 방지",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. Lead 프롬프트에서 '이미지 없이' 명시적 차단 — Lead의 판단 오류인가, 시스템 결함인가",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. nx_briefing 태그 불일치 — writer-rules.md가 Writer에게 전달되지 않음",
+            "status": "decided"
+          },
+          {
+            "id": 3,
+            "title": "3. writer-rules 강제력 — '권장 (필수 아님)' 표현이 적절한가",
+            "status": "decided"
+          },
+          {
+            "id": 4,
+            "title": "4. nx-run Content Pipeline에 시각 자산 체크포인트 부재",
+            "status": "decided"
+          },
+          {
+            "id": 5,
+            "title": "5. Design 단계 스킵의 부작용 — How 에이전트가 잡았을 가능성",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "Lead 프롬프트에만 의존하지 않고, 시스템 레벨에서 시각 자산 체크포인트를 둔다. 강제가 아닌 확인 수준. 구체적 구현은 논점 4에서 결정.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "writer-rules.md에 `content` 태그를 추가하여, hint=content로 브리핑 호출 시에도 writer-rules가 포함되도록 수정한다.",
+          "consult": 2
+        },
+        {
+          "id": 3,
+          "summary": "writer-rules의 이미지 사용 기준을 '권장'에서 '조건부 필수'로 강화. 주제 유형 매핑 테이블(아키텍처→블록 다이어그램, 알고리즘→플로우차트, 기술 비교→비교 도식, 프로세스→플로우차트, 수식→개념 도식)에 해당하면 최소 1개 SVG 필수. 해당하지 않는 단순 글은 면제.",
+          "consult": 3
+        },
+        {
+          "id": 4,
+          "summary": "nx-run은 범용 스킬이므로 수정하지 않음. 프로젝트 룰 기반 이중 안전망 구축: (A) writer-rules에 작성 완료 전 셀프 체크 항목 추가 (조건부 필수 SVG 포함 여부), (B) reviewer-rules.md 신설하여 콘텐츠 리뷰 시 SVG 포함 여부 검증 체크리스트 명시. 둘 다 nx_briefing 태그 매칭으로 자동 전달.",
+          "consult": 4
+        },
+        {
+          "id": 5,
+          "summary": "Design 단계 스킵 기준은 현행 유지 (Lead 재량). 논점 2~4의 안전망이 적용되면 Design 없이도 시각 자산 누락 방지 가능. 근본 원인은 스킵이 아니라 룰 전달 실패였으므로 별도 조치 불필요.",
+          "consult": 5
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "writer-rules.md 수정 (태그 추가 + 조건부 필수 + 셀프 체크)",
+          "context": "D2: content 태그 추가, D3: 이미지 사용 기준 조건부 필수로 강화, D4-A: 작성 완료 전 셀프 체크 항목 추가",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2,
+            3,
+            4
+          ],
+          "owner": "lead",
+          "created_at": "2026-03-31T02:22:00.300Z"
+        },
+        {
+          "id": 2,
+          "title": "reviewer-rules.md 신설",
+          "context": "D4-B: 콘텐츠 리뷰 시 SVG 포함 여부 검증 체크리스트 포함. content, review 태그 필요.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            4
+          ],
+          "owner": "lead",
+          "created_at": "2026-03-31T02:22:01.688Z"
+        },
+        {
+          "id": 3,
+          "title": "TurboQuant 포스트에 SVG 다이어그램 추가",
+          "context": "바뀐 룰에 따라 포스트에 SVG 추가. 후보: (1) 2단계 파이프라인 도식 (알고리즘/프로세스), (2) 기존 기법 비교 포지셔닝 (기술 비교). 둘 다 조건부 필수에 해당.",
+          "status": "completed",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [
+            3
+          ],
+          "owner": "writer",
+          "created_at": "2026-03-31T02:22:04.819Z"
+        },
+        {
+          "id": 4,
+          "title": "SVG 추가 후 리뷰 및 빌드 검증",
+          "context": "바뀐 reviewer-rules에 따라 SVG 포함 여부 검증 + 빌드 테스트",
+          "status": "completed",
+          "deps": [
+            3
+          ],
+          "decisions": [
+            4
+          ],
+          "owner": "reviewer",
+          "created_at": "2026-03-31T02:22:06.573Z"
+        }
+      ]
+    }
+  ]
+}

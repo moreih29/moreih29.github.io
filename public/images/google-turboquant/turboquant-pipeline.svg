@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" fill="none" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#059669"/>
+    </marker>
+  </defs>
+
+  <!-- 제목 -->
+  <text x="380" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#111827">TurboQuant 2단계 파이프라인</text>
+  <text x="380" y="48" text-anchor="middle" font-size="11" fill="#6B7280">PolarQuant (Stage 1) + QJL (Stage 2) 직렬 파이프라인</text>
+
+  <!-- ─── 입력 벡터 ─── -->
+  <rect x="20" y="75" width="110" height="60" rx="10" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="75" y="101" text-anchor="middle" font-size="12" font-weight="600" fill="#374151">입력 벡터</text>
+  <text x="75" y="118" text-anchor="middle" font-size="10" fill="#6B7280">카르테시안 좌표</text>
+  <text x="75" y="131" text-anchor="middle" font-size="10" fill="#6B7280">(x, y, z, ...)</text>
+
+  <!-- 입력 → Stage 1 화살표 -->
+  <line x1="130" y1="105" x2="158" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ─── Stage 1: PolarQuant ─── -->
+  <rect x="160" y="60" width="240" height="220" rx="12" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <rect x="160" y="60" width="240" height="34" rx="12" fill="#3B82F6"/>
+  <rect x="160" y="82" width="240" height="12" fill="#3B82F6"/>
+  <text x="280" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">Stage 1: PolarQuant</text>
+
+  <!-- 스텝 박스들 -->
+  <rect x="178" y="106" width="204" height="36" rx="7" fill="white" stroke="#93C5FD" stroke-width="1.3"/>
+  <text x="280" y="122" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">극좌표 변환</text>
+  <text x="280" y="136" text-anchor="middle" font-size="10" fill="#6B7280">(x,y,...) → (r, θ₁, θ₂, ...)</text>
+
+  <line x1="280" y1="142" x2="280" y2="154" stroke="#3B82F6" stroke-width="1.3" marker-end="url(#arrow)"/>
+
+  <rect x="178" y="156" width="204" height="36" rx="7" fill="white" stroke="#93C5FD" stroke-width="1.3"/>
+  <text x="280" y="172" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">랜덤 회전 적용</text>
+  <text x="280" y="186" text-anchor="middle" font-size="10" fill="#6B7280">무작위 회전 행렬 곱</text>
+
+  <line x1="280" y1="192" x2="280" y2="204" stroke="#3B82F6" stroke-width="1.3" marker-end="url(#arrow)"/>
+
+  <rect x="178" y="206" width="204" height="36" rx="7" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.3"/>
+  <text x="280" y="222" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">Beta 분포로 집중</text>
+  <text x="280" y="236" text-anchor="middle" font-size="10" fill="#374151">좌표 간 근사 독립성 유도</text>
+
+  <line x1="280" y1="242" x2="280" y2="254" stroke="#3B82F6" stroke-width="1.3" marker-end="url(#arrow)"/>
+
+  <rect x="178" y="256" width="204" height="13" rx="5" fill="#1E40AF"/>
+  <text x="280" y="266" text-anchor="middle" font-size="10" font-weight="600" fill="white">최적 스칼라 양자화</text>
+
+  <!-- Stage 1 → Stage 2 화살표 -->
+  <line x1="400" y1="105" x2="428" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 잔여 오차 레이블 -->
+  <text x="414" y="98" text-anchor="middle" font-size="9" fill="#9CA3AF">주 압축</text>
+  <line x1="400" y1="230" x2="428" y2="230" stroke="#9CA3AF" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+  <text x="414" y="244" text-anchor="middle" font-size="9" fill="#9CA3AF">잔여 오차</text>
+
+  <!-- ─── Stage 2: QJL ─── -->
+  <rect x="430" y="60" width="240" height="220" rx="12" fill="#F0FDF4" stroke="#10B981" stroke-width="2"/>
+  <rect x="430" y="60" width="240" height="34" rx="12" fill="#059669"/>
+  <rect x="430" y="82" width="240" height="12" fill="#059669"/>
+  <text x="550" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">Stage 2: QJL</text>
+
+  <rect x="448" y="106" width="204" height="36" rx="7" fill="white" stroke="#6EE7B7" stroke-width="1.3"/>
+  <text x="550" y="122" text-anchor="middle" font-size="11" font-weight="600" fill="#065F46">JL 변환 적용</text>
+  <text x="550" y="136" text-anchor="middle" font-size="10" fill="#6B7280">잔여 오차 → 저차원 투영</text>
+
+  <line x1="550" y1="142" x2="550" y2="154" stroke="#059669" stroke-width="1.3" marker-end="url(#arrow-green)"/>
+
+  <rect x="448" y="156" width="204" height="36" rx="7" fill="white" stroke="#6EE7B7" stroke-width="1.3"/>
+  <text x="550" y="172" text-anchor="middle" font-size="11" font-weight="600" fill="#065F46">부호 비트 압축</text>
+  <text x="550" y="186" text-anchor="middle" font-size="10" fill="#6B7280">결과값 → +1 / -1 단일 비트</text>
+
+  <line x1="550" y1="192" x2="550" y2="204" stroke="#059669" stroke-width="1.3" marker-end="url(#arrow-green)"/>
+
+  <rect x="448" y="206" width="204" height="36" rx="7" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1.3"/>
+  <text x="550" y="222" text-anchor="middle" font-size="11" font-weight="600" fill="#065F46">편향 보정</text>
+  <text x="550" y="236" text-anchor="middle" font-size="10" fill="#374151">체계적 편향 수식 도출 후 제거</text>
+
+  <line x1="550" y1="242" x2="550" y2="254" stroke="#059669" stroke-width="1.3" marker-end="url(#arrow-green)"/>
+
+  <rect x="448" y="256" width="204" height="13" rx="5" fill="#059669"/>
+  <text x="550" y="266" text-anchor="middle" font-size="10" font-weight="600" fill="white">추가 메모리 오버헤드 없음</text>
+
+  <!-- Stage 2 → 출력 화살표 -->
+  <line x1="670" y1="105" x2="698" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ─── 출력: 압축된 KV 캐시 ─── -->
+  <rect x="700" y="72" width="48" height="120" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="724" y="109" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E" transform="rotate(-90,724,132)">압축된 KV 캐시</text>
+  <text x="724" y="160" text-anchor="middle" font-size="9" fill="#B45309" transform="rotate(-90,724,175)">~3 bit · FP16 대비 5.3×</text>
+
+  <!-- ─── 하단 요약 ─── -->
+  <rect x="20" y="300" width="720" height="60" rx="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1.2"/>
+  <text x="380" y="320" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">핵심 특성</text>
+  <text x="130" y="340" text-anchor="middle" font-size="10" fill="#374151">훈련 데이터 불필요</text>
+  <text x="130" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">데이터 의존성 없음</text>
+  <text x="310" y="340" text-anchor="middle" font-size="10" fill="#374151">온라인 실시간 적용</text>
+  <text x="310" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">캐시 생성 즉시 압축</text>
+  <text x="490" y="340" text-anchor="middle" font-size="10" fill="#374151">이론적 근최적 보장</text>
+  <text x="490" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">정보이론적 하한 대비 2.7×</text>
+  <text x="660" y="340" text-anchor="middle" font-size="10" fill="#374151">H100 최대 8× 성능향상</text>
+  <text x="660" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">4-bit TurboQuant 기준</text>
+
+  <!-- 구분선 -->
+  <line x1="220" y1="308" x2="220" y2="352" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="400" y1="308" x2="400" y2="352" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="580" y1="308" x2="580" y2="352" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- 하단 출처 -->
+  <text x="380" y="400" text-anchor="middle" font-size="9" fill="#9CA3AF">PolarQuant (AISTATS 2026) + QJL (AAAI 2025) → TurboQuant (ICLR 2026)</text>
+</svg>
