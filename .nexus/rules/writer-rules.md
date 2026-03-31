@@ -19,9 +19,37 @@
 
 포닥이 리포트에 부여한 티어 태그를 기반으로 표기한다.
 
-- **인라인 톤 차등**: T1/T2는 확신 있는 서술, T3는 출처에 따라 확신도를 다르게
-- **하단 출처 목록**: 각 출처에 티어 태그 표기 (`[T1]`, `[T2]`, `[T3]`)
-- **시각적 callout**: 기본 사용 안 함. 특별한 경우에만 선택적 사용
+### 인라인 톤 차등
+
+- T1/T2는 확신 있는 서술, T3는 출처에 따라 확신도를 다르게
+
+### 인라인 인용 — `<Ref>` 컴포넌트
+
+본문에서 출처를 참조할 때 `<Ref>` 컴포넌트를 사용한다. `id`는 하단 `<RefItem>`의 `id`와 1:1 대응.
+
+```mdx
+TurboQuant는 KV 캐시를 3비트로 압축한다<Ref id={1} />.
+기존 방법과 달리 캘리브레이션이 불필요하며<Ref id={2} /><Ref id={3} />,
+H100에서 최대 8배 향상을 달성했다<Ref id={4} />.
+```
+
+### 하단 참고자료 — `<References>` / `<RefItem>` 컴포넌트
+
+포스트 본문 끝에 `<References>` 블록을 작성한다. **Tier별 소제목으로 구분**하되, **번호는 본문 참조 순서대로 전역 연속 (1~N)**.
+
+```mdx
+<References>
+  <RefItem id={1} tier="T1" title="TurboQuant 논문" source="arXiv:2504.19874, ICLR 2026" url="https://arxiv.org/abs/2504.19874" />
+  <RefItem id={2} tier="T1" title="PolarQuant 논문" source="arXiv:2502.02617, AISTATS 2026" url="https://arxiv.org/abs/2502.02617" />
+  <RefItem id={3} tier="T2" title="Google Research Blog" source="TurboQuant 소개" url="https://research.google/blog/..." />
+  <RefItem id={4} tier="T3" title="Hacker News 토론" source="커뮤니티" url="https://news.ycombinator.com/..." />
+</References>
+```
+
+- `tier`: 포닥 브리핑의 tier 분류표 그대로 반영 (T1/T2/T3)
+- `id`: 본문에서 처음 참조한 순서대로 1번부터 부여
+- `url`: 필수. 리서처 리포트의 URL을 그대로 사용
+- 시각적 callout: 기본 사용 안 함. 특별한 경우에만 선택적 사용
 
 ---
 

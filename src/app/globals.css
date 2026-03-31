@@ -149,3 +149,22 @@ button:active,
 [role="button"]:active {
   transform: scale(0.98);
 }
+
+/* 참고자료 하이라이트 */
+.ref-item:target {
+  animation: ref-highlight 1.5s ease;
+}
+
+@keyframes ref-highlight {
+  0% { background-color: rgba(245, 158, 11, 0.15); }
+  100% { background-color: transparent; }
+}
+
+.dark .ref-item:target {
+  animation: ref-highlight-dark 1.5s ease;
+}
+
+@keyframes ref-highlight-dark {
+  0% { background-color: rgba(245, 158, 11, 0.1); }
+  100% { background-color: transparent; }
+}
