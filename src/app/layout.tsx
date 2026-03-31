@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { SearchTrigger } from '@/components/search-trigger'
+import { ProgressBar } from '@/components/progress-bar'
 import { posts } from '#content'
 
 const pretendard = localFont({
@@ -53,6 +54,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${pretendard.variable} ${jetbrainsMono.variable} min-h-screen antialiased`}>
+        <ProgressBar />
         <ThemeProvider>
           <div className="mx-auto max-w-5xl px-4 py-8">
             <Header searchPosts={searchPosts} />

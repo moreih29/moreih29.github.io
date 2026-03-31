@@ -102,3 +102,32 @@ pre > code {
   line-height: 1.7;
   word-break: keep-all;
 }
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease;
+}
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* 카드 lift 효과 */
+.card-interactive {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-raised);
+}
+
+/* 버튼 press 효과 */
+button,
+[role="button"] {
+  transition: transform 0.1s ease;
+}
+button:active,
+[role="button"]:active {
+  transform: scale(0.98);
+}

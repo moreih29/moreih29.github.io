@@ -14,7 +14,7 @@ export function PostCard({ post, seriesTotal }: { post: Post; seriesTotal?: numb
   const displayTags = post.tags.slice(0, 2)
   return (
     <Link href={`/posts/${post.slug}`} className="group block">
-      <article className={`h-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-200 hover:shadow-lg${!post.cover ? ' hover:bg-card-hover' : ''}`}>
+      <article className={`card-interactive h-full overflow-hidden rounded-xl border border-border bg-card${!post.cover ? ' hover:bg-card-hover' : ''}`}>
         {post.cover && (
           <div className="overflow-hidden">
             <img

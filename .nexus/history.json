@@ -551,6 +551,51 @@
           "created_at": "2026-03-31T05:06:05.016Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T05:23:09.923Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "NProgress 스타일 프로그레스 바",
+          "context": "design-rules 섹션 7: 페이지 전환 시 상단 프로그레스 바. Next.js App Router의 라우트 변경 감지 + 얇은 상단 바 애니메이션. 외부 nprogress 패키지 사용 가능 또는 커스텀 구현.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            7
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T05:12:46.353Z"
+        },
+        {
+          "id": 2,
+          "title": "마이크로 인터랙션 체계화",
+          "context": "design-rules 섹션 7: 카드 lift(호버 시 미묘한 translateY + shadow), 링크 underline transition, 버튼 press effect(active:scale-[0.98]), 뱃지/태그 배경 전환. globals.css에 유틸리티 클래스 또는 기존 컴포넌트에 직접 적용. 모두 은은하고 절제된 수준.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            7
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T05:12:50.514Z"
+        },
+        {
+          "id": 3,
+          "title": "빌드 검증",
+          "context": "Phase 4 빌드 성공 확인",
+          "status": "completed",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:12:51.581Z"
+        }
+      ]
     }
   ]
 }
