@@ -15,7 +15,7 @@
   --text-3xl: 1.875rem;
   --text-4xl: 2.25rem;
   --color-primary: #64748b;
-  --color-background: #ffffff;
+  --color-background: #fafbfc;
   --color-foreground: #1e293b;
   --color-muted: #64748b;
   --color-border: #e2e8f0;
@@ -23,30 +23,35 @@
   --color-card-hover: #f8fafc;
   --color-tag-bg: #f1f5f9;
   --color-tag-text: #475569;
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 1px 3px rgba(100, 116, 139, 0.06);
+  --shadow-raised: 0 4px 12px rgba(100, 116, 139, 0.1);
   --shadow-overlay: 0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
 .dark {
   --color-primary: #94a3b8;
-  --color-background: #0f0f0f;
+  --color-background: #111215;
   --color-foreground: #e2e8f0;
   --color-muted: #94a3b8;
-  --color-border: #262626;
-  --color-card: #171717;
-  --color-card-hover: #1f1f1f;
+  --color-border: #262a33;
+  --color-card: #191b20;
+  --color-card-hover: #1f2228;
   --color-tag-bg: #1e293b;
   --color-tag-text: #cbd5e1;
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 3px rgba(148, 163, 184, 0.04);
+  --shadow-raised: 0 4px 12px rgba(148, 163, 184, 0.06);
   --shadow-overlay: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  transition: background-color 0.2s, color 0.2s;
+}
+
+/* 테마 토글 시에만 트랜지션 적용 — 페이지 전환 시 깜빡임 방지 */
+body.theme-transition,
+body.theme-transition * {
+  transition: background-color 0.2s, color 0.2s !important;
 }
 
 .category-tab-active {
@@ -115,6 +120,7 @@ pre > code {
 
 /* 카드 lift 효과 */
 .card-interactive {
+  box-shadow: var(--shadow-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .card-interactive:hover {

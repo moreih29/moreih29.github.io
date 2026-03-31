@@ -42,12 +42,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setResolvedTheme(resolved)
 
     const root = document.documentElement
+
+    // 테마 전환 시에만 트랜지션 적용 (페이지 전환 깜빡임 방지)
+    if (mounted) {
+      document.body.classList.add('theme-transition')
+      requestAnimationFrame(() => {
+        setTimeout(() => document.body.classList.remove('theme-transition'), 300)
+      })
+    }
+
     if (resolved === 'dark') {
       root.classList.add('dark')
     } else {
       root.classList.remove('dark')
     }
-  }, [theme])
+  }, [theme, mounted])
 
   useEffect(() => {
     if (theme !== 'system') return

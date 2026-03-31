@@ -596,6 +596,196 @@
           "created_at": "2026-03-31T05:12:51.581Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T05:32:21.883Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "Phase 5: Posts 페이지 + 비주얼 폴리싱",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 비주얼 폴리싱 — 배경/피쳐/카드/섹션 톤 밸런싱",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "2. Posts 페이지 디자인",
+            "status": "pending"
+          }
+        ]
+      },
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "비주얼 폴리싱 6가지 방안 비교 HTML 목업 생성",
+          "description": "polish-mockup.html 단일 파일로 6가지 비주얼 폴리싱 방안을 좌(라이트)/우(다크) 분할로 비교 표시",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T05:37:01.840Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "Phase 5: Posts 페이지 + 비주얼 폴리싱",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 비주얼 폴리싱 — 배경/피쳐/카드/섹션 톤 밸런싱",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. Posts 페이지 디자인",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "방안 4 \"Shadow Journal\" 선택. 배경: 라이트 #fafbfc / 다크 #111215. 카드: #ffffff / #191b20. 피처 포스트: 그라디언트 제거 → 카드형 + 상단 2px #94a3b8 악센트 + slate 톤 섀도. 카드: 보더 + slate 섀도. 섹션: border 제거, 여백만. 섀도에 slate RGB를 섞어 아이덴티티 유지. to-steel-100 유령 클래스 수정 필요.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "B안 (새 리스트 뷰) 선택. /posts 페이지 신설, 리스트형 목차 뷰 (날짜 | 카테고리 뱃지 | 제목 | 설명). 카테고리 필터 + 검색바 통합. Shadow Journal 톤에 맞는 정보 밀도 높은 탐색 경험.",
+          "consult": 2
+        }
+      ],
+      "tasks": []
+    },
+    {
+      "completed_at": "2026-03-31T06:03:42.475Z",
+      "branch": "feat/design-overhaul",
+      "consult": {
+        "topic": "히어로 구성 + Posts 라우팅",
+        "issues": [
+          {
+            "id": 1,
+            "title": "1. 피쳐 포스트 1개 vs 슬라이드 N개 — 객관적 판단",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "2. Posts 버튼 라우팅 수정 (/ → /posts)",
+            "status": "decided"
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "현행 유지 — 피처 1개 + 최신 글 4개. 슬라이더 복원 불필요. 사용자가 텍스트 목업으로 대안을 검토한 결과, 현재 구조로 충분히 만족. 최신 글 섹션에서 다수 포스트가 표현됨.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "Posts 헤더 링크 href=\"/\" → href=\"/posts\" 수정. 단순 버그 수정.",
+          "consult": 2
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Shadow Journal 비주얼 폴리싱",
+          "context": "배경: 라이트 #fafbfc / 다크 #111215. 카드: #ffffff / #191b20. 보더: 다크 #262a33. 피처 포스트: 그라디언트 제거 → 카드형 + 상단 2px #94a3b8 악센트 + slate 섀도. 카드: 보더 + slate 섀도. 섹션 border 제거, 여백만. 섀도 변수에 slate RGB 적용. to-steel-100 유령 클래스 수정.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            1
+          ],
+          "owner": "engineer-1",
+          "created_at": "2026-03-31T05:37:20.888Z"
+        },
+        {
+          "id": 2,
+          "title": "/posts 페이지 신설 (리스트형 목차 뷰)",
+          "context": "src/app/posts/page.tsx 신설. 리스트형 목차 뷰: 날짜 | 카테고리 뱃지 | 제목 | 설명 한 줄. 상단에 카테고리 필터 + 검색바. Shadow Journal 톤. 정보 밀도 높은 탐색 경험.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2
+          ],
+          "owner": "engineer-2",
+          "created_at": "2026-03-31T05:37:22.963Z"
+        },
+        {
+          "id": 3,
+          "title": "빌드 + 브라우저 검증",
+          "context": "Phase 5 빌드 성공 + 시각 검증",
+          "status": "completed",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:37:25.380Z"
+        },
+        {
+          "id": 4,
+          "title": "Posts 헤더 링크 라우팅 수정",
+          "context": "href=\"/\" → href=\"/posts\"",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            2
+          ],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:53:06.443Z"
+        },
+        {
+          "id": 5,
+          "title": "다크모드 깜빡임 수정 — body transition 제거",
+          "context": "body의 전역 transition: background-color 0.2s 제거. 테마 토글 시에만 transition 적용하도록 변경.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:55:25.709Z"
+        },
+        {
+          "id": 6,
+          "title": "헤더 a 태그 → Link 컴포넌트 전환",
+          "context": "헤더의 a 태그가 풀 페이지 리로드를 유발하여 다크모드 깜빡임 발생. Next.js Link 컴포넌트로 전환하여 클라이언트 사이드 네비게이션으로 변경.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:59:14.228Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T06:06:17.586Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "코어 메모리 기록: Next.js Link 필수",
+          "context": "내부 링크에 a 대신 Link 사용 피드백 메모리 저장",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T06:04:01.173Z"
+        },
+        {
+          "id": 2,
+          "title": "dev-rules에 Link 컴포넌트 규칙 추가",
+          "context": "내부 링크 Link 필수 규칙을 dev-rules.md 코드 규칙에 추가",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T06:05:32.140Z"
+        }
+      ]
     }
   ]
 }

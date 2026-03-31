@@ -48,7 +48,7 @@ export default function Home() {
       {featurePost && <FeaturePost post={featurePost} />}
 
       {/* 최신 포스트 섹션 */}
-      <section className="py-12 border-t border-border">
+      <section className="py-14">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-2xl font-bold">최신 글</h2>
           <Link
@@ -70,7 +70,7 @@ export default function Home() {
 
       {/* 시리즈 프리뷰 섹션 */}
       {seriesList.length > 0 && (
-        <section className="py-12 border-t border-border">
+        <section className="py-14">
           <div className="mb-8 flex items-center justify-between">
             <h2 className="text-2xl font-bold">시리즈</h2>
             <Link
@@ -100,7 +100,7 @@ export default function Home() {
 
       {/* 인기 태그 섹션 */}
       {topTags.length > 0 && (
-        <section className="py-12 border-t border-border">
+        <section className="py-14">
           <div className="mb-8 flex items-center justify-between">
             <h2 className="text-2xl font-bold">태그</h2>
             <Link
