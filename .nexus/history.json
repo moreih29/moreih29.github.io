@@ -423,6 +423,76 @@
           "created_at": "2026-03-31T04:53:29.680Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T05:05:19.881Z",
+      "branch": "feat/design-overhaul",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "히어로 슬라이더 → 정적 피처 포스트로 교체",
+          "context": "design-rules 섹션 6: 히어로 슬라이더 제거 → 정적 피처 포스트. 최신 1개 포스트를 피처로 표시. hero-slider.tsx를 feature-post.tsx로 교체. Slate/Steel 절제 톤에 맞는 정적 히어로.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            6
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T04:55:25.832Z"
+        },
+        {
+          "id": 2,
+          "title": "홈 페이지 랜딩 재설계",
+          "context": "design-rules 섹션 3: 홈을 원페이지 랜딩으로. 구성: 피처 포스트(태스크1) + 최신 포스트 3-4개 + 시리즈 프리뷰 + 인기 태그. 기존 CategoryFilter의 전체 포스트 그리드를 축소하고, 각 섹션을 명확히 분리. page.tsx 재설계.",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "decisions": [
+            3
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T04:55:30.346Z"
+        },
+        {
+          "id": 3,
+          "title": "글로벌 검색 (Cmd+K) 구현",
+          "context": "design-rules 섹션 3: Fuse.js 기반 클라이언트 사이드 검색. Cmd+K로 검색 모달 오픈. 빌드 타임에 검색 인덱스 JSON 생성. 헤더에 검색 아이콘 추가. 검색 결과: 제목, 설명, 태그 매칭.",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "decisions": [
+            3
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T04:55:33.055Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 + 브라우저 검증",
+          "context": "Phase 2 변경사항 빌드 성공 확인 + 홈 랜딩, 검색 기능 브라우저 검증",
+          "status": "completed",
+          "deps": [
+            3
+          ],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T04:55:35.135Z"
+        },
+        {
+          "id": 5,
+          "title": "검색 힌트 OS별 표시 (⌘K / Ctrl+K)",
+          "context": "Mac은 ⌘K, Windows/Linux는 Ctrl+K 표시",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "owner": "lead",
+          "created_at": "2026-03-31T05:03:06.859Z"
+        }
+      ]
     }
   ]
 }
