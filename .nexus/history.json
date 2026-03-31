@@ -851,6 +851,160 @@
           "created_at": "2026-03-31T06:32:36.911Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-03-31T07:21:34.178Z",
+      "branch": "feat/reference-rules",
+      "consult": {
+        "topic": "참고자료/참고문헌 시스템 설계",
+        "issues": [
+          {
+            "id": 1,
+            "title": "인라인 인용 표기 포맷 — 본문 내 출처 표시 형식 설계",
+            "status": "decided"
+          },
+          {
+            "id": 2,
+            "title": "참고자료 섹션 구조 — Tier별 분류 표시 및 레이아웃",
+            "status": "decided"
+          },
+          {
+            "id": 3,
+            "title": "인터랙션 패턴 — 클릭/호버 동작 및 시각적 하이라이트",
+            "status": "decided"
+          },
+          {
+            "id": 4,
+            "title": "구현 방식 — 플러그인 vs 커스텀 컴포넌트 vs 마크다운 규칙",
+            "status": "decided"
+          },
+          {
+            "id": 5,
+            "title": "규칙/프로세스 — writer·reviewer 룰 반영 및 지속 가능성",
+            "status": "decided"
+          }
+        ],
+        "researchSummary": "## 코드베이스 탐색 결과\n- 현재 google-turboquant.mdx에서 [T1]~[T7]을 순차 번호처럼 사용 — T1/T2/T3 tier 분류와 혼동\n- Tier 워크플로: 리서처가 source type 표기 → 포닥이 tier 부여 → 라이터가 적용 → 리뷰어가 검증\n- MDX 파이프라인: velite(remark-gfm + rehype-slug + rehype-pretty-code) → compiled MDX → React runtime\n- 커스텀 컴포넌트: img→ClickableImage JSX 인터셉션만 존재, 인용 관련 컴포넌트 없음\n- velite.config.ts에서 rehypePlugins 배열 확장 가능\n\n## 외부 리서치 결과\n- Distill.pub: numbered superscript + tippy.js hover tooltip이 표준 패턴\n- Oregon State 4-tier 프레임워크: 우리 3-tier와 잘 정렬됨\n- rehype-citation: BibTeX/CSL-JSON 입력, linkCitations + showTooltips 옵션 제공. Velite 호환 미검증\n- Tufte CSS sidenotes: 넓은 뷰포트에서 사이드노트, 좁으면 토글. 현재 블로그 65ch 너비와 충돌 가능\n- 접근성 필수: 양방향 앵커(ref↔back), aria-describedby, focus 트리거 tooltip\n- 시각적 Tier 표시 선례 없음 — 새로운 디자인 기회"
+      },
+      "decisions": [
+        {
+          "id": 1,
+          "summary": "인라인 인용은 숫자 superscript 방식(¹, ²³) 채택. Distill.pub 패턴. 본문 가독성 최우선. Tier 정보는 인라인에 넣지 않고, hover/클릭 인터랙션(논점 3)에서 보완. 디자이너가 제안한 미묘한 시각적 tier 힌트도 논점 3에서 구체화.",
+          "consult": 1
+        },
+        {
+          "id": 2,
+          "summary": "Tier 소제목 분리 + 전역 연속 번호 체계 채택. T1/T2/T3 섹션별 소제목(### T1 — 1차 출처)으로 구분하되, 번호는 1~N 전역 연속. 본문 superscript와 1:1 직접 매핑. 각 Tier 소제목에 시각적 단서 추가는 논점 3에서 구체화.",
+          "consult": 2
+        },
+        {
+          "id": 3,
+          "summary": "3개 레이어 모두 추천안 채택. ① 인라인: 무채색 단일 superscript (text-primary, 크기 약간 키움) ② 인터랙션: hover tooltip(tier 배지 포함) + 클릭→스크롤 (모바일은 tap→스크롤) ③ 도착: 배경 flash + ↩ back-link. 접근성 양방향 앵커 필수.",
+          "consult": 3
+        },
+        {
+          "id": 4,
+          "summary": "커스텀 MDX 컴포넌트 방식 채택. <Ref id={N} /> 인라인 + <References>/<RefItem> 하단 섹션. 기존 JSX 인터셉션 패턴과 일관. Tier/tooltip/하이라이트/back-link 모두 React로 완전 제어. rehype-citation은 Velite 호환 미검증+과도, 순수 마크다운은 기능 부재로 탈락.",
+          "consult": 4
+        },
+        {
+          "id": 5,
+          "summary": "파이프라인 전 단계 분산(B안) 채택. 리서처(type+URL 필수) → 포닥(tier 부여+브리핑에 분류표) → 라이터(<Ref>/<References> 문법) → 리뷰어(4항목 체크리스트). 아키텍트 보충 수용: Ref id 대응·번호 연속성은 빌드 타임 자동 검증도 추가. 출처 정확성 최우선.",
+          "consult": 5
+        }
+      ],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Create citation-demo.html",
+          "description": "Create a single self-contained HTML file demonstrating citation/reference interaction patterns for the blog.",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T07:29:53.818Z",
+      "branch": "feat/reference-rules",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "규칙 파일 업데이트 (researcher/writer/reviewer-rules)",
+          "context": "상담 결정사항을 3개 규칙 파일에 반영: researcher-rules에 URL필수+1줄요약, writer-rules에 Ref/References/RefItem 컴포넌트 문법, reviewer-rules에 인용 시스템 검증 체크리스트",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "owner": "lead",
+          "created_at": "2026-03-31T07:22:04.899Z"
+        },
+        {
+          "id": 2,
+          "title": "Ref/References/RefItem 커스텀 MDX 컴포넌트 구현",
+          "context": "React 컴포넌트 개발: Ref(인라인 superscript + hover tooltip + 클릭 스크롤), References(tier별 섹션 컨테이너), RefItem(개별 참고자료 + 배경 flash + back-link). MDX 컴포넌트로 등록.",
+          "status": "completed",
+          "deps": [],
+          "decisions": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T07:22:08.365Z"
+        },
+        {
+          "id": 3,
+          "title": "google-turboquant.mdx 인용 시스템 마이그레이션",
+          "context": "기존 [T1]~[T7] 텍스트 인용을 새 Ref/RefItem 컴포넌트로 변환. Tier별 분류 적용, 전역 번호 재부여.",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "decisions": [
+            1,
+            2,
+            5
+          ],
+          "owner": "engineer",
+          "created_at": "2026-03-31T07:22:11.850Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 검증 및 동작 테스트",
+          "context": "velite build + next build 성공 확인. 인라인 superscript, hover tooltip, 클릭 스크롤, 배경 flash, back-link 동작 검증.",
+          "status": "completed",
+          "deps": [
+            3
+          ],
+          "decisions": [],
+          "owner": "qa",
+          "created_at": "2026-03-31T07:22:13.584Z"
+        }
+      ]
+    },
+    {
+      "completed_at": "2026-03-31T07:38:52.573Z",
+      "branch": "feat/reference-rules",
+      "consult": null,
+      "decisions": [],
+      "tasks": [
+        {
+          "id": 1,
+          "title": "인라인 superscript 간격 조정",
+          "context": "연속된 Ref superscript 사이에 미세 간격(ml-[0.1em]) 추가",
+          "status": "completed",
+          "deps": [],
+          "decisions": [],
+          "created_at": "2026-03-31T07:38:36.442Z"
+        }
+      ]
     }
   ]
 }

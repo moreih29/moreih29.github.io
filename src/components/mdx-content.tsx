@@ -1,9 +1,13 @@
 import * as runtime from 'react/jsx-runtime'
 import { type ComponentProps, type ElementType } from 'react'
 import { ClickableImage } from './image-modal'
+import { Ref, RefItem, References } from './references'
 
 const sharedComponents = {
   img: ClickableImage,
+  Ref,
+  RefItem,
+  References,
 }
 
 function interceptJsx(
