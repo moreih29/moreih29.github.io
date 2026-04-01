@@ -38,7 +38,7 @@ GPT-3는 강력했지만, 원하는 대로 동작하지 않았다. 사실을 유
 
 ### 3단계 파이프라인
 
-2022년 3월, OpenAI의 Ouyang 팀이 "Training language models to follow instructions with human feedback"을 발표했다[^1]. **InstructGPT**다.
+2022년 3월, OpenAI의 Ouyang 팀이 "Training language models to follow instructions with human feedback"을 발표했다<Ref id={1} />. **InstructGPT**다.
 
 방법론의 이름은 **RLHF(Reinforcement Learning from Human Feedback)**. 세 단계로 이루어진다.
 
@@ -64,7 +64,7 @@ objective = E[r(x,y)] - β · KL(π_θ ∥ π_SFT)
 
 ### 결과: 크기를 이긴 정렬
 
-결과가 놀라웠다. **1.3B 파라미터 InstructGPT가 175B GPT-3보다 인간 평가에서 높은 점수를 받았다.** 파라미터 수는 100배 적었다.
+결과가 놀라웠다. **1.3B 파라미터 InstructGPT가 175B GPT-3보다 인간 평가에서 높은 점수를 받았다.**<Ref id={1} /> 파라미터 수는 100배 적었다.
 
 진실성(truthfulness)과 독성(toxicity) 감소 효과도 확인됐다. 공개 NLP 벤치마크에서는 일부 성능 저하("alignment tax")가 관찰됐지만, 인간이 느끼는 유용성은 크게 올랐다.
 
@@ -78,7 +78,7 @@ objective = E[r(x,y)] - β · KL(π_θ ∥ π_SFT)
 
 RLHF의 한계는 파이프라인의 복잡성이었다. 보상 모델을 별도로 학습하고, PPO라는 민감한 강화학습 알고리즘을 안정적으로 돌려야 한다. 하이퍼파라미터에 예민하고, 학습이 불안정해지기 쉽다.
 
-2023년 5월, Stanford의 Rafailov 팀이 <strong>DPO(Direct Preference Optimization)</strong>를 발표했다[^2]. 핵심 통찰은 하나였다.
+2023년 5월, Stanford의 Rafailov 팀이 <strong>DPO(Direct Preference Optimization)</strong>를 발표했다<Ref id={2} />. 핵심 통찰은 하나였다.
 
 > "최적 정책은 보상 함수를 통해 closed form으로 표현 가능하다. 그러면 보상 모델이 따로 필요 없다."
 
@@ -108,9 +108,9 @@ L_DPO = -E[log σ(β·log(π_θ(y_w|x)/π_ref(y_w|x)) - β·log(π_θ(y_l|x)/π_
 
 ### 결과
 
-원 논문(2023년 발표) 기준으로, GPT-4 평가 TL;DR 요약 태스크에서 DPO의 승률은 약 61%, PPO 기반 RLHF는 약 57%였다[^2]. 구현 복잡도는 크게 낮아졌다.
+원 논문(2023년 발표) 기준으로, GPT-4 평가 TL;DR 요약 태스크에서 DPO의 승률은 약 61%, PPO 기반 RLHF는 약 57%였다<Ref id={2} />. 구현 복잡도는 크게 낮아졌다.
 
-단, 2024년 ICML 종합 연구(Xu et al.)에서는 복잡한 코딩 태스크에서 잘 조정된 PPO가 DPO를 능가하는 결과도 보고됐다[^3]. PPO와 DPO는 상호 보완적이며, 어느 쪽이 절대적으로 우월하다고 보기 어렵다.
+단, 2024년 ICML 종합 연구(Xu et al.)에서는 복잡한 코딩 태스크에서 잘 조정된 PPO가 DPO를 능가하는 결과도 보고됐다<Ref id={3} />. PPO와 DPO는 상호 보완적이며, 어느 쪽이 절대적으로 우월하다고 보기 어렵다.
 
 ---
 
@@ -120,7 +120,7 @@ L_DPO = -E[log σ(β·log(π_θ(y_w|x)/π_ref(y_w|x)) - β·log(π_θ(y_l|x)/π_
 
 PPO를 대형 모델에 적용하면 한 가지 현실적 문제가 생긴다. **크리틱 모델(critic model)** 때문이다. PPO는 어떤 상태가 얼마나 좋은지 평가하는 별도의 가치 함수 네트워크를 필요로 하는데, 이것이 보통 정책 모델과 같은 크기다. 즉, 70B 모델을 PPO로 학습하면 70B짜리 모델 두 개를 동시에 메모리에 올려야 한다.
 
-2024년 2월, DeepSeek의 Shao 팀이 DeepSeekMath 논문과 함께 <strong>GRPO(Group Relative Policy Optimization)</strong>를 제안했다[^4]. 아이디어는 단순했다.
+2024년 2월, DeepSeek의 Shao 팀이 DeepSeekMath 논문과 함께 <strong>GRPO(Group Relative Policy Optimization)</strong>를 제안했다<Ref id={4} />. 아이디어는 단순했다.
 
 > "크리틱 모델 대신, 같은 프롬프트에서 샘플링한 그룹의 평균 보상을 베이스라인으로 쓰자."
 
@@ -136,9 +136,9 @@ A_i = (r_i - mean(r_1, ..., r_G)) / std(r_1, ..., r_G)
 
 ### 결과
 
-DeepSeekMath-7B에서 GRPO 적용 후 수학 벤치마크가 개선됐다 (GSM8K: 82.9% → 88.2%, MATH: 46.8% → 51.7%, 2024년 기준)[^4].
+DeepSeekMath-7B에서 GRPO 적용 후 수학 벤치마크가 개선됐다 (GSM8K: 82.9% → 88.2%, MATH: 46.8% → 51.7%, 2024년 기준)<Ref id={4} />.
 
-GRPO의 진가는 이후에 드러났다. 2025년 1월 발표된 **DeepSeek-R1**이 GRPO를 RL 프레임워크로 채택했다. R1의 기반이 된 DeepSeek-R1-Zero는 GRPO만으로 AIME 2024 pass@1을 15.6%에서 71.0%까지 끌어올렸다. 정식 R1 모델은 cold-start SFT를 추가해 79.8%를 달성했다 (2025년 1월 기술 보고서 기준)[^5].
+GRPO의 진가는 이후에 드러났다. 2025년 1월 발표된 **DeepSeek-R1**이 GRPO를 RL 프레임워크로 채택했다.<Ref id={5} /> R1의 기반이 된 DeepSeek-R1-Zero는 GRPO만으로 AIME 2024 pass@1을 15.6%에서 71.0%까지 끌어올렸다. 정식 R1 모델은 cold-start SFT를 추가해 79.8%를 달성했다 (2025년 1월 기술 보고서 기준)[^5].
 
 ---
 
@@ -148,7 +148,7 @@ GRPO의 진가는 이후에 드러났다. 2025년 1월 발표된 **DeepSeek-R1**
 
 RLHF는 무해성(harmlessness) 학습을 위해 인간 라벨러가 유해한 내용을 반복 검토해야 한다. 심리적 부담과 비용 문제가 있다. 또한 어떤 원칙으로 응답을 평가해야 하는지가 명시되지 않아 일관성이 떨어질 수 있다.
 
-2022년 12월, Anthropic의 Bai 팀이 <strong>CAI(Constitutional AI)</strong>를 발표했다[^6]. 두 가지 문제를 동시에 해결하는 접근이었다.
+2022년 12월, Anthropic의 Bai 팀이 <strong>CAI(Constitutional AI)</strong>를 발표했다<Ref id={6} />. 두 가지 문제를 동시에 해결하는 접근이었다.
 
 ### 2단계 구조
 
@@ -187,7 +187,7 @@ CAI는 현재 Claude 시리즈의 학습 방법론적 기반이다. Anthropic은
 
 정렬 과정 — RLHF, 지시 튜닝, 편향 완화 — 이 모델의 사전학습된 일반 능력(capability)을 저하시키는 현상이다.
 
-Lin et al. (2024, EMNLP)의 실험에서 이것이 수치로 확인됐다[^7]. OpenLLaMA-3B를 RLHF로 정렬할 때, 보상이 올라가는 만큼 NLP 벤치마크 성능이 떨어졌다.
+Lin et al. (2024, EMNLP)의 실험에서 이것이 수치로 확인됐다<Ref id={7} />. OpenLLaMA-3B를 RLHF로 정렬할 때, 보상이 올라가는 만큼 NLP 벤치마크 성능이 떨어졌다.
 
 | 보상 변화 | SQuAD F1 | DROP F1 | WMT BLEU |
 |----------|----------|---------|----------|
@@ -256,22 +256,68 @@ RLHF는 인간 피드백을 학습 신호로 만드는 방법을 체계화했다
 
 ---
 
-## 참고 자료
-
-[^1]: [T1] Ouyang et al. (2022). Training language models to follow instructions with human feedback. NeurIPS 2022. [arXiv:2203.02155](https://arxiv.org/abs/2203.02155)
-
-[^2]: [T1] Rafailov et al. (2023). Direct Preference Optimization: Your Language Model is Secretly a Reward Model. NeurIPS 2023. [arXiv:2305.18290](https://arxiv.org/abs/2305.18290)
-
-[^3]: [T1] Xu et al. (2024). Is DPO Superior to PPO for LLM Alignment? A Comprehensive Study. ICML 2024. [arXiv:2404.10719](https://arxiv.org/abs/2404.10719)
-
-[^4]: [T1] Shao et al. (2024). DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models. [arXiv:2402.03300](https://arxiv.org/abs/2402.03300)
-
-[^5]: [T2] DeepSeek-AI (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. [arXiv:2501.12948](https://arxiv.org/abs/2501.12948)
-
-[^6]: [T1] Bai et al. (2022). Constitutional AI: Harmlessness from AI Feedback. [arXiv:2212.08073](https://arxiv.org/abs/2212.08073)
-
-[^7]: [T1] Lin et al. (2024). Mitigating the Alignment Tax of RLHF. EMNLP 2024. [arXiv:2309.06256](https://arxiv.org/abs/2309.06256)
-
-- [T1] Gao et al. (2023). Scaling Laws for Reward Model Overoptimization. ICML 2023. [링크](https://proceedings.mlr.press/v202/gao23h/gao23h.pdf)
-- [T3] Weng, L. (2024). Reward Hacking in Reinforcement Learning. Lil'Log. [링크](https://lilianweng.github.io/posts/2024-11-28-reward-hacking/)
-- [T2] Anthropic (2022). Constitutional AI: Harmlessness from AI Feedback. [anthropic.com](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)
+<References>
+  <RefItem
+    id={1}
+    tier="T1"
+    title="Training language models to follow instructions with human feedback"
+    source="Ouyang et al., NeurIPS 2022"
+    url="https://arxiv.org/abs/2203.02155"
+  />
+  <RefItem
+    id={2}
+    tier="T1"
+    title="Direct Preference Optimization: Your Language Model is Secretly a Reward Model"
+    source="Rafailov et al., NeurIPS 2023"
+    url="https://arxiv.org/abs/2305.18290"
+  />
+  <RefItem
+    id={3}
+    tier="T1"
+    title="Is DPO Superior to PPO for LLM Alignment? A Comprehensive Study"
+    source="Xu et al., ICML 2024"
+    url="https://arxiv.org/abs/2404.10719"
+  />
+  <RefItem
+    id={4}
+    tier="T1"
+    title="DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models"
+    source="Shao et al., 2024"
+    url="https://arxiv.org/abs/2402.03300"
+  />
+  <RefItem
+    id={5}
+    tier="T1"
+    title="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning"
+    source="DeepSeek-AI, 2025"
+    url="https://arxiv.org/abs/2501.12948"
+  />
+  <RefItem
+    id={6}
+    tier="T1"
+    title="Constitutional AI: Harmlessness from AI Feedback"
+    source="Bai et al., Anthropic 2022"
+    url="https://arxiv.org/abs/2212.08073"
+  />
+  <RefItem
+    id={7}
+    tier="T1"
+    title="Mitigating the Alignment Tax of RLHF"
+    source="Lin et al., EMNLP 2024"
+    url="https://arxiv.org/abs/2309.06256"
+  />
+  <RefItem
+    id={8}
+    tier="T1"
+    title="Scaling Laws for Reward Model Overoptimization"
+    source="Gao et al., ICML 2023"
+    url="https://proceedings.mlr.press/v202/gao23h/gao23h.pdf"
+  />
+  <RefItem
+    id={9}
+    tier="T3"
+    title="Reward Hacking in Reinforcement Learning"
+    source="Lil'Log (Lilian Weng), 2024"
+    url="https://lilianweng.github.io/posts/2024-11-28-reward-hacking/"
+  />
+</References>

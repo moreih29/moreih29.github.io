@@ -1005,6 +1005,164 @@
           "created_at": "2026-03-31T07:38:36.442Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-04-01T05:20:13.002Z",
+      "branch": "main",
+      "meet": {
+        "id": 1,
+        "topic": "참고자료 인용 시스템 확장 및 디자인 개선",
+        "attendees": [
+          {
+            "role": "architect",
+            "name": "아키텍트",
+            "joined_at": "2026-04-01T02:11:46.799Z"
+          },
+          {
+            "role": "designer",
+            "name": "디자이너",
+            "joined_at": "2026-04-01T02:11:46.799Z"
+          },
+          {
+            "role": "postdoc",
+            "name": "포닥",
+            "joined_at": "2026-04-01T02:11:46.799Z"
+          }
+        ],
+        "issues": [
+          {
+            "id": 1,
+            "title": "기존 포스트 인용 시스템 적용 방안 + 새 포스트 룰 검증",
+            "status": "decided",
+            "discussion": [
+              {
+                "speaker": "lead",
+                "content": "세 에이전트 합의점: (1) 새 포스트용 룰/컴포넌트 체계는 충분, 소소한 보강만 필요 (2) 전면 소급 적용은 ROI 낮음. 차이점: 디자이너는 \"기존 건드리지 말자\", 아키텍트/포닥은 \"선별 소급 가능\"(최신편·1편 우선). 추가 발견: url 필수/선택 정책 불일치, 인용 밀도 가이드 부재, 모바일 툴팁 접근성.",
+                "timestamp": "2026-04-01T02:14:18.450Z"
+              },
+              {
+                "speaker": "user",
+                "content": "현재 룰로 새 포스트 충분하다는 것 확인. 기존 24개 포스트 전부 소급 적용하겠다는 결정. 선별이 아닌 전면 적용.",
+                "timestamp": "2026-04-01T02:15:30.146Z"
+              }
+            ],
+            "decision": "1) 새 포스트: 현재 룰/컴포넌트 체계 충분, 즉시 적용. 2) 기존 24개 포스트: 전면 소급 적용. 포닥의 역방향 출처 조사 프로토콜(주장 추출→출처 매칭→티어 부여→Ref 삽입→리뷰) 따름. 3) url 정책: \"가능한 한 필수, 없으면 생략 가능\"으로 룰 완화. 4) 인용 밀도: 한 문장에 Ref 최대 2개 가이드 추가. 5) 시리즈물: 포스트별 독립 관리, 공통 출처 반복 허용."
+          },
+          {
+            "id": 2,
+            "title": "참고자료 섹션 '본문으로 돌아가기' 버튼(↩) 디자인 이질감",
+            "status": "decided",
+            "discussion": [
+              {
+                "speaker": "lead",
+                "content": "디자이너·아키텍트: A안(번호를 링크로, ↩ 삭제) 추천. 구현 최소, 대칭적 UX, 모바일 문제 없음. 포닥: B안(hover 시만 표시) 추천. 양방향 내비게이션은 학술 독서 흐름에 기능적 필수이므로 삭제 반대, 시각적 잡음만 줄이자는 입장. 핵심 쟁점: ↩ 복귀 링크를 완전 제거해도 되는가(A) vs 기능은 유지하되 눈에 안 띄게(B).",
+                "timestamp": "2026-04-01T02:18:11.295Z"
+              }
+            ],
+            "decision": "A안 채택: RefItem의 번호(1,2...)를 클릭 가능한 링크(a 태그)로 변경하여 본문 복귀 기능 부여, 기존 ↩ 버튼 삭제. 번호에 cursor-pointer + hover:text-primary 스타일 추가. 양방향 내비게이션 유지하면서 시각적 이질감 제거."
+          }
+        ],
+        "research_summary": "## 리서치 결과 요약\n\n### 현재 시스템 구조\n- 컴포넌트: Ref(인라인 슈퍼스크립트), RefItem(하단 참고자료 항목), References(컨테이너, 티어별 자동 그룹핑)\n- MDX 등록: mdx-content.tsx의 sharedComponents에 전역 등록 → 모든 MDX에서 사용 가능\n- 티어: T1(논문/공식), T2(공식 블로그/미디어), T3(커뮤니티) — 색상 코딩됨\n\n### 적용 현황\n- google-turboquant.mdx: 유일하게 적용된 포스트 (파일럿)\n- 나머지 24개 포스트: 미적용 (llm-anatomy 9, nlp-journey 6, llm-eng 5, mfg-ai 4)\n\n### 룰 현황\n- writer-rules.md §2: Ref/RefItem 사용 패턴, ID 순서, 티어 규칙 명시\n- reviewer-rules.md §1: Ref↔RefItem 매칭 검증 체크리스트 존재\n- → 새 포스트 작성 시 룰은 충분히 갖춰져 있음\n\n### 디자인 이슈\n- RefItem 끝에 ↩ (U+21A9) 유니코드 화살표 — text-muted 색상, hover 시 밝아짐\n- 사용자 피드백: [Image #1] 형태로 보이며 이질감이 크다고 함\n- 현재: `[id] [tier-badge] [title — source] [↩]` 레이아웃",
+        "created_at": "2026-04-01T02:11:46.799Z"
+      },
+      "tasks": [
+        {
+          "id": 1,
+          "title": "writer-rules.md 룰 업데이트",
+          "context": "url 정책 \"가능한 한 필수, 없으면 생략 가능\"으로 완화 + 인용 밀도 가이드 \"한 문장에 Ref 최대 2개\" 추가",
+          "status": "pending",
+          "deps": [],
+          "decisions": [],
+          "meet_issue": 1,
+          "owner": "lead",
+          "created_at": "2026-04-01T03:11:42.223Z"
+        },
+        {
+          "id": 2,
+          "title": "RefItem 컴포넌트 수정 — 번호를 복귀 링크로, ↩ 삭제",
+          "context": "RefItem의 번호(1,2...)를 a 태그 링크로 변경하여 본문 복귀 기능 부여. 기존 ↩ 버튼 삭제. cursor-pointer + hover:text-primary 스타일 추가.",
+          "status": "pending",
+          "deps": [],
+          "decisions": [],
+          "meet_issue": 2,
+          "owner": "lead",
+          "created_at": "2026-04-01T03:11:45.393Z"
+        },
+        {
+          "id": 3,
+          "title": "기존 포스트 소급 적용 — llm-anatomy 시리즈 (9편)",
+          "context": "llm-anatomy 1~9 포스트에 인용 시스템 소급 적용. 역방향 출처 조사 프로토콜 따름.",
+          "status": "pending",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "meet_issue": 1,
+          "created_at": "2026-04-01T03:11:48.048Z"
+        },
+        {
+          "id": 4,
+          "title": "기존 포스트 소급 적용 — nlp-journey 시리즈 (6편)",
+          "context": "nlp-journey 1~6 포스트에 인용 시스템 소급 적용. 동일 프로토콜.",
+          "status": "pending",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "meet_issue": 1,
+          "created_at": "2026-04-01T03:11:49.391Z"
+        },
+        {
+          "id": 5,
+          "title": "기존 포스트 소급 적용 — llm-eng 시리즈 (5편)",
+          "context": "llm-eng 1~5 포스트에 인용 시스템 소급 적용. 동일 프로토콜.",
+          "status": "pending",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "meet_issue": 1,
+          "created_at": "2026-04-01T03:11:50.730Z"
+        },
+        {
+          "id": 6,
+          "title": "기존 포스트 소급 적용 — mfg-ai 시리즈 (4편)",
+          "context": "mfg-ai 1~4 포스트에 인용 시스템 소급 적용. 동일 프로토콜.",
+          "status": "pending",
+          "deps": [
+            1,
+            2
+          ],
+          "decisions": [],
+          "meet_issue": 1,
+          "created_at": "2026-04-01T03:11:53.870Z"
+        },
+        {
+          "id": 7,
+          "title": "writer-rules.md에 고아 RefItem 허용 룰 추가",
+          "context": "본문에 Ref 없이 하단 RefItem만 존재하는 \"추가 참고문헌\"을 허용하는 규칙 추가. reviewer-rules에도 고아 RefItem을 에러로 취급하지 않도록 반영.",
+          "status": "pending",
+          "deps": [],
+          "decisions": [],
+          "meet_issue": 1,
+          "owner": "lead",
+          "created_at": "2026-04-01T04:03:19.572Z"
+        },
+        {
+          "id": 8,
+          "title": "각주(footnotes) ↩ 아이콘 스타일 통일",
+          "context": "llm-anatomy 1~3편에 마크다운 각주([^N]) 사용 중. remark-gfm이 생성하는 ↩ backref 아이콘이 이질적. RefItem과 동일하게 번호 자체가 복귀 링크가 되도록 CSS로 변경. 구조: .footnotes > ol > li 안에 a.data-footnote-backref가 ↩ 포함. CSS 접근: ol list-style 제거, counter로 번호 생성, backref의 ↩ 텍스트 숨기고 counter 번호로 대체하여 좌측 배치.",
+          "status": "pending",
+          "deps": [],
+          "decisions": [],
+          "meet_issue": 2,
+          "owner": "엔지니어",
+          "created_at": "2026-04-01T04:48:32.044Z"
+        }
+      ]
     }
   ]
 }

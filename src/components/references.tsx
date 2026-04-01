@@ -138,9 +138,14 @@ export function RefItem({ id, tier, title, source, url }: RefItemProps) {
       data-title={title}
       data-source={source}
     >
-      <span className="min-w-[1.5rem] text-right font-mono text-sm text-muted shrink-0 pt-px">
+      <a
+        href={`#ref-back-${id}`}
+        onClick={handleBackClick}
+        className="min-w-[1.5rem] text-right font-mono text-sm text-muted shrink-0 pt-px no-underline cursor-pointer hover:text-primary transition-colors"
+        aria-label="본문으로 돌아가기"
+      >
         {id}
-      </span>
+      </a>
       <span
         className={`mt-0.5 inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${tierColors[tier]}`}
       >
@@ -160,14 +165,6 @@ export function RefItem({ id, tier, title, source, url }: RefItemProps) {
           <span className="font-medium text-foreground">{title}</span>
         )}
         <span className="text-muted">— {source}</span>
-        <a
-          href={`#ref-back-${id}`}
-          onClick={handleBackClick}
-          className="ml-1 text-muted no-underline hover:text-foreground transition-colors"
-          aria-label="본문으로 돌아가기"
-        >
-          ↩
-        </a>
       </span>
     </div>
   )

@@ -168,3 +168,44 @@ button:active,
   0% { background-color: rgba(245, 158, 11, 0.1); }
   100% { background-color: transparent; }
 }
+
+/* 각주(footnotes) — ↩ 제거, 번호 자체가 복귀 링크 */
+.prose .footnotes ol {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: fn;
+}
+
+.prose .footnotes li {
+  counter-increment: fn;
+  position: relative;
+  padding-left: 2.25rem;
+}
+
+.prose .footnotes li p {
+  margin: 0;
+}
+
+.prose .footnotes .data-footnote-backref {
+  font-size: 0 !important;
+  text-decoration: none !important;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.prose .footnotes .data-footnote-backref::before {
+  content: counter(fn);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  color: var(--color-muted);
+  min-width: 1.5rem;
+  display: inline-block;
+  text-align: right;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.prose .footnotes .data-footnote-backref:hover::before {
+  color: var(--color-primary);
+}
