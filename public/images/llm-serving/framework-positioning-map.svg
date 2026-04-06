@@ -1,0 +1,124 @@
+<svg viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">LLM 서빙 프레임워크 포지셔닝 맵</text>
+  <text x="380" y="44" text-anchor="middle" font-size="11" fill="#6B7280">x축: 설정 복잡도 / y축: 프로덕션 처리량 / 버블 크기: 커뮤니티 규모(Stars)</text>
+
+  <!-- Chart area background -->
+  <rect x="80" y="60" width="600" height="340" rx="6" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Grid lines horizontal -->
+  <line x1="80" y1="173" x2="680" y2="173" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="80" y1="287" x2="680" y2="287" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Grid lines vertical -->
+  <line x1="230" y1="60" x2="230" y2="400" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="380" y1="60" x2="380" y2="400" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="530" y1="60" x2="530" y2="400" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Y axis label -->
+  <text x="24" y="233" text-anchor="middle" font-size="11" fill="#6B7280" transform="rotate(-90, 24, 233)">처리량 (프로덕션)</text>
+  <text x="54" y="80" text-anchor="middle" font-size="10" fill="#9CA3AF">높음</text>
+  <text x="54" y="395" text-anchor="middle" font-size="10" fill="#9CA3AF">낮음</text>
+
+  <!-- X axis label -->
+  <text x="380" y="430" text-anchor="middle" font-size="11" fill="#6B7280">설정 복잡도</text>
+  <text x="90" y="420" text-anchor="start" font-size="10" fill="#9CA3AF">낮음</text>
+  <text x="658" y="420" text-anchor="end" font-size="10" fill="#9CA3AF">높음</text>
+
+  <!-- Axes -->
+  <line x1="80" y1="400" x2="680" y2="400" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="80" y1="400" x2="80" y2="60" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Zone labels -->
+  <text x="155" y="78" text-anchor="middle" font-size="10" fill="#9CA3AF" font-style="italic">로컬/엣지</text>
+  <text x="605" y="78" text-anchor="middle" font-size="10" fill="#9CA3AF" font-style="italic">프로덕션 고성능</text>
+
+  <!-- ── BUBBLES ── -->
+
+  <!-- TensorRT-LLM: 높은 처리량, 높은 복잡도, stars ~13K (중간 버블) -->
+  <circle cx="610" cy="88" r="22" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5" opacity="0.85"/>
+  <text x="610" y="84" text-anchor="middle" font-size="9" font-weight="bold" fill="#374151">TensorRT</text>
+  <text x="610" y="96" text-anchor="middle" font-size="8" fill="#6B7280">-LLM</text>
+  <text x="610" y="120" text-anchor="middle" font-size="8" fill="#9CA3AF">~13K ★</text>
+
+  <!-- SGLang: 높은 처리량, 중간 복잡도, stars ~25K (중간 버블) -->
+  <circle cx="400" cy="95" r="28" fill="#D1FAE5" stroke="#059669" stroke-width="1.5" opacity="0.85"/>
+  <text x="400" y="91" text-anchor="middle" font-size="9" font-weight="bold" fill="#374151">SGLang</text>
+  <text x="400" y="103" text-anchor="middle" font-size="8" fill="#6B7280">RadixAttn</text>
+  <text x="400" y="134" text-anchor="middle" font-size="8" fill="#9CA3AF">~25K ★</text>
+
+  <!-- vLLM: 높은 처리량, 낮은 복잡도, stars ~75K (큰 버블) -->
+  <circle cx="195" cy="108" r="40" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5" opacity="0.85"/>
+  <text x="195" y="103" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">vLLM</text>
+  <text x="195" y="117" text-anchor="middle" font-size="8" fill="#6B7280">PagedAttn</text>
+  <text x="195" y="158" text-anchor="middle" font-size="8" fill="#9CA3AF">~75K ★</text>
+
+  <!-- TGI: 중간 처리량, 낮은 복잡도, stars ~15K (중간 버블) — 유지보수 모드 -->
+  <circle cx="195" cy="220" r="22" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.85"/>
+  <text x="195" y="216" text-anchor="middle" font-size="9" font-weight="bold" fill="#9CA3AF">TGI</text>
+  <text x="195" y="228" text-anchor="middle" font-size="8" fill="#9CA3AF">유지보수</text>
+  <text x="195" y="252" text-anchor="middle" font-size="8" fill="#9CA3AF">~15K ★</text>
+
+  <!-- LMDeploy: 높은 처리량, 중간 복잡도, stars ~7.6K (작은 버블) -->
+  <circle cx="480" cy="135" r="17" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5" opacity="0.85"/>
+  <text x="480" y="131" text-anchor="middle" font-size="8" font-weight="bold" fill="#374151">LMDeploy</text>
+  <text x="480" y="143" text-anchor="middle" font-size="7" fill="#6B7280">TurboMind</text>
+  <text x="480" y="162" text-anchor="middle" font-size="8" fill="#9CA3AF">~7.6K ★</text>
+
+  <!-- DeepSpeed-MII: 중간 처리량, 중간 복잡도, 낮은 stars (작은 버블) -->
+  <circle cx="395" cy="230" r="14" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5" opacity="0.85"/>
+  <text x="395" y="226" text-anchor="middle" font-size="8" font-weight="bold" fill="#374151">DS-MII</text>
+  <text x="395" y="238" text-anchor="middle" font-size="7" fill="#6B7280">SplitFuse</text>
+  <text x="395" y="255" text-anchor="middle" font-size="7" fill="#9CA3AF">낮은 활성도</text>
+
+  <!-- Modular MAX: 중간-높은 처리량, 중간 복잡도, 작은 버블 -->
+  <circle cx="480" cy="210" r="15" fill="#FCE7F3" stroke="#EC4899" stroke-width="1.5" opacity="0.85"/>
+  <text x="480" y="206" text-anchor="middle" font-size="8" font-weight="bold" fill="#374151">Modular</text>
+  <text x="480" y="218" text-anchor="middle" font-size="7" fill="#6B7280">MAX/Mojo</text>
+  <text x="480" y="234" text-anchor="middle" font-size="7" fill="#9CA3AF">신생</text>
+
+  <!-- llama.cpp: 낮은 처리량, 낮은 복잡도, stars ~99K (큰 버블) -->
+  <circle cx="160" cy="330" r="38" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" opacity="0.85"/>
+  <text x="160" y="325" text-anchor="middle" font-size="9" font-weight="bold" fill="#374151">llama.cpp</text>
+  <text x="160" y="337" text-anchor="middle" font-size="8" fill="#6B7280">GGUF/CPU</text>
+  <text x="160" y="376" text-anchor="middle" font-size="8" fill="#9CA3AF">~99K ★</text>
+
+  <!-- Ollama: 낮은 처리량, 최저 복잡도, stars ~110K (가장 큰 버블) -->
+  <circle cx="108" cy="340" r="22" fill="#FEF9C3" stroke="#CA8A04" stroke-width="1.5" opacity="0.85"/>
+  <text x="108" y="337" text-anchor="middle" font-size="9" font-weight="bold" fill="#374151">Ollama</text>
+  <text x="108" y="372" text-anchor="middle" font-size="8" fill="#9CA3AF">~110K ★</text>
+
+  <!-- MLC LLM: 낮은 처리량, 중간 복잡도, 작은 버블 -->
+  <circle cx="310" cy="340" r="14" fill="#E0E7FF" stroke="#6366F1" stroke-width="1.5" opacity="0.85"/>
+  <text x="310" y="336" text-anchor="middle" font-size="8" font-weight="bold" fill="#374151">MLC LLM</text>
+  <text x="310" y="348" text-anchor="middle" font-size="7" fill="#6B7280">TVM/엣지</text>
+  <text x="310" y="363" text-anchor="middle" font-size="7" fill="#9CA3AF">ICLR 2025</text>
+
+  <!-- LiteLLM: 게이트웨이 특성 — 낮은 처리량 위치, 낮은 복잡도, 중간 버블 -->
+  <circle cx="145" cy="265" r="18" fill="#FDF4FF" stroke="#A855F7" stroke-width="1.5" opacity="0.85"/>
+  <text x="145" y="261" text-anchor="middle" font-size="8" font-weight="bold" fill="#374151">LiteLLM</text>
+  <text x="145" y="273" text-anchor="middle" font-size="7" fill="#6B7280">100+ API</text>
+  <text x="145" y="288" text-anchor="middle" font-size="7" fill="#9CA3AF">게이트웨이</text>
+
+  <!-- Separator dashed line — 프로덕션 / 로컬 경계 -->
+  <line x1="80" y1="193" x2="680" y2="193" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="686" y="196" text-anchor="start" font-size="9" fill="#9CA3AF">─ 프로덕션/로컬 경계</text>
+
+  <!-- Legend -->
+  <rect x="82" y="442" width="596" height="28" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <circle cx="106" cy="456" r="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="116" y="460" font-size="9" fill="#374151">1군 (프로덕션 고처리량)</text>
+  <circle cx="246" cy="456" r="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="1"/>
+  <text x="256" y="460" font-size="9" fill="#374151">2군 (로컬/엣지)</text>
+  <circle cx="356" cy="456" r="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="366" y="460" font-size="9" fill="#374151">특수 목적</text>
+  <circle cx="436" cy="456" r="6" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="446" y="460" font-size="9" fill="#9CA3AF">유지보수 모드</text>
+  <text x="546" y="460" font-size="9" fill="#9CA3AF">버블 크기 = GitHub Stars</text>
+</svg>
