@@ -1,0 +1,133 @@
+<svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
+    </marker>
+    <marker id="arr-gray" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#9CA3AF"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">LLM 서빙 생태계 맵 — 모델에서 사용자까지</text>
+
+  <!-- ── Layer 0: Model / Engine (top) ── -->
+  <rect x="20" y="48" width="760" height="86" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="400" y="68" text-anchor="middle" font-size="11" font-weight="bold" fill="#7C3AED">프로덕션 추론 엔진</text>
+
+  <!-- vLLM -->
+  <rect x="36" y="78" width="130" height="42" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="101" y="96" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">vLLM</text>
+  <text x="101" y="111" text-anchor="middle" font-size="9" fill="#6B7280">범용 표준</text>
+
+  <!-- SGLang -->
+  <rect x="180" y="78" width="130" height="42" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="245" y="96" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">SGLang</text>
+  <text x="245" y="111" text-anchor="middle" font-size="9" fill="#6B7280">RAG / 캐시 효율</text>
+
+  <!-- TensorRT-LLM -->
+  <rect x="324" y="78" width="152" height="42" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="400" y="96" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">TensorRT-LLM</text>
+  <text x="400" y="111" text-anchor="middle" font-size="9" fill="#6B7280">NVIDIA 최고 처리량</text>
+
+  <!-- llama.cpp + Ollama -->
+  <rect x="490" y="78" width="140" height="42" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="560" y="96" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">llama.cpp / Ollama</text>
+  <text x="560" y="111" text-anchor="middle" font-size="9" fill="#6B7280">로컬 / 엣지</text>
+
+  <!-- MLC LLM -->
+  <rect x="644" y="78" width="120" height="42" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text x="704" y="96" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">MLC LLM</text>
+  <text x="704" y="111" text-anchor="middle" font-size="9" fill="#6B7280">모바일 / 브라우저</text>
+
+  <!-- Arrows layer0 → layer1 -->
+  <line x1="400" y1="134" x2="400" y2="158" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── Layer 1: Gateway ── -->
+  <rect x="20" y="160" width="760" height="80" rx="8" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="400" y="178" text-anchor="middle" font-size="11" font-weight="bold" fill="#D97706">LLM 게이트웨이 / 오케스트레이션</text>
+
+  <!-- LiteLLM -->
+  <rect x="50" y="188" width="180" height="38" rx="6" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text x="140" y="205" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">LiteLLM</text>
+  <text x="140" y="220" text-anchor="middle" font-size="9" fill="#6B7280">셀프호스팅 · 100+ LLM 통합</text>
+
+  <!-- OpenRouter -->
+  <rect x="310" y="188" width="180" height="38" rx="6" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text x="400" y="205" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">OpenRouter</text>
+  <text x="400" y="220" text-anchor="middle" font-size="9" fill="#6B7280">즉시 멀티모델 · 200+ 모델</text>
+
+  <!-- Portkey -->
+  <rect x="570" y="188" width="180" height="38" rx="6" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text x="660" y="205" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">Portkey</text>
+  <text x="660" y="220" text-anchor="middle" font-size="9" fill="#6B7280">엔터프라이즈 · 시맨틱 캐싱</text>
+
+  <!-- Arrows layer1 → layer2 -->
+  <line x1="400" y1="240" x2="400" y2="264" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── Layer 2: Cloud / Local Deployment ── -->
+  <!-- Cloud block -->
+  <rect x="20" y="266" width="460" height="110" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="250" y="284" text-anchor="middle" font-size="11" font-weight="bold" fill="#059669">클라우드 배포</text>
+
+  <rect x="36" y="292" width="124" height="72" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1"/>
+  <text x="98" y="311" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">AWS</text>
+  <text x="98" y="325" text-anchor="middle" font-size="9" fill="#6B7280">SageMaker</text>
+  <text x="98" y="339" text-anchor="middle" font-size="9" fill="#6B7280">점유율 34%</text>
+  <text x="98" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">Inferentia3</text>
+
+  <rect x="176" y="292" width="124" height="72" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1"/>
+  <text x="238" y="311" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">GCP</text>
+  <text x="238" y="325" text-anchor="middle" font-size="9" fill="#6B7280">Vertex AI</text>
+  <text x="238" y="339" text-anchor="middle" font-size="9" fill="#6B7280">점유율 22%</text>
+  <text x="238" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">TPU v5p</text>
+
+  <rect x="316" y="292" width="148" height="72" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1"/>
+  <text x="390" y="311" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">Azure</text>
+  <text x="390" y="325" text-anchor="middle" font-size="9" fill="#6B7280">AI Foundry</text>
+  <text x="390" y="339" text-anchor="middle" font-size="9" fill="#6B7280">점유율 29%</text>
+  <text x="390" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">규제 특화</text>
+
+  <!-- Local/Edge block -->
+  <rect x="496" y="266" width="284" height="110" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.5"/>
+  <text x="638" y="284" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8">로컬 / 엣지 배포</text>
+
+  <rect x="512" y="292" width="120" height="72" rx="6" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="1"/>
+  <text x="572" y="311" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">Ollama</text>
+  <text x="572" y="325" text-anchor="middle" font-size="9" fill="#6B7280">사실상 표준 CLI</text>
+  <text x="572" y="339" text-anchor="middle" font-size="9" fill="#6B7280">GGUF 기반</text>
+  <text x="572" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">Stars 110K+</text>
+
+  <rect x="648" y="292" width="116" height="72" rx="6" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="1"/>
+  <text x="706" y="311" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">LM Studio</text>
+  <text x="706" y="325" text-anchor="middle" font-size="9" fill="#6B7280">시각적 평가</text>
+  <text x="706" y="339" text-anchor="middle" font-size="9" fill="#6B7280">Hugging Face</text>
+  <text x="706" y="353" text-anchor="middle" font-size="9" fill="#9CA3AF">원클릭 다운로드</text>
+
+  <!-- Arrows layer2 → layer3 -->
+  <line x1="400" y1="376" x2="400" y2="400" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── Layer 3: Monitoring ── -->
+  <rect x="20" y="402" width="760" height="80" rx="8" fill="#FCE7F3" stroke="#BE185D" stroke-width="1.5"/>
+  <text x="400" y="420" text-anchor="middle" font-size="11" font-weight="bold" fill="#BE185D">모니터링 / 관찰성</text>
+
+  <rect x="44" y="430" width="160" height="38" rx="6" fill="#FDF2F8" stroke="#BE185D" stroke-width="1"/>
+  <text x="124" y="447" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">Prometheus</text>
+  <text x="124" y="462" text-anchor="middle" font-size="9" fill="#6B7280">메트릭 수집 · 쿼리</text>
+
+  <rect x="224" y="430" width="168" height="38" rx="6" fill="#FDF2F8" stroke="#BE185D" stroke-width="1"/>
+  <text x="308" y="447" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">OpenTelemetry</text>
+  <text x="308" y="462" text-anchor="middle" font-size="9" fill="#6B7280">분산 추적 사실상 표준</text>
+
+  <rect x="412" y="430" width="148" height="38" rx="6" fill="#FDF2F8" stroke="#BE185D" stroke-width="1"/>
+  <text x="486" y="447" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">Grafana</text>
+  <text x="486" y="462" text-anchor="middle" font-size="9" fill="#6B7280">실시간 시각화</text>
+
+  <rect x="580" y="430" width="176" height="38" rx="6" fill="#FDF2F8" stroke="#BE185D" stroke-width="1"/>
+  <text x="668" y="447" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">OpenLLMetry</text>
+  <text x="668" y="462" text-anchor="middle" font-size="9" fill="#6B7280">LLM 특화 계측</text>
+
+  <!-- Footer: key metrics -->
+  <text x="400" y="500" text-anchor="middle" font-size="9" fill="#6B7280">핵심 LLM 메트릭: TTFT · 토큰당 지연 · GPU 사용률 · 큐 길이 · 토큰 비용 누계</text>
+  <text x="400" y="514" text-anchor="middle" font-size="9" fill="#9CA3AF">2026년 4월 기준</text>
+</svg>

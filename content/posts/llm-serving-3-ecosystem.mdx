@@ -1,0 +1,464 @@
+---
+title: "클라우드에서 엣지까지 — LLM 서빙 생태계와 배포 전략"
+slug: llm-serving-3-ecosystem
+date: 2026-04-06
+description: "AWS·GCP·Azure 빅3 비교부터 LLM 게이트웨이, 로컬/엣지 서빙, GPU 비용 최적화, 모니터링 스택, 그리고 Disaggregated Serving·MoE·하드웨어 다양화까지 — LLM을 프로덕션에 올리기 위한 생태계 전체를 실무자 관점에서 정리합니다."
+tags: ["llm", "ai", "serving", "cloud", "aws", "gcp", "azure", "ollama", "litellm", "monitoring", "deployment", "mlops"]
+published: true
+series: "LLM 서빙"
+seriesOrder: 3
+category: "AI"
+---
+
+2편에서 vLLM, SGLang, TensorRT-LLM 세 프레임워크의 특성과 선택 기준을 살펴봤다. 프레임워크를 골랐다면, 다음 질문이 기다린다: 그것을 어디에, 어떻게 올릴 것인가.
+
+AWS인가 GCP인가. 전용 GPU 클러스터인가 서버리스인가. 로컬 개발 환경에서 프로덕션으로 이어지는 워크플로는 어떻게 구성하는가. TTFT가 튀기 시작할 때 무엇을 보는가. 3편은 이 질문들에 대한 답을 다룬다.
+
+---
+
+## 이 글의 위치
+
+- **1편 (이전 글)**: 핵심 기술 — PagedAttention, Continuous Batching, 양자화, Disaggregated Inference 등
+- **2편 (이전 글)**: 프레임워크 — vLLM, SGLang, TensorRT-LLM과 11종 구현체 비교
+- **3편 (이 글)**: 생태계 — 클라우드 플랫폼, 게이트웨이, 로컬/엣지, 비용, 모니터링, 트렌드
+
+프레임워크가 엔진이라면, 이 편은 엔진을 실제로 달리게 하는 도로, 주유소, 계기판 전체다.
+
+![LLM 서빙 생태계 맵 — 상단부터 프로덕션 추론 엔진(vLLM, SGLang, TensorRT-LLM, llama.cpp/Ollama, MLC LLM), LLM 게이트웨이 레이어(LiteLLM, OpenRouter, Portkey), 클라우드 배포(AWS 34%, GCP 22%, Azure 29%)와 로컬/엣지 배포(Ollama, LM Studio)가 병렬로, 하단에 모니터링 스택(Prometheus, OpenTelemetry, Grafana, OpenLLMetry)이 전체를 받치는 4계층 구조](/images/llm-serving/ecosystem-map.svg)
+
+---
+
+## 클라우드 서빙 플랫폼
+
+### 빅3: AWS, GCP, Azure
+
+세 플랫폼 모두 LLM 서빙을 지원하지만, 각각의 강점이 다르다. 어디에 맞는지를 먼저 판단해야 한다.
+
+**AWS SageMaker / Bedrock**는 2026년 4월 기준 클라우드 AI 시장 약 34%를 점유한다<Ref id={1} />. 핵심 기능은 Inference Components — 단일 엔드포인트에 복수 모델을 배포해 기존 대비 비용을 최대 80% 절감할 수 있다<Ref id={2} />. HyperPod는 최대 15,000 노드까지 확장해 100B+ 파라미터 모델을 지원한다. AWS Inferentia3 칩을 3년 약정으로 쓰면 온디맨드 대비 58% 비용이 줄어든다.
+
+**Google Vertex AI**는 약 22% 점유율로 BigQuery와의 통합이 강점이다<Ref id={1} />. TPU v5p 클러스터는 2024년 대비 2.8배 빠른 학습 속도를 제공하며, MLOps 신규 팀에 진입 장벽이 상대적으로 낮다<Ref id={3} />.
+
+**Azure ML / AI Foundry**는 약 29% 점유율로 규제 산업에 특화됐다<Ref id={1} />. 금융·의료 워크로드를 위한 컨피덴셜 컴퓨팅, Arc-enabled 엣지 배포(150+ 하이브리드 사이트, 10ms 미만 지연), 1년 예약 인스턴스 기준 온디맨드 대비 42% 절감이 주요 특징이다.
+
+| 항목 | AWS | GCP | Azure |
+|------|-----|-----|-------|
+| 점유율 (2026년 4월 기준) | ~34% | ~22% | ~29% |
+| 핵심 서빙 서비스 | SageMaker Inference Components | Vertex AI + TPU v5p | AI Foundry |
+| 비용 절감 레버 | Inferentia3 3년 약정 (-58%) | 추론 $0.0001/1k chars | 1년 예약 (-42%) |
+| 특화 영역 | 대규모 모델, HyperPod | BigQuery 통합, MLOps | 규제 산업, 엣지 |
+
+### 특화 서빙 플랫폼
+
+빅3 외에도 용도에 따라 선택할 수 있는 플랫폼이 있다.
+
+**Replicate**는 ML 모델을 호스티드 API로 즉시 배포하고 공유할 수 있어 프로토타이핑에 최적이다. 인프라 커스터마이징이 제한적이어서 프로덕션 커스텀 요구사항에는 적합하지 않다<Ref id={4} />.
+
+**Modal**은 Python 코드만으로 배포와 스케일링을 처리한다. GPU 서버리스 인프라를 자동으로 관리하며, 배치 잡과 워크플로 처리에 강점이 있다<Ref id={5} />.
+
+**Together AI**는 LLaMA, Mixtral 등 오픈소스 모델 전용 호스티드 추론 엔드포인트를 제공한다. LLM 추론에 특화되어 있어, 폭넓은 배포 워크플로가 필요한 경우에는 맞지 않는다<Ref id={6} />.
+
+**RunPod**는 서버리스 오토스케일링과 초(秒) 단위 과금이 특징이다. 실험적이거나 비용에 민감한 워크로드에 적합하며, H100 커뮤니티 가격은 2026년 4월 기준 약 $1.99/hr이다<Ref id={7} />.
+
+**BentoML**은 오픈소스 ML 서빙 프레임워크로, REST API 패키징과 셀프호스팅 제어에 특화됐다. 자체 인프라 팀이 있는 조직에 적합하다<Ref id={4} />.
+
+**Baseten**은 저지연 추론과 개발자 친화적 배포 워크플로를 강조한다. 엔터프라이즈 SLA를 제공하며 고객 대면 애플리케이션에 적합하다<Ref id={4} />.
+
+---
+
+## LLM 게이트웨이
+
+프레임워크와 클라우드 사이에는 게이트웨이 레이어가 있다. 여러 모델 프로바이더를 통합하고, 비용을 추적하고, 장애 시 자동으로 폴백하는 역할이다. 세 선택지가 2026년 현재 시장을 나누고 있다.
+
+### LiteLLM — 셀프호스팅의 선택
+
+100개 이상의 LLM을 단일 OpenAI 호환 인터페이스로 통합하는 오픈소스 프록시다<Ref id={8} />. 셀프호스팅 배포 시 가상 키 관리, 팀별 예산·속도 제한, 비용 추적, PII 마스킹, 콘텐츠 필터링을 중앙에서 처리한다<Ref id={9} />.
+
+인프라 제어권을 완전히 가져가야 하는 팀에 적합하다. 클라우드 API와 자체 호스팅 모델을 동시에 쓸 때 공통 추상화 레이어 역할을 한다.
+
+### OpenRouter — 즉시 멀티모델 접근
+
+200개 이상의 모델을 단일 API 키로 접근할 수 있다. 2026년 4월 기준 글로벌 사용자 200만+이며, 라우팅·로드밸런싱·폴백을 자체적으로 처리하고 토큰당 과금 방식으로 동작한다<Ref id={10} />. 별도 설정 없이 빠르게 멀티모델 환경을 구축해야 하는 개발자에게 적합하다.
+
+### Portkey — 엔터프라이즈 관찰성
+
+관리형 또는 셀프호스팅 형태로 제공되는 엔터프라이즈급 AI 게이트웨이다<Ref id={11} />. 시맨틱 캐싱으로 LLM 비용을 30~50% 절감할 수 있다는 보고가 있으며<Ref id={12} />, 비용·지연·정확도 기반 조건부 라우팅, 자동 폴백, 고급 관찰성을 제공한다.
+
+| 항목 | LiteLLM | OpenRouter | Portkey |
+|------|---------|------------|---------|
+| 배포 방식 | 셀프호스팅 프록시 | 클라우드 관리형 | 관리형 / 셀프호스팅 |
+| 지원 모델 수 | 100+ | 200+ | 다중 프로바이더 |
+| 비용 최적화 | 예산/속도 제한 | 토큰당 과금 | 시맨틱 캐싱 30~50% |
+| 주요 대상 | 셀프호스팅 팀 | 빠른 시작 개발자 | 프로덕션 엔터프라이즈 |
+
+---
+
+## 로컬 / 엣지 서빙
+
+클라우드만이 답은 아니다. 개발 단계, 개인정보 보호가 필요한 환경, 오프라인 또는 엣지 배포에서는 로컬 서빙이 더 나은 선택이다.
+
+### llama.cpp + GGUF — 생태계의 기반
+
+Ollama, LM Studio, GPT4All, KoboldCpp는 모두 llama.cpp를 추론 엔진으로 사용한다<Ref id={13} />. 2026년 2월에는 ggml-org 팀 전체가 Hugging Face에 합류하며 생태계가 더 공고해졌다<Ref id={14} />.
+
+GGUF 포맷은 모델 가중치, 토크나이저, 메타데이터를 단일 파일로 번들한다. Q4\_K\_M 양자화는 FP16 대비 크기 75% 감소, 품질 92% 유지가 가능한 권장 스위트 스팟이다<Ref id={13} />.
+
+### Ollama — 사실상의 표준 CLI
+
+llama.cpp 기반 래퍼로, Docker의 이미지 관리 UX에서 영감을 받아 LLM을 컨테이너처럼 관리한다. 2026년 4월 기준 GitHub Stars 110,000+이다.
+
+```bash
+ollama pull llama3.2
+ollama run deepseek-r1
+```
+
+GUI 오버헤드가 없어 LM Studio 대비 20~30% 빠른 토큰 생성이 가능하다는 실측이 있다<Ref id={15} />. CES 2026 NVIDIA 최적화로 토큰 생성 속도가 최대 35% 향상됐다.
+
+### LM Studio — 시각적 평가 도구
+
+비주얼 모델 브라우저와 Hugging Face 원클릭 다운로드, 내장 채팅 인터페이스를 제공한다. 로컬 서버 모드(포트 1234, OpenAI 호환 API)로 개발 중 API 연동 테스트에도 쓰인다<Ref id={16} />.
+
+### 실전 3단계 워크플로
+
+```
+평가 (LM Studio)  →  개발 (Ollama)  →  배포 (vLLM)
+```
+
+모델 선택 단계에서는 LM Studio의 GUI로 다양한 모델을 빠르게 비교한다. 개발 단계에서는 Ollama로 로컬 API 서버를 올려 코드와 통합한다. 프로덕션에서는 vLLM으로 전환해 처리량과 동시성을 확보한다.
+
+---
+
+## GPU 비용과 배포 전략
+
+### H100 가격대 (2026년 4월 기준)
+
+GPU 비용은 제공업체마다 크게 다르다. 같은 H100이라도 $1.25에서 $14.90/hr까지 벌어진다<Ref id={17} />.
+
+| GPU | 제공업체 | 가격/hr |
+|-----|---------|--------|
+| H100 | RunPod (커뮤니티) | ~$1.99 |
+| H100 | Spheron | ~$2.01 |
+| H100 | Lambda Labs | ~$2.99 |
+| H100 | 전체 범위 | $1.25~$14.90 |
+| A100 | 평균 | $1.29~$2.29 |
+
+70B 모델 기준 추론 비용 효율을 보면, H100은 $0.47/M 토큰으로 L40S($0.56/M)와 A100($0.57/M)을 앞선다<Ref id={18} />.
+
+### 서버리스 vs 전용 인스턴스
+
+두 방식은 트레이드오프가 명확하다<Ref id={19} />.
+
+서버리스는 버스티 트래픽과 프로토타이핑에 유리하다. 밀리초 단위 스핀업, 초 단위 과금이 가능하다. 단, 콜드스타트 지연이 있고, 지속적인 고볼륨 추론에서는 전용 인스턴스보다 비싸질 수 있다.
+
+전용 GPU 클러스터는 지속적인 고볼륨 추론에서 서버리스보다 저렴하다. Kubernetes 오토스케일링을 쓰면 서버리스의 콜드스타트 문제를 상당 부분 완화할 수 있다.
+
+vLLM Router(Rust 기반)는 vLLM 워커 간 지능형 상태 인식 로드밸런싱을 제공한다<Ref id={20} />. Prefill/Decode 분리 아키텍처를 지원하며, KV 캐시 상태를 인식한 라우팅이 가능하다.
+
+---
+
+## 모니터링과 관찰성
+
+프레임워크를 올리고 트래픽을 받기 시작하면, 다음 문제는 "지금 무슨 일이 벌어지는가"를 아는 것이다. LLM 서빙은 일반 웹 서비스와 다른 메트릭을 본다.
+
+### 핵심 메트릭
+
+LLM 특화 메트릭이 별도로 있다<Ref id={21} />.
+
+- TTFT(Time to First Token): 사용자가 응답을 기다리는 체감 시간
+- 토큰당 지연(TPOT): 생성 속도, decode 단계의 효율을 반영
+- 큐 길이와 배치 크기: 현재 부하와 스케일링 필요 시점 판단
+- GPU 사용률: 리소스 낭비 여부 확인
+- 토큰 비용 누계: 운영 비용 추적
+
+### 표준 스택 (2026년)
+
+세 도구가 조합을 이룬다<Ref id={22} /><Ref id={23} />.
+
+**Prometheus**(v3.10.0)가 메트릭을 수집하고 쿼리한다. LLM 추론 워크로드의 이상 탐지를 지원한다.
+
+**OpenTelemetry**는 분산 추적과 로깅의 사실상 표준(de facto standard)으로, 벤더 중립적이다. 어떤 클라우드나 모니터링 도구로도 데이터를 내보낼 수 있다.
+
+**Grafana**는 실시간 모니터링과 시각화를 담당한다.
+
+**OpenLLMetry**는 OpenTelemetry 확장으로, LLM 애플리케이션 계측에 특화된 오픈소스 도구다<Ref id={24} />. vLLM과 같은 추론 엔진과 직접 연동해 LLM 특화 메트릭을 수집한다<Ref id={25} />.
+
+클라우드 제공업체 고유 도구도 있다. AWS CloudWatch는 LLM 추론 워크로드에 대한 자동 이상 탐지와 실시간 알림을 제공하고, Azure Monitor는 예측 분석으로 성능 이슈를 사전에 감지한다.
+
+---
+
+## 2025~2026 주요 트렌드
+
+생태계는 빠르게 움직이고 있다. 2025~2026년에 방향을 바꾸고 있는 세 가지 흐름을 짚는다.
+
+### Disaggregated Serving 상용화
+
+1편에서 개념을 다뤘고, 2025년부터 실제 프로덕션에 진입하기 시작했다. Prefill(compute-bound)과 Decode(memory-bound)를 분리된 전용 워커로 처리하는 아키텍처다.
+
+Meta, LinkedIn, Mistral, Hugging Face가 vLLM disaggregated serving을 프로덕션에서 운영 중이다<Ref id={26} />. GTC 2025에서 발표된 NVIDIA Dynamo는 오픈소스로, disaggregated prefill/decode에 동적 GPU 스케줄링과 KV 캐시 가속 전송을 추가했다<Ref id={27} />. AMD MI300X에서도 SGLang으로 disaggregation이 검증됐다<Ref id={28} />.
+
+핵심 과제는 KV 캐시를 충분히 빠르게 전송하는 것이다. TTFT 500ms 목표 시, prefill ~200ms + KV 전송 ~300ms 이내라는 기준이 실무에서 쓰인다.
+
+### MoE 프론티어 모델 60%+ 채택
+
+2025년 초 이후 프론티어 모델 릴리스의 60% 이상이 Mixture-of-Experts(MoE) 아키텍처를 채택했다<Ref id={29} />. DeepSeek-V3는 256개 전문가 중 37B 파라미터만 활성화하는 구조다. Apple 서버 모델은 Parallel-Track MoE(PT-MoE) 트랜스포머 아키텍처를 채택했다<Ref id={30} />.
+
+MoE의 서빙 과제는 메모리 확장과 통신 오버헤드다. All-to-All 통신이 end-to-end 지연의 10~30%를 차지하고, expert 부하 불균형(hot/cold expert) 문제가 있다. Apple Silicon의 통합 메모리는 MoE에 구조적으로 유리하다 — 671B 전체 파라미터를 로드한 뒤 37B만 연산하는 패턴이 캐시 효율을 높인다<Ref id={31} />.
+
+### 하드웨어 다양화
+
+NVIDIA GPU 독점 구도가 바뀌고 있다.
+
+vLLM v0.16.0(2026년 2월)은 NVIDIA, AMD ROCm, Intel XPU, TPU를 멀티플랫폼으로 공식 지원한다<Ref id={32} />. AMD MI300X는 OpenAI의 주요 공급업체로 자리를 잡았고, SGLang disaggregation도 MI300X에서 검증됐다.
+
+커스텀 ASIC 분야도 움직이고 있다. 트랜스포머 연산 전용 회로로 GPU 대비 10~50배 성능/전력비를 목표로 하는 스타트업들이 있다<Ref id={33} />. d-Matrix, Rain AI, Mythic, Tenet 같은 회사들이 여기에 해당하며, Google과 Microsoft도 자체 실리콘을 배포하고 있다. 2026년 XPU(ASIC·커스텀 가속기) 성장률은 22%로 GPU(19%), CPU(14%)를 상회할 것으로 전망된다<Ref id={33} />.
+
+---
+
+## 시리즈를 마치며
+
+3편에 걸쳐 LLM 서빙의 전체 지도를 그렸다.
+
+1편에서는 LLM 서빙이 일반 딥러닝 서빙과 왜 근본적으로 다른지를 봤다. Prefill은 compute-bound, Decode는 memory-bound — 이 비대칭이 PagedAttention, Continuous Batching, Speculative Decoding, Disaggregated Inference 같은 기술들을 만들어냈다.
+
+2편에서는 그 기술들을 실제로 구현한 프레임워크들을 해부했다. vLLM은 범용 표준, SGLang은 캐시 효율과 구조화 출력, TensorRT-LLM은 NVIDIA 하드웨어 최대치. TGI는 유지보수 모드로 전환됐고, llama.cpp + Ollama는 로컬 생태계의 기반이 됐다.
+
+3편에서는 그 프레임워크들이 돌아가는 환경 전체를 다뤘다. 클라우드 플랫폼의 선택, 게이트웨이 레이어의 역할, 로컬과 클라우드를 잇는 워크플로, GPU 비용의 현실, 그리고 TTFT가 튀기 시작할 때 무엇을 봐야 하는지.
+
+LLM 서빙 생태계는 여전히 빠르게 움직인다. Disaggregated Serving은 상용화 초기 단계에 있고, MoE 모델의 서빙 최적화는 아직 해결해야 할 과제가 많다. 하드웨어 다양화로 NVIDIA 중심의 구도도 바뀌는 중이다.
+
+이 시리즈가 그 빠른 변화를 따라가기 위한 좌표가 됐으면 한다.
+
+---
+
+<References>
+  <RefItem
+    id={1}
+    tier="T3"
+    title="Azure AI Offerings vs AWS & Google AI: 2026 Comparison"
+    source="bloomcs.com, 2026"
+    url="https://bloomcs.com/azure-ai-offerings-vs-aws-google-ai/"
+  />
+  <RefItem
+    id={2}
+    tier="T3"
+    title="AWS Bedrock/SageMaker vs Azure AI Foundry vs Google Vertex AI — The Ultimate Cloud AI Platform 2026"
+    source="aws.plainenglish.io, 2026"
+    url="https://aws.plainenglish.io/aws-bedrock-sagemaker-vs-azure-ai-foundry-vs-google-vertex-ai-the-ultimate-cloud-ai-platform-2026-03bbbab919b2"
+  />
+  <RefItem
+    id={3}
+    tier="T3"
+    title="SageMaker vs Vertex AI: Full Comparison for 2025"
+    source="leanware.co, 2025"
+    url="https://www.leanware.co/insights/sagemaker-vs-vertex-ai"
+  />
+  <RefItem
+    id={4}
+    tier="T3"
+    title="6 best Replicate alternatives for ML, LLMs, and AI app deployment"
+    source="northflank.com"
+    url="https://northflank.com/blog/6-best-replicate-alternatives"
+  />
+  <RefItem
+    id={5}
+    tier="T3"
+    title="10 Modal Alternatives for ML Deployment in 2025"
+    source="digitalocean.com, 2025"
+    url="https://www.digitalocean.com/resources/articles/serverless-modal-alt"
+  />
+  <RefItem
+    id={6}
+    tier="T3"
+    title="Top AI PaaS platforms in 2026 for model deployment"
+    source="northflank.com, 2026"
+    url="https://northflank.com/blog/top-ai-paas-platforms"
+  />
+  <RefItem
+    id={7}
+    tier="T3"
+    title="Top Serverless GPU Clouds for 2026"
+    source="runpod.io, 2026"
+    url="https://www.runpod.io/articles/guides/top-serverless-gpu-clouds"
+  />
+  <RefItem
+    id={8}
+    tier="T2"
+    title="Getting Started — LiteLLM 공식 문서"
+    source="docs.litellm.ai"
+    url="https://docs.litellm.ai/docs/"
+  />
+  <RefItem
+    id={9}
+    tier="T3"
+    title="Top 5 LLM Gateways in 2025: The Complete Guide"
+    source="helicone.ai, 2025"
+    url="https://www.helicone.ai/blog/top-llm-gateways-comparison-2025"
+  />
+  <RefItem
+    id={10}
+    tier="T3"
+    title="LiteLLM vs OpenRouter: Which is Best For You?"
+    source="truefoundry.com"
+    url="https://www.truefoundry.com/blog/litellm-vs-openrouter"
+  />
+  <RefItem
+    id={11}
+    tier="T3"
+    title="Best AI Gateway Solutions"
+    source="portkey.ai Buyers Guide"
+    url="https://portkey.ai/buyers-guide/ai-gateway-solutions"
+  />
+  <RefItem
+    id={12}
+    tier="T3"
+    title="Portkey vs LiteLLM vs OpenRouter: LLM Gateway 2026"
+    source="pkgpulse.com, 2026"
+    url="https://www.pkgpulse.com/blog/portkey-vs-litellm-vs-openrouter-llm-gateway-2026"
+  />
+  <RefItem
+    id={13}
+    tier="T3"
+    title="I Switched From Ollama And LM Studio To llama.cpp"
+    source="itsfoss.com"
+    url="https://itsfoss.com/llama-cpp/"
+  />
+  <RefItem
+    id={14}
+    tier="T3"
+    title="Local LLM Inference in 2026: The Complete Guide"
+    source="blog.starmorph.com, 2026"
+    url="https://blog.starmorph.com/blog/local-llm-inference-tools-guide"
+  />
+  <RefItem
+    id={15}
+    tier="T3"
+    title="Llama.cpp vs Ollama — Best Local LLM Tool (2026)"
+    source="openxcell.com, 2026"
+    url="https://www.openxcell.com/blog/llama-cpp-vs-ollama/"
+  />
+  <RefItem
+    id={16}
+    tier="T3"
+    title="LM Studio vs Ollama: Local LLM Comparison for 2026"
+    source="fundesk.io, 2026"
+    url="https://www.fundesk.io/lm-studio-vs-ollama-local-llm-comparison-2026"
+  />
+  <RefItem
+    id={17}
+    tier="T3"
+    title="H100 Rental Prices Compared: $1.49-$6.98/hr Across 15+ Cloud Providers (2026)"
+    source="intuitionlabs.ai, 2026"
+    url="https://intuitionlabs.ai/articles/h100-rental-prices-cloud-comparison"
+  />
+  <RefItem
+    id={18}
+    tier="T3"
+    title="Cloud GPU Pricing — Compare 57 Providers (2026)"
+    source="getdeploying.com, 2026"
+    url="https://getdeploying.com/gpus"
+  />
+  <RefItem
+    id={19}
+    tier="T3"
+    title="Serverless ML Inference: Cost-Effective Options & Cloud Comparison (2025)"
+    source="prateekvishwakarma.tech, 2025"
+    url="https://prateekvishwakarma.tech/blog/serverless-ml-inference-costs/"
+  />
+  <RefItem
+    id={20}
+    tier="T2"
+    title="vLLM Router: A High-Performance and Prefill/Decode Aware Load Balancer"
+    source="vLLM Blog, 2025-12-13"
+    url="https://blog.vllm.ai/2025/12/13/vllm-router-release.html"
+  />
+  <RefItem
+    id={21}
+    tier="T3"
+    title="vLLM Observability: Monitor LLM Inference with OpenTelemetry"
+    source="parseable.com"
+    url="https://www.parseable.com/blog/vllm-inference-metrics-otel"
+  />
+  <RefItem
+    id={22}
+    tier="T2"
+    title="An Introduction to Observability for LLM-based applications using OpenTelemetry"
+    source="opentelemetry.io, 2024"
+    url="https://opentelemetry.io/blog/2024/llm-observability/"
+  />
+  <RefItem
+    id={23}
+    tier="T2"
+    title="A complete guide to LLM observability with OpenTelemetry and Grafana Cloud"
+    source="grafana.com"
+    url="https://grafana.com/blog/a-complete-guide-to-llm-observability-with-opentelemetry-and-grafana-cloud/"
+  />
+  <RefItem
+    id={24}
+    tier="T2"
+    title="traceloop/openllmetry — LLM 애플리케이션 계측 오픈소스"
+    source="GitHub"
+    url="https://github.com/traceloop/openllmetry"
+  />
+  <RefItem
+    id={25}
+    tier="T3"
+    title="Top Open Source LLM Observability Tools in 2026"
+    source="openobserve.ai, 2026"
+    url="https://openobserve.ai/blog/llm-observability-tools/"
+  />
+  <RefItem
+    id={26}
+    tier="T2"
+    title="Disaggregated Prefilling (experimental) — vLLM 공식 문서"
+    source="docs.vllm.ai"
+    url="https://docs.vllm.ai/en/latest/features/disagg_prefill/"
+  />
+  <RefItem
+    id={27}
+    tier="T2"
+    title="NVIDIA Dynamo: A Low-Latency Distributed Inference Framework"
+    source="NVIDIA Developer Blog, GTC 2025"
+    url="https://developer.nvidia.com/blog/introducing-nvidia-dynamo-a-low-latency-distributed-inference-framework-for-scaling-reasoning-ai-models/"
+  />
+  <RefItem
+    id={28}
+    tier="T2"
+    title="Unleashing AMD Instinct MI300X GPUs for LLM Serving: Disaggregating Prefill & Decode with SGLang"
+    source="AMD ROCm Blog"
+    url="https://rocm.blogs.amd.com/software-tools-optimization/disaggregation/README.html"
+  />
+  <RefItem
+    id={29}
+    tier="T3"
+    title="The Rise of MoE: Comparing 2025's Leading Mixture-of-Experts AI Models"
+    source="friendli.ai, 2025"
+    url="https://friendli.ai/blog/moe-models-comparison"
+  />
+  <RefItem
+    id={30}
+    tier="T2"
+    title="Updates to Apple's On-Device and Server Foundation Language Models"
+    source="Apple Machine Learning Research Blog, 2025"
+    url="https://machinelearning.apple.com/research/apple-foundation-models-2025-updates"
+  />
+  <RefItem
+    id={31}
+    tier="T1"
+    title="A Survey on Inference Optimization Techniques for Mixture of Experts Models"
+    source="arXiv:2412.14219, ACM Computing Surveys"
+    url="https://arxiv.org/html/2412.14219v2"
+  />
+  <RefItem
+    id={32}
+    tier="T3"
+    title="vLLM v0.16.0 Release Notes"
+    source="vLLM 공식 문서"
+    url="https://docs.vllm.ai/en/latest/"
+  />
+  <RefItem
+    id={33}
+    tier="T3"
+    title="LLM Inference Hardware: An Enterprise Guide to Key Players"
+    source="intuitionlabs.ai"
+    url="https://intuitionlabs.ai/articles/llm-inference-hardware-enterprise-guide"
+  />
+</References>
