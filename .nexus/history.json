@@ -1163,6 +1163,113 @@
           "created_at": "2026-04-01T04:48:32.044Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-04-06T15:14:43.654Z",
+      "branch": "feat/llm-serving-frameworks",
+      "plan": {
+        "id": 2,
+        "topic": "LLM 서빙 프레임워크 블로그 시리즈 기획",
+        "issues": [
+          {
+            "id": 1,
+            "title": "시리즈 구조 — 편수, 각 편의 범위와 제목",
+            "status": "decided",
+            "decision": "3편 시리즈. 1편: \"LLM 서빙이 어려운 이유\" — 왜 서빙이 문제인지(메모리/컴퓨트 특성) + 핵심 기술(PagedAttention, Continuous Batching, 양자화, 병렬화, Speculative Decoding, FlashAttention). 2편: \"프레임워크 전쟁\" — vLLM/SGLang/TensorRT-LLM 3강 + TGI 퇴장 + llama.cpp/Ollama 로컬 생태계 + LMDeploy/MLC LLM/Modular MAX 등 특수 목적 + 벤치마크 비교. 3편: \"배포와 생태계\" — 클라우드 플랫폼, 게이트웨이, 로컬/엣지, GPU 비용, 모니터링, Disaggregated Serving/MoE/ASIC 등 2025~2026 트렌드."
+          },
+          {
+            "id": 2,
+            "title": "시리즈 이름과 슬러그/프론트매터 규칙",
+            "status": "decided",
+            "decision": "시리즈명: \"LLM 서빙\". 슬러그: llm-serving-{N}-{keyword}. 카테고리: AI. 날짜: 2026-04-06. published: true. tags는 각 편 주제에 맞게 라이터가 결정."
+          },
+          {
+            "id": 3,
+            "title": "콘텐츠 범위 — 다룰 프레임워크와 기술의 선별 기준",
+            "status": "decided",
+            "decision": "프레임워크: 11종 전부 다루되 심도 차등. 1군(심층): vLLM, SGLang, TensorRT-LLM. 2군(중간): llama.cpp, Ollama, TGI, LiteLLM. 3군(간략): LMDeploy, DeepSpeed-MII, MLC LLM, Modular MAX. 기술: PagedAttention/Continuous Batching/양자화는 원리까지, 나머지는 개요+효과 중심. 벤치마크: H100 기준 vLLM vs SGLang vs TensorRT-LLM 비교표 필수. 생태계: 클라우드 빅3, 게이트웨이, 로컬 도구 각각 비교표로 정리."
+          }
+        ],
+        "research_summary": "3명의 리서처가 병렬 조사 완료. (1) 주요 프레임워크 11종 (vLLM, SGLang, TensorRT-LLM, TGI, llama.cpp, Ollama, LiteLLM, LMDeploy, DeepSpeed-MII, MLC LLM, Modular MAX) 현황·성능·트렌드 수집. (2) 핵심 기술 6개 영역 (메모리최적화/배치/양자화/병렬화/디코딩최적화/최신기술) 원논문+구현체 기반 조사. (3) 생태계 — 클라우드 빅3, 게이트웨이 3강, 로컬/엣지, GPU 비용, 모니터링, 2025~2026 트렌드 (Disaggregated Serving, MoE, 하드웨어 다양화, ASIC). 리포트 3건 저장: .nexus/state/artifacts/llm-serving-{1,2,3}-research.md",
+        "created_at": "2026-04-06T14:33:20.267Z"
+      },
+      "tasks": [
+        {
+          "id": 1,
+          "title": "1편 집필: LLM 서빙이 어려운 이유 — 핵심 기술 총정리",
+          "context": "시리즈 \"LLM 서빙\" 1편. LLM 추론의 메모리/컴퓨트 특성(왜 서빙이 어려운가) + 핵심 기술 6개 영역(PagedAttention, Continuous Batching, 양자화, 병렬화, Speculative Decoding, FlashAttention, Disaggregated Inference). 리서치 리포트: .nexus/state/artifacts/llm-serving-2-research.md (핵심 기술), llm-serving-1-research.md (프레임워크 기술 부분 참조). 프론트매터: slug=llm-serving-1-core-tech, series=\"LLM 서빙\", seriesOrder=1, category=AI, date=2026-04-06. SVG 필수: 최소 1개(LLM 추론 파이프라인 or PagedAttention 개념도). writer-rules.md 준수.",
+          "approach": "리서처 리포트 llm-serving-2-research.md를 주 소스로, 1-research.md의 기술 설명을 보조 소스로 활용. 도입부에서 LLM 추론의 근본적 어려움(autoregressive 특성, 메모리-바운드 디코딩, KV 캐시 폭발)을 설명한 뒤, 각 기술을 문제→해결 구조로 전개. SVG: LLM 추론 파이프라인(Prefill→Decode) + PagedAttention 메모리 레이아웃 도식.",
+          "acceptance": "1. MDX 파일 content/posts/llm-serving-1-core-tech.mdx 생성 2. 프론트매터 규칙 준수 3. 핵심 기술 6개 영역 모두 커버 4. SVG 최소 1개 포함 (public/images/llm-serving/) 5. Ref/RefItem 인용 시스템 사용 6. velite build 에러 없음",
+          "risk": "기술 설명 깊이 조절 — 너무 깊으면 분량 폭발, 너무 얕으면 기존 블로그 톤 대비 부실",
+          "status": "completed",
+          "deps": [],
+          "plan_issue": 1,
+          "owner": "writer",
+          "created_at": "2026-04-06T14:33:53.486Z"
+        },
+        {
+          "id": 2,
+          "title": "2편 집필: 프레임워크 전쟁 — vLLM, SGLang, TensorRT-LLM 그리고 나머지",
+          "context": "시리즈 \"LLM 서빙\" 2편. 프레임워크 11종 비교. 1군 심층(vLLM, SGLang, TensorRT-LLM): 아키텍처, 핵심 기술, 성능 벤치마크, 사용 사례. 2군(llama.cpp, Ollama, TGI, LiteLLM): 특성과 포지셔닝. 3군(LMDeploy, DeepSpeed-MII, MLC LLM, Modular MAX): 간략 소개. TGI의 유지보수 모드 전환 서사. 벤치마크 비교표(H100 기준). 리서치 리포트: .nexus/state/artifacts/llm-serving-1-research.md (주), 3-research.md (생태계 부분 참조). 프론트매터: slug=llm-serving-2-frameworks, series=\"LLM 서빙\", seriesOrder=2, category=AI, date=2026-04-06. SVG 필수: 프레임워크 포지셔닝 맵 or 비교 도식.",
+          "approach": "1-research.md의 프레임워크별 상세 데이터와 벤치마크를 주 소스로 활용. 도입부에서 1편(핵심 기술)을 간단 리캡하고 \"이 기술들을 구현한 프레임워크들\"로 전환. 프레임워크를 용도별(프로덕션 고처리량/로컬·엣지/게이트웨이·추상화/특수목적)로 분류하여 전개. 비교표 2개: (1) 전체 프레임워크 요약표 (2) 1군 3종 H100 벤치마크.",
+          "acceptance": "1. MDX 파일 content/posts/llm-serving-2-frameworks.mdx 생성 2. 11종 프레임워크 모두 언급 3. H100 벤치마크 비교표 포함 4. TGI 유지보수 모드 전환 서술 5. SVG 최소 1개 6. 1편 리캡 + 3편 예고 포함 7. Ref/RefItem 인용 시스템 사용 8. velite build 에러 없음",
+          "risk": "벤치마크 수치가 조건(모델, 배치크기, GPU)에 따라 크게 달라짐 — 조건 명시 필수",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "plan_issue": 1,
+          "owner": "writer",
+          "created_at": "2026-04-06T14:34:05.878Z"
+        },
+        {
+          "id": 3,
+          "title": "3편 집필: 배포와 생태계 — 클라우드에서 엣지까지",
+          "context": "시리즈 \"LLM 서빙\" 3편. 클라우드 플랫폼(AWS/Azure/GCP) 비교, 게이트웨이(LiteLLM/OpenRouter/Portkey), 로컬/엣지(Ollama/LM Studio/llama.cpp 생태계), GPU 비용 비교, 배포 전략(서버리스 vs 전용), 모니터링(OTel/Prometheus), 2025~2026 트렌드(Disaggregated Serving 상용화, MoE, 하드웨어 다양화, ASIC). 리서치 리포트: .nexus/state/artifacts/llm-serving-3-research.md (주), 1-research.md와 2-research.md (Disagg/MoE 기술 부분 참조). 프론트매터: slug=llm-serving-3-ecosystem, series=\"LLM 서빙\", seriesOrder=3, category=AI, date=2026-04-06. SVG 필수: 서빙 생태계 맵 or 배포 아키텍처 도식.",
+          "approach": "3-research.md를 주 소스로 활용. 도입부에서 2편(프레임워크) 리캡 후 \"프레임워크를 선택했다면 어디에 어떻게 배포할 것인가\"로 전환. 클라우드→게이트웨이→로컬→비용→모니터링→트렌드 순서로 전개. 비교표 3개: (1) 클라우드 빅3 (2) GPU 비용 (3) 게이트웨이 3종. 마무리에서 시리즈 전체 회고.",
+          "acceptance": "1. MDX 파일 content/posts/llm-serving-3-ecosystem.mdx 생성 2. 클라우드/게이트웨이/로컬/비용/모니터링/트렌드 모두 커버 3. 비교표 최소 2개 4. SVG 최소 1개 5. 2편 리캡 + 시리즈 마무리 포함 6. Ref/RefItem 인용 시스템 사용 7. velite build 에러 없음",
+          "risk": "클라우드 가격/점유율 수치가 빠르게 변동 — 조사 시점(2026-04) 명시 필요",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "plan_issue": 1,
+          "owner": "writer",
+          "created_at": "2026-04-06T14:34:15.705Z"
+        },
+        {
+          "id": 4,
+          "title": "3편 전체 리뷰 — 팩트체크, 인용 검증, 톤 일관성",
+          "context": "Writer가 작성한 3편의 MDX 파일을 리뷰. 리서처 리포트 3건과 대조하여 팩트체크. Ref/RefItem URL 유효성, 인용 밀도 규칙(문장당 최대 2개), 톤 일관성, MDX 문법(한글 bold 패턴 등), SVG 스타일 가이드 준수 여부 확인.",
+          "approach": "3편 MDX 파일을 순차 리뷰. 각 편에 대해: (1) 리서처 리포트와 수치/출처 대조 (2) Ref id 매핑 일관성 (3) 톤/깊이 writer-rules 준수 (4) MDX 렌더링 이슈 점검. 문제 발견 시 구체적 수정사항 리포트.",
+          "acceptance": "1. 3편 모두 리뷰 완료 2. 팩트 오류 0건 또는 수정 완료 3. 인용 규칙 준수 확인 4. MDX 빌드 에러 없음 확인",
+          "risk": "리뷰어가 리서처 리포트에 없는 수치를 라이터가 추가한 경우 검증 불가 — 출처 없는 수치는 삭제 권고",
+          "status": "completed",
+          "deps": [
+            1,
+            2,
+            3
+          ],
+          "plan_issue": 3,
+          "owner": "reviewer",
+          "created_at": "2026-04-06T14:34:25.303Z"
+        },
+        {
+          "id": 5,
+          "title": "MDX 빌드 검증 (velite build)",
+          "context": "3편 MDX 파일 작성 및 리뷰 완료 후 velite build로 빌드 에러 검출. 에러 발생 시 수정.",
+          "approach": "bun run build 또는 velite build 실행. 에러 발생 시 MDX 문법 수정.",
+          "acceptance": "velite build 성공 (exit code 0)",
+          "risk": "MDX 컴포넌트 import 누락, 한글 bold 패턴 등 빌드 시점에만 발견되는 에러",
+          "status": "completed",
+          "deps": [
+            4
+          ],
+          "plan_issue": 3,
+          "owner": "lead",
+          "created_at": "2026-04-06T14:34:28.986Z"
+        }
+      ]
     }
   ]
 }
