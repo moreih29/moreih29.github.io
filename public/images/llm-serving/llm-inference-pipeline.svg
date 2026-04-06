@@ -1,0 +1,89 @@
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#3B82F6"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">LLM 추론 파이프라인 — Prefill, KV Cache, Decode 루프</text>
+
+  <!-- ─── PREFILL BOX ─── -->
+  <rect x="20" y="46" width="200" height="120" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="120" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#374151">① Prefill</text>
+  <text x="120" y="86" text-anchor="middle" font-size="10" fill="#6B7280">모든 입력 토큰을</text>
+  <text x="120" y="100" text-anchor="middle" font-size="10" fill="#6B7280">한 번에 처리</text>
+  <text x="120" y="120" text-anchor="middle" font-size="10" fill="#7C3AED">Compute-bound</text>
+  <text x="120" y="136" text-anchor="middle" font-size="10" fill="#6B7280">행렬 곱 연산 집약적</text>
+  <text x="120" y="154" text-anchor="middle" font-size="9" fill="#6B7280">TTFT 결정</text>
+
+  <!-- ─── ARROW prefill → kv cache ─── -->
+  <line x1="220" y1="106" x2="270" y2="106" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="245" y="98" text-anchor="middle" font-size="9" fill="#374151">K/V</text>
+  <text x="245" y="116" text-anchor="middle" font-size="9" fill="#374151">저장</text>
+
+  <!-- ─── KV CACHE BOX ─── -->
+  <rect x="272" y="46" width="216" height="120" rx="8" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="380" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#374151">KV Cache</text>
+  <!-- Grid of KV blocks -->
+  <rect x="290" y="78" width="52" height="28" rx="3" fill="#FDE68A" stroke="#D97706" stroke-width="1"/>
+  <text x="316" y="97" text-anchor="middle" font-size="9" fill="#374151">Block 0</text>
+  <rect x="350" y="78" width="52" height="28" rx="3" fill="#FDE68A" stroke="#D97706" stroke-width="1"/>
+  <text x="376" y="97" text-anchor="middle" font-size="9" fill="#374151">Block 1</text>
+  <rect x="410" y="78" width="52" height="28" rx="3" fill="#FEF9C3" stroke="#D97706" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="436" y="97" text-anchor="middle" font-size="9" fill="#9CA3AF">Block 2</text>
+  <text x="380" y="128" text-anchor="middle" font-size="10" fill="#D97706">PagedAttention</text>
+  <text x="380" y="143" text-anchor="middle" font-size="10" fill="#6B7280">고정 크기 블록(16 tok)</text>
+  <text x="380" y="157" text-anchor="middle" font-size="9" fill="#6B7280">낭비 4% 미만</text>
+
+  <!-- ─── ARROW kv cache → decode ─── -->
+  <line x1="488" y1="106" x2="540" y2="106" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="514" y="98" text-anchor="middle" font-size="9" fill="#374151">캐시</text>
+  <text x="514" y="116" text-anchor="middle" font-size="9" fill="#374151">조회</text>
+
+  <!-- ─── DECODE BOX ─── -->
+  <rect x="542" y="46" width="198" height="120" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="641" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#374151">② Decode</text>
+  <text x="641" y="86" text-anchor="middle" font-size="10" fill="#6B7280">한 번에 토큰 1개씩</text>
+  <text x="641" y="100" text-anchor="middle" font-size="10" fill="#6B7280">자기회귀 생성</text>
+  <text x="641" y="120" text-anchor="middle" font-size="10" fill="#059669">Memory-bound</text>
+  <text x="641" y="136" text-anchor="middle" font-size="10" fill="#6B7280">KV 캐시 대역폭 병목</text>
+  <text x="641" y="154" text-anchor="middle" font-size="9" fill="#6B7280">TPOT 결정</text>
+
+  <!-- ─── DECODE LOOP ARROW ─── -->
+  <path d="M 641 166 L 641 210 L 380 210 L 380 178" stroke="#3B82F6" stroke-width="1.5" fill="none" marker-end="url(#arr-blue)" stroke-dasharray="5,3"/>
+  <text x="510" y="228" text-anchor="middle" font-size="10" fill="#3B82F6">EOS 토큰 생성 전까지 반복</text>
+
+  <!-- ─── BOTTOM: Continuous Batching ─── -->
+  <rect x="20" y="254" width="720" height="90" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="380" y="275" text-anchor="middle" font-size="12" font-weight="bold" fill="#374151">Continuous Batching — 매 iteration마다 배치 재구성</text>
+
+  <!-- Iteration steps -->
+  <rect x="40" y="285" width="80" height="44" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="80" y="303" text-anchor="middle" font-size="10" fill="#374151">Iter 1</text>
+  <text x="80" y="318" text-anchor="middle" font-size="9" fill="#6B7280">Req A,B,C</text>
+
+  <line x1="120" y1="307" x2="138" y2="307" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="140" y="285" width="80" height="44" rx="4" fill="#D1FAE5" stroke="#059669" stroke-width="1"/>
+  <text x="180" y="303" text-anchor="middle" font-size="10" fill="#374151">Iter 2</text>
+  <text x="180" y="318" text-anchor="middle" font-size="9" fill="#6B7280">A 완료→D 진입</text>
+
+  <line x1="220" y1="307" x2="238" y2="307" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="240" y="285" width="80" height="44" rx="4" fill="#D1FAE5" stroke="#059669" stroke-width="1"/>
+  <text x="280" y="303" text-anchor="middle" font-size="10" fill="#374151">Iter 3</text>
+  <text x="280" y="318" text-anchor="middle" font-size="9" fill="#6B7280">D,B,C,E</text>
+
+  <line x1="320" y1="307" x2="338" y2="307" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <text x="400" y="300" text-anchor="middle" font-size="11" fill="#6B7280">…</text>
+
+  <!-- vs Static batching annotation -->
+  <rect x="450" y="282" width="272" height="50" rx="4" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="586" y="300" text-anchor="middle" font-size="10" fill="#374151">Static Batching (구): 느린 요청이 끝날 때까지 GPU 대기</text>
+  <text x="586" y="318" text-anchor="middle" font-size="10" fill="#EF4444">처리량 최대 23×↓ 손실</text>
+</svg>
