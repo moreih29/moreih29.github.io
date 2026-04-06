@@ -1,0 +1,105 @@
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
+    </marker>
+    <marker id="arr-share" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#059669"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">PagedAttention — 논리 블록과 물리 블록 매핑</text>
+
+  <!-- ─── LEFT: Logical View (Req A) ─── -->
+  <text x="160" y="52" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">요청 A (논리 뷰)</text>
+  <rect x="40" y="60" width="70" height="36" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="75" y="83" text-anchor="middle" font-size="10" fill="#374151">논리 0</text>
+  <rect x="115" y="60" width="70" height="36" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="150" y="83" text-anchor="middle" font-size="10" fill="#374151">논리 1</text>
+  <rect x="190" y="60" width="70" height="36" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="225" y="83" text-anchor="middle" font-size="10" fill="#374151">논리 2</text>
+  <text x="160" y="115" text-anchor="middle" font-size="9" fill="#6B7280">연속적으로 보임 (모델 관점)</text>
+
+  <!-- ─── LEFT: Logical View (Req B) ─── -->
+  <text x="160" y="148" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">요청 B (논리 뷰)</text>
+  <rect x="40" y="156" width="70" height="36" rx="4" fill="#FDE68A" stroke="#D97706" stroke-width="1.5"/>
+  <text x="75" y="179" text-anchor="middle" font-size="10" fill="#374151">논리 0</text>
+  <rect x="115" y="156" width="70" height="36" rx="4" fill="#FDE68A" stroke="#D97706" stroke-width="1.5"/>
+  <text x="150" y="179" text-anchor="middle" font-size="10" fill="#374151">논리 1</text>
+  <text x="160" y="211" text-anchor="middle" font-size="9" fill="#6B7280">연속적으로 보임 (모델 관점)</text>
+
+  <!-- ─── MIDDLE: Block Table ─── -->
+  <rect x="272" y="46" width="170" height="200" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="357" y="67" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">블록 테이블</text>
+  <text x="357" y="82" text-anchor="middle" font-size="9" fill="#6B7280">(논리 → 물리 매핑)</text>
+
+  <!-- Table header -->
+  <rect x="282" y="88" width="70" height="22" rx="2" fill="#E5E7EB"/>
+  <text x="317" y="103" text-anchor="middle" font-size="9" font-weight="bold" fill="#374151">논리</text>
+  <rect x="356" y="88" width="76" height="22" rx="2" fill="#E5E7EB"/>
+  <text x="394" y="103" text-anchor="middle" font-size="9" font-weight="bold" fill="#374151">물리</text>
+
+  <!-- Req A rows -->
+  <text x="286" y="124" font-size="9" fill="#7C3AED">A-0</text>
+  <line x1="310" y1="116" x2="310" y2="132" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="360" y="124" text-anchor="middle" font-size="9" fill="#374151">Phys #3</text>
+  <line x1="282" y1="132" x2="432" y2="132" stroke="#E5E7EB" stroke-width="1"/>
+
+  <text x="286" y="148" font-size="9" fill="#7C3AED">A-1</text>
+  <line x1="310" y1="140" x2="310" y2="156" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="360" y="148" text-anchor="middle" font-size="9" fill="#374151">Phys #7</text>
+  <line x1="282" y1="156" x2="432" y2="156" stroke="#E5E7EB" stroke-width="1"/>
+
+  <text x="286" y="172" font-size="9" fill="#7C3AED">A-2</text>
+  <line x1="310" y1="164" x2="310" y2="180" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="360" y="172" text-anchor="middle" font-size="9" fill="#374151">Phys #1</text>
+  <line x1="282" y1="180" x2="432" y2="180" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Req B rows -->
+  <text x="286" y="196" font-size="9" fill="#D97706">B-0</text>
+  <line x1="310" y1="188" x2="310" y2="204" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="360" y="196" text-anchor="middle" font-size="9" fill="#374151">Phys #5</text>
+  <line x1="282" y1="204" x2="432" y2="204" stroke="#E5E7EB" stroke-width="1"/>
+
+  <text x="286" y="220" font-size="9" fill="#D97706">B-1</text>
+  <line x1="310" y1="212" x2="310" y2="228" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="360" y="220" text-anchor="middle" font-size="9" fill="#374151">Phys #3 ★</text>
+
+  <!-- ─── RIGHT: Physical GPU Memory ─── -->
+  <text x="620" y="52" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">물리 GPU 메모리</text>
+
+  <rect x="530" y="60" width="80" height="36" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="570" y="78" text-anchor="middle" font-size="9" fill="#374151">Phys #1</text>
+  <text x="570" y="90" text-anchor="middle" font-size="8" fill="#7C3AED">A-2</text>
+
+  <rect x="530" y="104" width="80" height="36" rx="4" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="570" y="128" text-anchor="middle" font-size="9" fill="#9CA3AF">Phys #2 (빈)</text>
+
+  <rect x="530" y="148" width="80" height="36" rx="4" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="570" y="166" text-anchor="middle" font-size="9" fill="#374151">Phys #3 ★</text>
+  <text x="570" y="178" text-anchor="middle" font-size="8" fill="#059669">A-0 / B-1 공유</text>
+
+  <rect x="530" y="192" width="80" height="36" rx="4" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="570" y="216" text-anchor="middle" font-size="9" fill="#9CA3AF">Phys #4 (빈)</text>
+
+  <rect x="530" y="236" width="80" height="36" rx="4" fill="#FDE68A" stroke="#D97706" stroke-width="1.5"/>
+  <text x="570" y="254" text-anchor="middle" font-size="9" fill="#374151">Phys #5</text>
+  <text x="570" y="266" text-anchor="middle" font-size="8" fill="#D97706">B-0</text>
+
+  <rect x="626" y="60" width="80" height="36" rx="4" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="666" y="84" text-anchor="middle" font-size="9" fill="#9CA3AF">Phys #6 (빈)</text>
+
+  <rect x="626" y="104" width="80" height="36" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="666" y="122" text-anchor="middle" font-size="9" fill="#374151">Phys #7</text>
+  <text x="666" y="134" text-anchor="middle" font-size="8" fill="#7C3AED">A-1</text>
+
+  <!-- Mapping arrows (A) -->
+  <line x1="262" y1="78" x2="430" y2="122" stroke="#7C3AED" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+  <line x1="262" y1="78" x2="430" y2="168" stroke="#059669" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-share)"/>
+
+  <!-- ─── BOTTOM: Copy-on-Write note ─── -->
+  <rect x="20" y="268" width="720" height="42" rx="6" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="380" y="285" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">★ 공유 블록(Phys #3) — Prefix Caching의 원리</text>
+  <text x="380" y="301" text-anchor="middle" font-size="10" fill="#6B7280">시스템 프롬프트 등 공통 접두어는 Copy-on-Write로 물리 블록 1개를 여러 요청이 공유 → 메모리 절감</text>
+</svg>
