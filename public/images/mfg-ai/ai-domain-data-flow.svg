@@ -17,8 +17,6 @@
     </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="860" height="480" fill="#fafafa" rx="8"/>
 
   <!-- Title -->
   <text x="430" y="32" text-anchor="middle" class="title">제조업 AI 도메인 간 데이터 흐름</text>

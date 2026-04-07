@@ -18,7 +18,7 @@
 
 - **Primary**: Slate/Steel `#94a3b8` — 무채색 중심 절제 톤
 - **카테고리 뱃지**: 다양한 색 유지 (AI/Web/MLOps/DevOps 각각 구분)
-- **SVG 다크모드**: CSS 필터 핵(`invert+hue-rotate`) 제거 → SVG 자체 다크모드 대응
+- **SVG 다크모드**: CSS 필터 핵(`invert+hue-rotate`) 제거 → SVG는 라이트 모드 최적화 제작, 다크모드는 ClickableImage 컨테이너에서 `dark:bg-slate-100 dark:rounded-xl dark:p-4 dark:shadow-sm` 일괄 처리
 - **접근성**: 카테고리 색상 WCAG AA 대비 보정
 
 ---

@@ -9,8 +9,6 @@
     </style>
   </defs>
 
-  <!-- Background -->
-  <rect width="900" height="520" fill="#fafafa" rx="8"/>
 
   <!-- Title -->
   <text x="450" y="32" text-anchor="middle" class="title">제조업 AI 도메인 x 적용 분야 매트릭스</text>

@@ -29,10 +29,10 @@
   <text x="283" y="166" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">처리</text>
 
   <!-- Arrows late fusion -->
-  <line x1="130" y1="83" x2="153" y2="120" stroke="#374151" stroke-width="1.2" marker-end="url(#bf)"/>
-  <line x1="130" y1="135" x2="153" y2="132" stroke="#374151" stroke-width="1.2" marker-end="url(#bf)"/>
-  <line x1="130" y1="177" x2="248" y2="165" stroke="#374151" stroke-width="1.2" marker-end="url(#bf)"/>
-  <line x1="225" y1="130" x2="246" y2="130" stroke="#374151" stroke-width="1.2" marker-end="url(#bf)"/>
+  <line x1="130" y1="83" x2="153" y2="120" stroke="#374151" stroke-width="1.5" marker-end="url(#bf)"/>
+  <line x1="130" y1="135" x2="153" y2="132" stroke="#374151" stroke-width="1.5" marker-end="url(#bf)"/>
+  <line x1="130" y1="177" x2="248" y2="165" stroke="#374151" stroke-width="1.5" marker-end="url(#bf)"/>
+  <line x1="225" y1="130" x2="246" y2="130" stroke="#374151" stroke-width="1.5" marker-end="url(#bf)"/>
 
   <!-- Divider -->
   <line x1="350" y1="44" x2="350" y2="220" stroke="#374151" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
@@ -61,9 +61,9 @@
   <text x="457" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">텍스트</text>
 
   <!-- Arrows early fusion -->
-  <line x1="485" y1="118" x2="516" y2="118" stroke="#374151" stroke-width="1.2" marker-end="url(#bf)"/>
-  <line x1="397" y1="158" x2="430" y2="136" stroke="#374151" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#bf)"/>
-  <line x1="457" y1="158" x2="445" y2="136" stroke="#374151" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#bf)"/>
+  <line x1="485" y1="118" x2="516" y2="118" stroke="#374151" stroke-width="1.5" marker-end="url(#bf)"/>
+  <line x1="397" y1="158" x2="430" y2="136" stroke="#374151" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#bf)"/>
+  <line x1="457" y1="158" x2="445" y2="136" stroke="#374151" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#bf)"/>
 
   <!-- Labels -->
   <text x="175" y="215" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">모달리티별 인코더 → LLM 매핑</text>

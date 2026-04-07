@@ -17,7 +17,7 @@
     </marker>
   </defs>
 
-  <rect width="860" height="500" fill="#f8fafc" rx="10"/>
+
   <text x="430" y="28" text-anchor="middle" class="title">Siemens IFM 아키텍처 — Industrial Copilot + vPLC 통합 구조</text>
 
   <!-- Layer 1: Human Interface -->

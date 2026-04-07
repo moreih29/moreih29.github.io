@@ -1,9 +1,18 @@
-<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
   <defs>
     <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
       <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
     </marker>
     <marker id="arr-share" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#059669"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#D97706"/>
+    </marker>
+    <marker id="arr-green" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
       <path d="M0,0 L7,3.5 L0,7 Z" fill="#059669"/>
     </marker>
   </defs>
@@ -94,9 +103,21 @@
   <text x="666" y="122" text-anchor="middle" font-size="9" fill="#374151">Phys #7</text>
   <text x="666" y="134" text-anchor="middle" font-size="8" fill="#7C3AED">A-1</text>
 
-  <!-- Mapping arrows (A) -->
-  <line x1="262" y1="78" x2="430" y2="122" stroke="#7C3AED" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/>
-  <line x1="262" y1="78" x2="430" y2="168" stroke="#059669" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-share)"/>
+  <!-- Logical → Block Table arrows -->
+  <line x1="260" y1="78" x2="272" y2="120" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <line x1="185" y1="174" x2="272" y2="192" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+  <!-- Block Table → Physical block arrows -->
+  <!-- A-0 (y≈120) → Phys #3 (x=530, y=148~184, center y=166) — green (shared) -->
+  <line x1="432" y1="120" x2="530" y2="166" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-green)"/>
+  <!-- A-1 (y≈144) → Phys #7 (x=626, y=104~140, center y=122) — purple -->
+  <line x1="432" y1="144" x2="626" y2="122" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <!-- A-2 (y≈168) → Phys #1 (x=530, y=60~96, center y=78) — purple -->
+  <line x1="432" y1="168" x2="530" y2="78" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <!-- B-0 (y≈192) → Phys #5 (x=530, y=236~272, center y=254) — orange -->
+  <line x1="432" y1="192" x2="530" y2="254" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <!-- B-1 (y≈216) → Phys #3 (x=530, y=148~184, center y=166) — green (shared) -->
+  <line x1="432" y1="216" x2="530" y2="166" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-green)"/>
 
   <!-- ─── BOTTOM: Copy-on-Write note ─── -->
   <rect x="20" y="268" width="720" height="42" rx="6" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>

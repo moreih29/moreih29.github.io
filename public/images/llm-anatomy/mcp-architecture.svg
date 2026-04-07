@@ -17,7 +17,7 @@
   <text x="180" y="128" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">Client</text>
 
   <!-- LLM ↔ Client -->
-  <line x1="120" y1="115" x2="140" y2="115" stroke="#374151" stroke-width="1.2" marker-end="url(#a1)" marker-start="url(#a1r)"/>
+  <line x1="120" y1="115" x2="140" y2="115" stroke="#374151" stroke-width="1.5" marker-end="url(#a1)" marker-start="url(#a1r)"/>
 
   <!-- Protocol label -->
   <text x="130" y="158" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">JSON-RPC 2.0</text>
@@ -45,8 +45,8 @@
   <text x="390" y="228" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">... 추가 가능</text>
 
   <!-- Arrows: Client → each Server -->
-  <line x1="240" y1="115" x2="308" y2="80" stroke="#374151" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
-  <line x1="240" y1="155" x2="308" y2="215" stroke="#374151" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+  <line x1="240" y1="115" x2="308" y2="80" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+  <line x1="240" y1="155" x2="308" y2="215" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a1)"/>
 
   <!-- External services -->
   <rect x="500" y="60" width="150" height="40" rx="6" fill="#FEF3C7" stroke="#374151" stroke-width="1"/>
@@ -57,8 +57,8 @@
   <text x="575" y="150" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">검색엔진 / 웹</text>
   <text x="575" y="164" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">계산 도구</text>
 
-  <line x1="470" y1="80" x2="498" y2="80" stroke="#374151" stroke-width="1" marker-end="url(#a1)"/>
-  <line x1="470" y1="150" x2="498" y2="150" stroke="#374151" stroke-width="1" marker-end="url(#a1)"/>
+  <line x1="470" y1="80" x2="498" y2="80" stroke="#374151" stroke-width="1.5" marker-end="url(#a1)"/>
+  <line x1="470" y1="150" x2="498" y2="150" stroke="#374151" stroke-width="1.5" marker-end="url(#a1)"/>
 
   <defs>
     <marker id="a1" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">

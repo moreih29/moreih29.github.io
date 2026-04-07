@@ -1,4 +1,4 @@
-<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+<svg viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
       <path d="M0,0 L0,7 L9,3.5 z" fill="#3B82F6"/>
@@ -8,8 +8,6 @@
     </marker>
   </defs>
 
-  <!-- 배경 -->
-  <rect width="760" height="460" fill="#F8FAFC"/>
 
   <!-- 제목 -->
   <text x="380" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#374151">LLM 엔지니어링의 진화</text>

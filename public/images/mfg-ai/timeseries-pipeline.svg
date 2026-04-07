@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 410" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
   <defs>
     <style>
       .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
@@ -20,7 +20,7 @@
     </marker>
   </defs>
 
-  <rect width="860" height="400" fill="#fafafa" rx="8"/>
+
   <text x="430" y="32" text-anchor="middle" class="title">예지보전 시계열 분석 파이프라인</text>
 
   <!-- Stage 1: Data Acquisition -->

@@ -14,8 +14,6 @@
     </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="900" height="480" fill="#f8fafc" rx="10"/>
 
   <!-- Title -->
   <text x="450" y="30" text-anchor="middle" class="title">Think 레이어 — 판단의 세 기술과 제조 적용</text>

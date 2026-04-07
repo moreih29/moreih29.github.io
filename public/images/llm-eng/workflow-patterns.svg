@@ -8,8 +8,6 @@
     </marker>
   </defs>
 
-  <!-- 배경 -->
-  <rect width="880" height="620" fill="#F9FAFB" rx="10"/>
 
   <!-- 제목 -->
   <text x="440" y="38" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">워크플로우 패턴 5종 비교</text>

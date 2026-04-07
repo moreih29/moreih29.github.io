@@ -10,6 +10,7 @@ interface ClickableImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
 
 export function ClickableImage({ src, alt, className, ...props }: ClickableImageProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const isSvg = src?.endsWith(".svg")
 
   return (
     <>
@@ -17,7 +18,7 @@ export function ClickableImage({ src, alt, className, ...props }: ClickableImage
       <img
         src={src}
         alt={alt}
-        className={`cursor-zoom-in ${className ?? ""}`}
+        className={`cursor-zoom-in ${isSvg ? "dark:bg-slate-100 dark:rounded-xl dark:p-4 dark:shadow-sm" : ""} ${className ?? ""}`}
         onClick={() => setIsOpen(true)}
         {...props}
       />
@@ -33,6 +34,7 @@ interface ImageModalProps {
 }
 
 function ImageModal({ src, alt, onClose }: ImageModalProps) {
+  const isSvg = src?.endsWith(".svg")
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -103,7 +105,7 @@ function ImageModal({ src, alt, onClose }: ImageModalProps) {
       <img
         src={src}
         alt={alt}
-        className="max-w-[90vw] max-h-[90vh] object-contain cursor-zoom-out"
+        className={`max-w-[90vw] max-h-[90vh] object-contain cursor-zoom-out ${isSvg ? "bg-slate-100 rounded-xl p-4" : ""}`}
         onClick={(e) => e.stopPropagation()}
       />
     </div>,

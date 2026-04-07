@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" font-family="'Pretendard', 'Apple SD Gothic Neo', sans-serif">
   <defs>
     <style>
       .title { font-size: 16px; font-weight: 700; fill: #1a1a2e; }
@@ -15,7 +15,7 @@
     </marker>
   </defs>
 
-  <rect width="900" height="440" fill="#f8fafc" rx="10"/>
+
   <text x="450" y="28" text-anchor="middle" class="title">자율 제조 발전 단계 — 코파일럿에서 Lights-out까지</text>
 
   <!-- Progress bar background -->

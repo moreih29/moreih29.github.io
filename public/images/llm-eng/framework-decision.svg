@@ -8,8 +8,6 @@
     </marker>
   </defs>
 
-  <!-- 배경 -->
-  <rect width="760" height="580" fill="#F9FAFB" rx="10"/>
 
   <!-- 제목 -->
   <text x="380" y="36" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">프레임워크 선택 의사결정 플로우</text>

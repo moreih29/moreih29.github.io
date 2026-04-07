@@ -5,8 +5,6 @@
     </marker>
   </defs>
 
-  <!-- 배경 -->
-  <rect width="720" height="500" fill="#F8FAFC" rx="0"/>
 
   <!-- 지붕: 하네스 엔지니어링 -->
   <rect x="40" y="30" width="640" height="70" rx="10" fill="#1E40AF" stroke="#1E3A8A" stroke-width="1.5"/>
