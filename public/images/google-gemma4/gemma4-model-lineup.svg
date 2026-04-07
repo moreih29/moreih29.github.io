@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" fill="none">
+  <style>
+    text { font-family: system-ui, -apple-system, sans-serif; }
+    .title { font-size: 18px; font-weight: 700; fill: #1E40AF; }
+    .subtitle { font-size: 11px; fill: #6B7280; }
+    .model-name { font-size: 15px; font-weight: 700; fill: #1F2937; }
+    .badge { font-size: 10px; font-weight: 600; fill: #fff; }
+    .spec { font-size: 10.5px; fill: #374151; }
+    .small-label { font-size: 10px; fill: #6B7280; }
+    .zone-edge-bg { fill: #EFF6FF; stroke: #BFDBFE; }
+    .zone-edge-label { font-size: 12px; font-weight: 600; fill: #3B82F6; }
+    .card-edge { fill: #EFF6FF; stroke: #93C5FD; }
+    .zone-server-bg { fill: #F0FDF4; stroke: #BBF7D0; }
+    .zone-server-label { font-size: 12px; font-weight: 600; fill: #16A34A; }
+    .card-server { fill: #F0FDF4; stroke: #86EFAC; }
+    .arrow-line { stroke: #9CA3AF; stroke-width: 1.5; stroke-dasharray: 6 3; }
+    .feature-bg { fill: #FEF3C7; stroke: #FDE68A; }
+    .feature-title { font-size: 13px; font-weight: 600; fill: #92400E; }
+    .feature-value { font-size: 13px; font-weight: 700; fill: #B45309; }
+    .license-bg { fill: #DCFCE7; stroke: #86EFAC; }
+    .license-text { font-size: 13px; font-weight: 700; fill: #15803D; }
+    .footer { font-size: 10px; fill: #9CA3AF; }
+
+    @media (prefers-color-scheme: dark) {
+      .title { fill: #60A5FA; }
+      .subtitle { fill: #9CA3AF; }
+      .model-name { fill: #F3F4F6; }
+      .spec { fill: #D1D5DB; }
+      .small-label { fill: #9CA3AF; }
+      .zone-edge-bg { fill: #172554; stroke: #1E3A5F; }
+      .zone-edge-label { fill: #60A5FA; }
+      .card-edge { fill: #1E3A5F; stroke: #3B82F6; }
+      .zone-server-bg { fill: #052E16; stroke: #14532D; }
+      .zone-server-label { fill: #4ADE80; }
+      .card-server { fill: #14532D; stroke: #22C55E; }
+      .feature-bg { fill: #422006; stroke: #713F12; }
+      .feature-title { fill: #FDE68A; }
+      .feature-value { fill: #FBBF24; }
+      .license-bg { fill: #052E16; stroke: #22C55E; }
+      .license-text { fill: #4ADE80; }
+      .footer { fill: #6B7280; }
+    }
+  </style>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" class="title">Gemma 4 Model Family</text>
+  <text x="400" y="50" text-anchor="middle" class="subtitle">Gemini 3 기반 · Apache 2.0 · 140+ 언어 · 멀티모달 (텍스트 + 이미지 + 오디오)</text>
+
+  <!-- Edge Zone -->
+  <rect x="30" y="75" width="355" height="210" rx="14" class="zone-edge-bg" stroke-width="1.5"/>
+  <text x="207" y="97" text-anchor="middle" class="zone-edge-label">On-Device (Edge)</text>
+
+  <!-- E2B -->
+  <rect x="50" y="115" width="150" height="155" rx="10" class="card-edge" stroke-width="1.2"/>
+  <text x="125" y="140" text-anchor="middle" class="model-name">Gemma E2B</text>
+  <rect x="85" y="148" width="80" height="18" rx="9" fill="#3B82F6"/>
+  <text x="125" y="161" text-anchor="middle" class="badge">2B params</text>
+  <text x="125" y="186" text-anchor="middle" class="spec">128K 컨텍스트</text>
+  <text x="125" y="202" text-anchor="middle" class="spec">최대 속도 최적화</text>
+  <text x="125" y="218" text-anchor="middle" class="spec">60% 배터리 절감</text>
+  <text x="125" y="234" text-anchor="middle" class="spec">Android 최적화</text>
+  <line x1="125" y1="244" x2="125" y2="252" stroke="#93C5FD" stroke-width="1"/>
+  <text x="125" y="262" text-anchor="middle" class="small-label">최경량</text>
+
+  <!-- E4B -->
+  <rect x="218" y="115" width="150" height="155" rx="10" class="card-edge" stroke-width="1.2"/>
+  <text x="293" y="140" text-anchor="middle" class="model-name">Gemma E4B</text>
+  <rect x="253" y="148" width="80" height="18" rx="9" fill="#3B82F6"/>
+  <text x="293" y="161" text-anchor="middle" class="badge">4B params</text>
+  <text x="293" y="186" text-anchor="middle" class="spec">128K 컨텍스트</text>
+  <text x="293" y="202" text-anchor="middle" class="spec">높은 추론 성능</text>
+  <text x="293" y="218" text-anchor="middle" class="spec">4x 속도 향상</text>
+  <text x="293" y="234" text-anchor="middle" class="spec">Android 최적화</text>
+  <line x1="293" y1="244" x2="293" y2="252" stroke="#93C5FD" stroke-width="1"/>
+  <text x="293" y="262" text-anchor="middle" class="small-label">엣지 추론</text>
+
+  <!-- Server Zone -->
+  <rect x="415" y="75" width="355" height="210" rx="14" class="zone-server-bg" stroke-width="1.5"/>
+  <text x="592" y="97" text-anchor="middle" class="zone-server-label">Server / Workstation</text>
+
+  <!-- 26B MoE -->
+  <rect x="435" y="115" width="150" height="155" rx="10" class="card-server" stroke-width="1.2"/>
+  <text x="510" y="140" text-anchor="middle" class="model-name">Gemma 26B</text>
+  <rect x="462" y="148" width="96" height="18" rx="9" fill="#16A34A"/>
+  <text x="510" y="161" text-anchor="middle" class="badge">MoE · A4B 활성</text>
+  <text x="510" y="186" text-anchor="middle" class="spec">256K 컨텍스트</text>
+  <text x="510" y="202" text-anchor="middle" class="spec">3.8B만 활성화</text>
+  <text x="510" y="218" text-anchor="middle" class="spec">Arena 텍스트 6위</text>
+  <text x="510" y="234" text-anchor="middle" class="spec">효율성 최상위</text>
+  <line x1="510" y1="244" x2="510" y2="252" stroke="#86EFAC" stroke-width="1"/>
+  <text x="510" y="262" text-anchor="middle" class="small-label">효율 극대화</text>
+
+  <!-- 31B Dense -->
+  <rect x="603" y="115" width="150" height="155" rx="10" class="card-server" stroke-width="1.2"/>
+  <text x="678" y="140" text-anchor="middle" class="model-name">Gemma 31B</text>
+  <rect x="630" y="148" width="96" height="18" rx="9" fill="#15803D"/>
+  <text x="678" y="161" text-anchor="middle" class="badge">Dense · 30.7B</text>
+  <text x="678" y="186" text-anchor="middle" class="spec">256K 컨텍스트</text>
+  <text x="678" y="202" text-anchor="middle" class="spec">전체 파라미터 활성</text>
+  <text x="678" y="218" text-anchor="middle" class="spec">Arena 텍스트 3위</text>
+  <text x="678" y="234" text-anchor="middle" class="spec">최고 성능</text>
+  <line x1="678" y1="244" x2="678" y2="252" stroke="#86EFAC" stroke-width="1"/>
+  <text x="678" y="262" text-anchor="middle" class="small-label">플래그십</text>
+
+  <!-- Arrow between zones -->
+  <line x1="395" y1="180" x2="405" y2="180" class="arrow-line"/>
+
+  <!-- Bottom: Key Features -->
+  <rect x="30" y="310" width="740" height="80" rx="12" class="feature-bg" stroke-width="1.2"/>
+  <text x="400" y="334" text-anchor="middle" class="feature-title">주요 개선 (vs Gemma 3)</text>
+
+  <text x="110" y="360" text-anchor="middle" class="spec">AIME 2026</text>
+  <text x="110" y="376" text-anchor="middle" class="feature-value">20.8% → 89.2%</text>
+
+  <text x="300" y="360" text-anchor="middle" class="spec">Codeforces ELO</text>
+  <text x="300" y="376" text-anchor="middle" class="feature-value">110 → 2,150</text>
+
+  <text x="500" y="360" text-anchor="middle" class="spec">BigBench Extra Hard</text>
+  <text x="500" y="376" text-anchor="middle" class="feature-value">19.3% → 74.4%</text>
+
+  <text x="690" y="360" text-anchor="middle" class="spec">256K 문서 검색</text>
+  <text x="690" y="376" text-anchor="middle" class="feature-value">13.5% → 66.4%</text>
+
+  <!-- License badge -->
+  <rect x="295" y="415" width="210" height="36" rx="18" class="license-bg" stroke-width="1.5"/>
+  <text x="400" y="438" text-anchor="middle" class="license-text">Apache 2.0 — Gemma 최초</text>
+
+  <!-- Footer -->
+  <text x="400" y="480" text-anchor="middle" class="footer">Gemini 3 기반 기술 · 교차 어텐션 · 듀얼 RoPE · Per-Layer Embeddings · Shared KV Cache</text>
+  <text x="400" y="496" text-anchor="middle" class="footer">2026.04.02 발표 · Hugging Face · Google AI Studio · Vertex AI · Ollama · vLLM</text>
+</svg>

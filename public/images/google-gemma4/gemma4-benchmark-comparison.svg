@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 440" fill="none">
+  <style>
+    text { font-family: system-ui, -apple-system, sans-serif; }
+    .title { font-size: 16px; font-weight: 700; fill: #1E40AF; }
+    .subtitle { font-size: 11px; fill: #6B7280; }
+    .header { font-size: 11px; font-weight: 700; fill: #374151; }
+    .cell { font-size: 11px; fill: #4B5563; }
+    .cell-bold { font-size: 11.5px; font-weight: 700; fill: #1F2937; }
+    .best { font-size: 11.5px; font-weight: 700; fill: #16A34A; }
+    .row-stripe { fill: #F9FAFB; }
+    .table-bg { fill: #FFFFFF; }
+    .header-bg { fill: #F3F4F6; }
+    .divider { stroke: #E5E7EB; stroke-width: 1; }
+    .legend-sub { fill: #9CA3AF; }
+    .legend-label { fill: #6B7280; }
+    .model-gemma { font-size: 11.5px; font-weight: 700; fill: #1E40AF; }
+    .model-qwen { font-size: 11.5px; font-weight: 700; fill: #9333EA; }
+    .model-llama { font-size: 11.5px; font-weight: 700; fill: #DC2626; }
+
+    @media (prefers-color-scheme: dark) {
+      .title { fill: #60A5FA; }
+      .subtitle { fill: #9CA3AF; }
+      .header { fill: #E5E7EB; }
+      .cell { fill: #D1D5DB; }
+      .cell-bold { fill: #F3F4F6; }
+      .best { fill: #4ADE80; }
+      .row-stripe { fill: #1F2937; }
+      .table-bg { fill: #111827; }
+      .header-bg { fill: #1F2937; }
+      .divider { stroke: #374151; }
+      .legend-sub { fill: #6B7280; }
+      .legend-label { fill: #9CA3AF; }
+      .model-gemma { fill: #60A5FA; }
+      .model-qwen { fill: #C084FC; }
+      .model-llama { fill: #F87171; }
+    }
+  </style>
+
+  <!-- Title -->
+  <text x="390" y="30" text-anchor="middle" class="title">오픈소스 모델 벤치마크 비교</text>
+  <text x="390" y="48" text-anchor="middle" class="subtitle">Gemma 4 31B vs Qwen 3.5 27B vs Llama 4 Scout (17B active) — 2026년 4월 기준</text>
+
+  <!-- Table -->
+  <rect x="30" y="65" width="720" height="340" rx="10" class="table-bg" stroke="#E5E7EB" stroke-width="1.5"/>
+
+  <!-- Header row -->
+  <rect x="30" y="65" width="720" height="35" rx="10" class="header-bg"/>
+  <rect x="30" y="85" width="720" height="15" class="header-bg"/>
+  <text x="170" y="87" text-anchor="middle" class="header">벤치마크</text>
+  <text x="390" y="87" text-anchor="middle" class="model-gemma">Gemma 4 31B</text>
+  <text x="540" y="87" text-anchor="middle" class="model-qwen">Qwen 3.5 27B</text>
+  <text x="680" y="87" text-anchor="middle" class="model-llama">Llama 4 Scout</text>
+  <line x1="30" y1="100" x2="750" y2="100" class="divider"/>
+
+  <!-- Row 1: AIME 2026 -->
+  <text x="170" y="125" text-anchor="middle" class="cell">AIME 2026 (수학 추론)</text>
+  <text x="390" y="125" text-anchor="middle" class="best">89.2%</text>
+  <text x="540" y="125" text-anchor="middle" class="cell">—</text>
+  <text x="680" y="125" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="140" x2="750" y2="140" class="divider"/>
+
+  <!-- Row 2: MMLU Pro -->
+  <rect x="30" y="140" width="720" height="40" class="row-stripe"/>
+  <text x="170" y="165" text-anchor="middle" class="cell">MMLU Pro (일반 지식)</text>
+  <text x="390" y="165" text-anchor="middle" class="cell-bold">85.2%</text>
+  <text x="540" y="165" text-anchor="middle" class="best">86.1%</text>
+  <text x="680" y="165" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="180" x2="750" y2="180" class="divider"/>
+
+  <!-- Row 3: GPQA Diamond -->
+  <text x="170" y="205" text-anchor="middle" class="cell">GPQA Diamond (전문 지식)</text>
+  <text x="390" y="205" text-anchor="middle" class="cell-bold">84.3%</text>
+  <text x="540" y="205" text-anchor="middle" class="best">85.5%</text>
+  <text x="680" y="205" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="220" x2="750" y2="220" class="divider"/>
+
+  <!-- Row 4: Codeforces ELO -->
+  <rect x="30" y="220" width="720" height="40" class="row-stripe"/>
+  <text x="170" y="245" text-anchor="middle" class="cell">Codeforces ELO (코딩)</text>
+  <text x="390" y="245" text-anchor="middle" class="best">2,150</text>
+  <text x="540" y="245" text-anchor="middle" class="cell">—</text>
+  <text x="680" y="245" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="260" x2="750" y2="260" class="divider"/>
+
+  <!-- Row 5: LiveCodeBench -->
+  <text x="170" y="285" text-anchor="middle" class="cell">LiveCodeBench v6</text>
+  <text x="390" y="285" text-anchor="middle" class="best">80.0%</text>
+  <text x="540" y="285" text-anchor="middle" class="cell">—</text>
+  <text x="680" y="285" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="300" x2="750" y2="300" class="divider"/>
+
+  <!-- Row 6: BigBench Extra Hard -->
+  <rect x="30" y="300" width="720" height="40" class="row-stripe"/>
+  <text x="170" y="325" text-anchor="middle" class="cell">BigBench Extra Hard</text>
+  <text x="390" y="325" text-anchor="middle" class="best">74.4%</text>
+  <text x="540" y="325" text-anchor="middle" class="cell">—</text>
+  <text x="680" y="325" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="340" x2="750" y2="340" class="divider"/>
+
+  <!-- Row 7: LMArena -->
+  <text x="170" y="365" text-anchor="middle" class="cell">LMArena 텍스트 순위</text>
+  <text x="390" y="365" text-anchor="middle" class="best">3위 (ELO 1452)</text>
+  <text x="540" y="365" text-anchor="middle" class="cell">—</text>
+  <text x="680" y="365" text-anchor="middle" class="cell">—</text>
+  <line x1="30" y1="380" x2="750" y2="380" class="divider"/>
+
+  <!-- Row 8: 256K Context Retrieval -->
+  <rect x="30" y="380" width="720" height="25" rx="0 0 10 10" class="row-stripe"/>
+  <text x="170" y="400" text-anchor="middle" class="cell">256K 문서 검색</text>
+  <text x="390" y="400" text-anchor="middle" class="best">66.4%</text>
+  <text x="540" y="400" text-anchor="middle" class="cell">—</text>
+  <text x="680" y="400" text-anchor="middle" class="cell">—</text>
+
+  <!-- Legend -->
+  <rect x="260" y="418" width="8" height="8" rx="2" fill="#16A34A"/>
+  <text x="272" y="426" font-size="10" class="legend-label">= 최고 성능</text>
+  <text x="390" y="426" font-size="10" class="legend-sub">| 수학·코딩: Gemma 4 우위 · 일반 지식: Qwen 3.5 소폭 앞섬</text>
+</svg>

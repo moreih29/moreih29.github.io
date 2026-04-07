@@ -1,0 +1,215 @@
+---
+title: "Gemma 4 — Apache 2.0로 무장한 Google의 오픈 모델 역전극"
+slug: google-gemma4
+date: 2026-04-06
+description: "Google이 Gemma 시리즈 최초로 Apache 2.0 라이선스를 채택한 Gemma 4를 공개했다. 2B 엣지부터 31B 서버까지, 수학 추론 330% 향상과 함께 오픈소스 모델 판도를 바꿀 네 가지 모델을 해부한다."
+tags: ["ai", "llm", "google", "gemma", "open-source", "multimodal", "apache-2.0"]
+published: true
+category: "AI"
+---
+
+*이 글은 2026년 4월 기준으로 작성됐습니다.*
+
+숫자 하나가 흐름을 요약한다. **AIME 2026 수학 추론: 20.8% → 89.2%. 한 세대 만에 +330%.**
+
+Google이 2026년 4월 2일 공개한 Gemma 4는 단순한 버전 업이 아니다 <Ref id={1} />. 아키텍처를 재설계하고, 라이선스를 Apache 2.0으로 전환하고, 2B 엣지 모델부터 31B 서버 모델까지 네 가지 크기로 오픈소스 모델 시장에 정면 승부를 걸었다.
+
+---
+
+## 네 가지 모델, 하나의 패밀리
+
+Gemma 4는 Gemini 3와 동일한 연구·기술 기반 위에 구축됐다. 네 모델이 단일 패밀리로 온디바이스에서 서버까지 전 영역을 커버한다 <Ref id={1} /><Ref id={2} />.
+
+![Gemma 4 모델 패밀리 도식 — 왼쪽 On-Device 영역에 E2B(2B)와 E4B(4B) 엣지 모델, 오른쪽 Server 영역에 26B MoE(3.8B 활성)와 31B Dense 모델이 배치되어 있으며, 하단에 Gemma 3 대비 주요 벤치마크 개선 수치와 Apache 2.0 라이선스 배지가 표시된다.](/images/google-gemma4/gemma4-model-lineup.svg)
+
+| 모델 | 파라미터 | 활성 파라미터 | 컨텍스트 | 대상 환경 |
+|------|---------|-------------|---------|----------|
+| **E2B** | 2B | 2B | 128K | Android 기기 |
+| **E4B** | 4B | 4B | 128K | Android 기기 |
+| **26B MoE** | 26B | 3.8B (A4B) | 256K | 워크스테이션 |
+| **31B Dense** | 30.7B | 30.7B | 256K | 서버 |
+
+엣지 모델 두 개가 눈에 띈다. E2B와 E4B는 이전 세대 대비 최대 4배 빠른 속도와 60% 배터리 절감을 달성했다 <Ref id={1} />. Android AICore Developer Preview를 통해 온디바이스에서 직접 실행할 수 있다.
+
+26B MoE는 총 26B 파라미터 중 추론 시 3.8B만 활성화하는 <strong>Mixture of Experts</strong> 구조다. 전체를 다 쓰지 않으면서도 LMArena 텍스트 리더보드 6위(ELO 1441)를 기록했다 <Ref id={3} />. 활성 파라미터 대비 성능 효율이 현존 오픈 모델 중 최상위다.
+
+31B Dense는 패밀리의 플래그십이다. 30.7B 전체 파라미터를 활성화해 LMArena 텍스트 리더보드 **전체 3위**(ELO 약 1452)에 올랐다 <Ref id={3} />.
+
+---
+
+## 아키텍처: 무엇이 달라졌나
+
+Gemma 4는 Gemma 3에서 검증된 구조를 기반으로 하되, 네 가지 핵심 개선을 적용했다 <Ref id={4} /><Ref id={5} />.
+
+**교차 어텐션 레이어.** 로컬 슬라이딩 윈도우 어텐션과 글로벌 풀 컨텍스트 어텐션을 교차 배치한다. 가까운 토큰은 슬라이딩 윈도우로 빠르게, 먼 토큰은 글로벌 어텐션으로 정확하게 처리한다. 이 하이브리드 설계가 256K 컨텍스트에서 효율과 정확도를 동시에 확보하는 핵심이다.
+
+**듀얼 RoPE.** 슬라이딩 레이어에는 표준 RoPE(Rotary Position Embedding)를, 글로벌 레이어에는 비례 RoPE를 적용한다. 긴 컨텍스트에서 위치 정보가 희석되는 문제를 구조적으로 해결한 접근이다.
+
+**Per-Layer Embeddings (PLE).** 각 디코더 레이어에 별도 임베딩 테이블을 배치해 잔차 신호를 주입한다. 레이어마다 입력 표현을 보강하는 효과가 있어, 동일 파라미터 수 대비 표현력이 높아진다.
+
+**Shared KV Cache.** 마지막 N개 레이어가 이전 레이어의 Key-Value 상태를 재사용한다. KV 프로젝션 중복을 제거해 메모리 효율을 높이면서 성능 손실은 최소화했다.
+
+### 멀티모달
+
+텍스트, 이미지, 오디오 세 가지 모달리티를 동시에 처리한다 <Ref id={2} />. 이미지는 학습된 2D 위치 인코딩과 다차원 RoPE를 활용하며, 원본 종횡비를 유지한 채 처리한다. 이미지 토큰 예산을 70/140/280/560/1,120으로 조절해 속도-품질 트레이드오프를 선택할 수 있다.
+
+단일 프롬프트 안에서 텍스트와 이미지를 자유롭게 혼합하는 인터리빙도 지원한다. 140개 이상 언어를 네이티브로 학습했다.
+
+---
+
+## 벤치마크: 세대 간 격차
+
+Gemma 3에서 Gemma 4로의 개선 폭이 역대 오픈 모델 단일 세대 중 가장 크다는 평가를 받고 있다 <Ref id={6} />.
+
+| 벤치마크 | Gemma 3 (27B) | Gemma 4 (31B) | 개선 |
+|---------|--------------|--------------|------|
+| AIME 2026 (수학) | 20.8% | **89.2%** | +330% |
+| BigBench Extra Hard | 19.3% | **74.4%** | +285% |
+| Codeforces ELO (코딩) | 110 | **2,150** | 극적 향상 |
+| 256K 문서 검색 | 13.5% | **66.4%** | ×4.9 |
+| LiveCodeBench v6 | — | **80.0%** | — |
+
+수학과 코딩에서의 도약이 압도적이다. AIME 2026에서 89.2%는 오픈소스 30B급 모델로는 전례 없는 수치다.
+
+### 오픈소스 모델 간 비교
+
+![오픈소스 모델 벤치마크 비교 테이블 — Gemma 4 31B, Qwen 3.5 27B, Llama 4 Scout을 AIME, MMLU Pro, GPQA Diamond, Codeforces ELO, LMArena 순위 등에서 비교한다. 수학·코딩은 Gemma 4 우위, 일반 지식은 Qwen 3.5가 소폭 앞선다.](/images/google-gemma4/gemma4-benchmark-comparison.svg)
+
+흥미로운 점은 분야별 강점이 갈린다는 것이다 <Ref id={7} />. 수학과 코딩에서는 Gemma 4가 확실한 우위를 보이지만, MMLU Pro(86.1% vs 85.2%)와 GPQA Diamond(85.5% vs 84.3%) 같은 일반 지식 벤치마크에서는 Qwen 3.5 27B가 소폭 앞선다.
+
+Llama 4 Scout은 총 109B 파라미터(17B 활성)임에도 추론 벤치마크에서 두 모델에 뒤처진다 <Ref id={7} />. 파라미터 수가 아닌 아키텍처 효율이 중요하다는 걸 보여주는 사례다.
+
+---
+
+## Apache 2.0: 라이선스가 바꾸는 판
+
+Gemma 4의 가장 큰 변화는 성능이 아닐 수 있다. <strong>Gemma 시리즈 최초로 Apache 2.0 라이선스를 채택</strong>했다 <Ref id={8} /><Ref id={9} />.
+
+이전 Gemma 모델들은 커스텀 라이선스를 사용했다. "유해 사용 금지" 조항, 재배포 제한, 상업적 활용 조건 등이 포함되어 있어 기업 법무팀에서 검토가 필요한 구조였다. Apache 2.0 전환으로 이 불확실성이 완전히 사라진다.
+
+- 상업적 이용: 제한 없음
+- 수정 및 파인튜닝: 자유
+- 재배포: 자유
+- 프로덕션 배포: 온프레미스든 클라우드든 무관
+
+비교하면 Meta의 Llama 4는 여전히 월간 활성 사용자 7억 명 초과 앱에 대한 사용 제한이 있다 <Ref id={9} />. OSI(Open Source Initiative) 공식 인정 라이선스라는 점에서 Gemma 4가 "진정한 오픈소스"에 한 발 더 가깝다.
+
+VentureBeat는 이 라이선스 전환이 성능 자체보다 더 큰 영향을 미칠 수 있다고 분석했다 <Ref id={9} />. 기업 도입 장벽이 사라지면 생태계 확장 속도가 달라지기 때문이다.
+
+---
+
+## 어디서 쓸 수 있나
+
+출시와 동시에 주요 플랫폼 대부분에서 사용 가능하다 <Ref id={1} /><Ref id={10} />.
+
+- **Hugging Face**: 모델 가중치 다운로드
+- **Google AI Studio**: 웹에서 바로 테스트
+- **Vertex AI**: 클라우드 프로덕션 배포
+- **Kaggle**: 모델 가중치 + 노트북
+- **Ollama**: `ollama pull gemma4`로 로컬 실행
+- **LM Studio**: 로컬 GUI 환경
+- **vLLM**: 고성능 서빙
+- **Android AICore**: E2B/E4B 온디바이스 실행
+
+NVIDIA와의 협업으로 데이터센터 및 엣지 디바이스용 최적화도 진행 중이다 <Ref id={11} />.
+
+---
+
+## 마무리
+
+Gemma 4의 의미를 압축하면 세 가지다.
+
+**첫째, 성능 격차 해소.** 수학과 코딩에서 Gemma 3 대비 3~4배 향상. 오픈소스 30B급에서 프로프라이어터리 모델과 경쟁 가능한 수준에 도달했다.
+
+**둘째, Apache 2.0.** 기업 법무팀의 승인 없이 프로덕션에 올릴 수 있는 고성능 오픈 모델. 이건 생태계 레벨의 변화다.
+
+**셋째, 풀 스택 커버리지.** 2B 엣지부터 31B 서버까지 단일 패밀리. 같은 아키텍처 위에서 지식 증류나 파인튜닝 파이프라인을 공유할 수 있다는 건 실무에서 큰 이점이다.
+
+물론 한계도 있다. 일반 지식 벤치마크에서 Qwen 3.5에 소폭 뒤지고, 오디오 모달리티는 아직 초기 단계다. 그리고 벤치마크 수치가 실제 프로덕션 성능으로 직결되는지는 별도 검증이 필요하다.
+
+하지만 방향은 명확하다. Google이 오픈소스 모델에 진심이 됐다. Apache 2.0이라는 선택이 그 증거다.
+
+---
+
+<References>
+  ### T1 — 공식 소스
+  <RefItem
+    id={1}
+    tier="T1"
+    title="Gemma 4: Byte for byte, the most capable open models"
+    source="Google Blog"
+    url="https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/"
+  />
+  <RefItem
+    id={2}
+    tier="T1"
+    title="Welcome Gemma 4: Frontier multimodal intelligence on device"
+    source="Hugging Face Blog"
+    url="https://huggingface.co/blog/gemma4"
+  />
+  <RefItem
+    id={4}
+    tier="T1"
+    title="Gemma 4 Model Card"
+    source="Google AI for Developers"
+    url="https://ai.google.dev/gemma/docs/core/model_card_4"
+  />
+
+  ### T2 — 분석/보도
+  <RefItem
+    id={3}
+    tier="T2"
+    title="LMArena Leaderboard"
+    source="LMArena"
+    url="https://lmarena.ai/"
+  />
+  <RefItem
+    id={5}
+    tier="T2"
+    title="A Visual Guide to Gemma 4"
+    source="Maarten Grootendorst"
+    url="https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-gemma-4"
+  />
+  <RefItem
+    id={6}
+    tier="T2"
+    title="AINews: Gemma 4 — the best small multimodal open models"
+    source="Latent Space"
+    url="https://www.latent.space/p/ainews-gemma-4-the-best-small-multimodal"
+  />
+  <RefItem
+    id={7}
+    tier="T2"
+    title="Gemma 4 vs Llama 4 vs Qwen 3.5: Open Weight Model Comparison"
+    source="Lushbinary"
+    url="https://www.lushbinary.com/blog/gemma-4-vs-llama-4-vs-qwen-3-5-open-weight-model-comparison/"
+  />
+  <RefItem
+    id={8}
+    tier="T2"
+    title="Google announces open Gemma 4 model with Apache 2.0 license"
+    source="9to5Google"
+    url="https://9to5google.com/2026/04/02/google-gemma-4/"
+  />
+  <RefItem
+    id={9}
+    tier="T2"
+    title="Google releases Gemma 4 under Apache 2.0 — and that license change may matter"
+    source="VentureBeat"
+    url="https://venturebeat.com/technology/google-releases-gemma-4-under-apache-2-0-and-that-license-change-may-matter/"
+  />
+  <RefItem
+    id={10}
+    tier="T2"
+    title="Gemma 4 available on Google Cloud"
+    source="Google Cloud Blog"
+    url="https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud"
+  />
+  <RefItem
+    id={11}
+    tier="T2"
+    title="Bringing AI Closer to the Edge with Gemma 4"
+    source="NVIDIA Technical Blog"
+    url="https://developer.nvidia.com/blog/bringing-ai-closer-to-the-edge-and-on-device-with-gemma-4/"
+  />
+</References>
