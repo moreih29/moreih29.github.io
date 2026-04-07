@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 540" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="430" y="28" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#374151">Whisper 추론 파이프라인</text>
+
+  <!-- ===== SECTION: 기본 파이프라인 ===== -->
+  <text x="20" y="58" font-family="monospace" font-size="11" fill="#6B7280">기본 파이프라인</text>
+  <line x1="20" y1="62" x2="840" y2="62" stroke="#D1D5DB" stroke-width="1"/>
+
+  <!-- Base nodes -->
+  <!-- Audio -->
+  <rect x="20" y="74" width="90" height="40" rx="6" fill="#EDE9FE" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="65" y="91" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151">오디오</text>
+  <text x="65" y="106" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B7280">입력</text>
+
+  <!-- Arrow -->
+  <line x1="111" y1="94" x2="143" y2="94" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Mel Spectrogram -->
+  <rect x="144" y="74" width="110" height="40" rx="6" fill="#EDE9FE" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="199" y="91" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151">Mel 스펙트로그램</text>
+  <text x="199" y="106" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B7280">로그-멜 변환</text>
+
+  <!-- Arrow -->
+  <line x1="255" y1="94" x2="287" y2="94" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Encoder -->
+  <rect x="288" y="74" width="110" height="40" rx="6" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="343" y="91" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151">오디오 인코더</text>
+  <text x="343" y="106" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B7280">Transformer</text>
+
+  <!-- Arrow -->
+  <line x1="399" y1="94" x2="431" y2="94" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Decoder -->
+  <rect x="432" y="74" width="120" height="40" rx="6" fill="#FEF3C7" stroke="#FBBF24" stroke-width="1.5"/>
+  <text x="492" y="91" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151">디코더</text>
+  <text x="492" y="106" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B7280">autoregressive</text>
+
+  <!-- Arrow -->
+  <line x1="553" y1="94" x2="585" y2="94" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Text output -->
+  <rect x="586" y="74" width="90" height="40" rx="6" fill="#EDE9FE" stroke="#A78BFA" stroke-width="1.5"/>
+  <text x="631" y="91" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151">텍스트</text>
+  <text x="631" y="106" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B7280">출력</text>
+
+  <!-- ===== SECTION DIVIDER ===== -->
+  <line x1="20" y1="134" x2="840" y2="134" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="20" y="152" font-family="monospace" font-size="11" fill="#6B7280">최적화 분기</text>
+  <line x1="20" y1="156" x2="840" y2="156" stroke="#D1D5DB" stroke-width="1"/>
+
+  <!-- ===== BRANCH 1: faster-whisper ===== -->
+  <rect x="20" y="168" width="820" height="96" rx="8" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="36" y="186" font-family="monospace" font-size="11" font-weight="bold" fill="#166534">faster-whisper (CTranslate2)</text>
+
+  <!-- fw: Audio -->
+  <rect x="36" y="194" width="80" height="36" rx="6" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="76" y="208" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">오디오</text>
+  <text x="76" y="223" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B7280">입력</text>
+  <line x1="117" y1="212" x2="145" y2="212" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- fw: CTranslate2 Engine box (multi-op) -->
+  <rect x="146" y="192" width="200" height="54" rx="6" fill="#BBF7D0" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="246" y="210" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#166534">CTranslate2 엔진</text>
+  <text x="246" y="225" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">레이어퓨전 · 패딩제거</text>
+  <text x="246" y="238" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">인플레이스 연산 · INT8</text>
+  <line x1="347" y1="219" x2="375" y2="219" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- fw: Optimized Decoder -->
+  <rect x="376" y="194" width="110" height="36" rx="6" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="431" y="209" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">최적화 디코더</text>
+  <text x="431" y="222" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">배치 재정렬</text>
+  <line x1="487" y1="212" x2="515" y2="212" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- fw: Result -->
+  <rect x="516" y="194" width="110" height="36" rx="6" fill="#D1FAE5" stroke="#34D399" stroke-width="1.5"/>
+  <text x="571" y="209" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">텍스트 출력</text>
+  <text x="571" y="222" text-anchor="middle" font-family="monospace" font-size="9" fill="#166534">4x 빠름 · VRAM 73% ↓</text>
+
+  <!-- ===== BRANCH 2: 배치 추론 ===== -->
+  <rect x="20" y="280" width="820" height="96" rx="8" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="36" y="298" font-family="monospace" font-size="11" font-weight="bold" fill="#1E40AF">배치 추론 (VAD 기반)</text>
+
+  <!-- batch: Long Audio -->
+  <rect x="36" y="306" width="80" height="36" rx="6" fill="#DBEAFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="76" y="320" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">장시간</text>
+  <text x="76" y="333" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">오디오</text>
+  <line x1="117" y1="324" x2="145" y2="324" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- batch: VAD -->
+  <rect x="146" y="306" width="100" height="36" rx="6" fill="#DBEAFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="196" y="320" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">VAD 분할</text>
+  <text x="196" y="333" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">무음 제거</text>
+  <line x1="247" y1="324" x2="275" y2="324" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- batch: segments -->
+  <rect x="276" y="306" width="100" height="36" rx="6" fill="#DBEAFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="326" y="320" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">유성 구간</text>
+  <text x="326" y="333" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">세그먼트 배치</text>
+  <line x1="377" y1="324" x2="405" y2="324" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- batch: parallel whisper -->
+  <rect x="406" y="306" width="120" height="36" rx="6" fill="#BFDBFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="466" y="320" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">병렬 Whisper</text>
+  <text x="466" y="333" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">추론 배치</text>
+  <line x1="527" y1="324" x2="555" y2="324" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- batch: result -->
+  <rect x="556" y="306" width="120" height="36" rx="6" fill="#DBEAFE" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="616" y="320" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">결합 텍스트</text>
+  <text x="616" y="333" text-anchor="middle" font-family="monospace" font-size="9" fill="#1E40AF">12.5x 빠름</text>
+
+  <!-- ===== BRANCH 3: 스트리밍 ===== -->
+  <rect x="20" y="392" width="820" height="96" rx="8" fill="#FFF7ED" stroke="#FCA5A5" stroke-width="1.5"/>
+  <text x="36" y="410" font-family="monospace" font-size="11" font-weight="bold" fill="#9A3412">스트리밍 ASR (Two-Pass / CarelessWhisper)</text>
+
+  <!-- streaming: chunks -->
+  <rect x="36" y="418" width="80" height="36" rx="6" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1.5"/>
+  <text x="76" y="432" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">오디오</text>
+  <text x="76" y="445" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">청크 스트림</text>
+  <line x1="117" y1="436" x2="145" y2="436" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- streaming: CTC -->
+  <rect x="146" y="418" width="130" height="36" rx="6" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1.5"/>
+  <text x="211" y="432" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">CTC 디코더</text>
+  <text x="211" y="445" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">인과적 어텐션 초안</text>
+  <line x1="277" y1="436" x2="305" y2="436" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- streaming: Whisper decoder (rerank) -->
+  <rect x="306" y="418" width="140" height="36" rx="6" fill="#FECACA" stroke="#F87171" stroke-width="1.5"/>
+  <text x="376" y="432" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">Whisper 디코더</text>
+  <text x="376" y="445" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">리랭킹 (0.5s EPD)</text>
+  <line x1="447" y1="436" x2="475" y2="436" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- streaming: output -->
+  <rect x="476" y="418" width="130" height="36" rx="6" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1.5"/>
+  <text x="541" y="432" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">스트리밍 텍스트</text>
+  <text x="541" y="445" text-anchor="middle" font-family="monospace" font-size="9" fill="#9A3412">저지연 실시간 출력</text>
+
+  <!-- Legend: Distil-Whisper note -->
+  <rect x="660" y="418" width="180" height="54" rx="6" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="750" y="435" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#374151">Distil-Whisper</text>
+  <text x="750" y="450" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Large v3 대비 6x 빠름</text>
+  <text x="750" y="463" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">49% 작음 · WER +1%</text>
+</svg>

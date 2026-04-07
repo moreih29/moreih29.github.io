@@ -1,0 +1,80 @@
+<svg viewBox="0 0 780 400" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="390" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">LLM 서빙 vs 비전 모델 서빙 — 근본적 차이</text>
+
+  <!-- ─── LEFT: LLM ─── -->
+  <rect x="20" y="46" width="350" height="334" rx="10" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.8"/>
+  <text x="195" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#7C3AED">LLM 서빙</text>
+
+  <!-- Row 1: Autoregressive -->
+  <rect x="36" y="82" width="318" height="54" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="56" y="103" font-size="11" font-weight="bold" fill="#374151">생성 방식</text>
+  <text x="56" y="120" font-size="10" fill="#6B7280">Autoregressive — 토큰 1개씩 순차 생성</text>
+  <text x="56" y="133" font-size="10" fill="#6B7280">다음 토큰은 이전 출력에 의존</text>
+
+  <!-- Row 2: KV Cache -->
+  <rect x="36" y="144" width="318" height="66" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="56" y="165" font-size="11" font-weight="bold" fill="#374151">메모리 특성</text>
+  <text x="56" y="182" font-size="10" fill="#6B7280">KV Cache 누적 — 컨텍스트 길이 비례 증가</text>
+  <text x="56" y="196" font-size="10" fill="#7C3AED">→ PagedAttention으로 관리</text>
+  <text x="56" y="210" font-size="10" fill="#6B7280">단일 요청 KV: 수십 GB 가능</text>
+
+  <!-- Row 3: Memory-bound -->
+  <rect x="36" y="218" width="318" height="54" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="56" y="239" font-size="11" font-weight="bold" fill="#374151">연산 특성</text>
+  <text x="56" y="256" font-size="10" fill="#6B7280">Decode: Memory-bound (KV 읽기가 병목)</text>
+  <text x="56" y="269" font-size="10" fill="#6B7280">Prefill: Compute-bound</text>
+
+  <!-- Row 4: Continuous Batching -->
+  <rect x="36" y="280" width="318" height="54" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.2"/>
+  <text x="56" y="301" font-size="11" font-weight="bold" fill="#374151">배치 전략</text>
+  <text x="56" y="318" font-size="10" fill="#6B7280">Continuous Batching — 매 스텝마다 재구성</text>
+  <text x="56" y="331" font-size="10" fill="#6B7280">요청 간 길이 의존성 있음</text>
+
+  <!-- Row 5: Bottleneck label -->
+  <rect x="36" y="342" width="318" height="26" rx="6" fill="#DDD6FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="195" y="359" text-anchor="middle" font-size="10" font-weight="bold" fill="#7C3AED">병목: KV Cache 메모리 대역폭 + 직렬 디코딩</text>
+
+  <!-- ─── RIGHT: Vision ─── -->
+  <rect x="410" y="46" width="350" height="334" rx="10" fill="#D1FAE5" stroke="#059669" stroke-width="1.8"/>
+  <text x="585" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#059669">비전 모델 서빙</text>
+
+  <!-- Row 1: Single Forward Pass -->
+  <rect x="426" y="82" width="318" height="54" rx="6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.2"/>
+  <text x="446" y="103" font-size="11" font-weight="bold" fill="#374151">생성 방식</text>
+  <text x="446" y="120" font-size="10" fill="#6B7280">Single Forward Pass — 한 번의 추론으로 완료</text>
+  <text x="446" y="133" font-size="10" fill="#6B7280">요청 간 의존성 없음, 완전 독립</text>
+
+  <!-- Row 2: Feature Map -->
+  <rect x="426" y="144" width="318" height="66" rx="6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.2"/>
+  <text x="446" y="165" font-size="11" font-weight="bold" fill="#374151">메모리 특성</text>
+  <text x="446" y="182" font-size="10" fill="#6B7280">피처 맵은 전진 패스 직후 즉시 해제</text>
+  <text x="446" y="196" font-size="10" fill="#059669">→ KV Cache 누적 없음</text>
+  <text x="446" y="210" font-size="10" fill="#6B7280">스테이지 간 버퍼 재사용, 제로-카피</text>
+
+  <!-- Row 3: Compute-bound -->
+  <rect x="426" y="218" width="318" height="54" rx="6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.2"/>
+  <text x="446" y="239" font-size="11" font-weight="bold" fill="#374151">연산 특성</text>
+  <text x="446" y="256" font-size="10" fill="#6B7280">일관되게 Compute-bound</text>
+  <text x="446" y="269" font-size="10" fill="#6B7280">Tensor Core 활용률이 핵심 지표</text>
+
+  <!-- Row 4: Preprocessing bottleneck -->
+  <rect x="426" y="280" width="318" height="54" rx="6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.2"/>
+  <text x="446" y="301" font-size="11" font-weight="bold" fill="#374151">전처리 특성</text>
+  <text x="446" y="318" font-size="10" fill="#6B7280">CPU 전처리(디코딩·리사이즈)가 GPU를 굶김</text>
+  <text x="446" y="331" font-size="10" fill="#6B7280">→ DALI로 GPU 전처리 전환 필수</text>
+
+  <!-- Row 5: Bottleneck label -->
+  <rect x="426" y="342" width="318" height="26" rx="6" fill="#A7F3D0" stroke="#059669" stroke-width="1"/>
+  <text x="585" y="359" text-anchor="middle" font-size="10" font-weight="bold" fill="#059669">병목: CPU 전처리 + 가변 이미지 배치 비효율</text>
+
+  <!-- Center VS -->
+  <circle cx="390" cy="213" r="18" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="390" y="218" text-anchor="middle" font-size="12" font-weight="bold" fill="#374151">VS</text>
+</svg>

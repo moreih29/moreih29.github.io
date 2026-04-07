@@ -1,0 +1,110 @@
+<svg viewBox="0 0 820 380" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#374151"/>
+    </marker>
+    <marker id="arr-gpu" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#059669"/>
+    </marker>
+    <marker id="arr-bls" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#D97706"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#374151">Triton 앙상블 파이프라인 — DALI → TensorRT → 후처리 DAG</text>
+
+  <!-- ─── CLIENT REQUEST ─── -->
+  <rect x="20" y="50" width="130" height="60" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="85" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">클라이언트</text>
+  <text x="85" y="91" text-anchor="middle" font-size="10" fill="#6B7280">JPEG 이미지</text>
+  <text x="85" y="104" text-anchor="middle" font-size="10" fill="#6B7280">HTTP / gRPC</text>
+
+  <!-- arrow: client → DALI -->
+  <line x1="150" y1="80" x2="190" y2="80" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="170" y="72" text-anchor="middle" font-size="9" fill="#374151">raw</text>
+  <text x="170" y="92" text-anchor="middle" font-size="9" fill="#374151">bytes</text>
+
+  <!-- ─── STAGE 1: DALI Preprocessing ─── -->
+  <rect x="192" y="44" width="164" height="120" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.8"/>
+  <text x="274" y="64" text-anchor="middle" font-size="11" font-weight="bold" fill="#7C3AED">① 전처리 (DALI)</text>
+  <text x="274" y="82" text-anchor="middle" font-size="10" fill="#374151">nvJPEG 디코딩</text>
+  <text x="274" y="97" text-anchor="middle" font-size="10" fill="#374151">리사이즈 · 정규화</text>
+  <text x="274" y="112" text-anchor="middle" font-size="10" fill="#374151">데이터 증강</text>
+  <rect x="206" y="123" width="136" height="30" rx="4" fill="#DDD6FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="274" y="137" text-anchor="middle" font-size="9" fill="#7C3AED">DALI Backend</text>
+  <text x="274" y="150" text-anchor="middle" font-size="9" fill="#6B7280">GPU 메모리 직접 적재</text>
+
+  <!-- GPU Memory Band (connects stages) -->
+  <rect x="192" y="186" width="496" height="28" rx="4" fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text x="440" y="204" text-anchor="middle" font-size="10" font-weight="bold" fill="#059669">GPU 메모리 직접 전달 — CPU 복사 없음 (Zero-Copy)</text>
+
+  <!-- arrow: DALI → TensorRT (via GPU mem) -->
+  <line x1="356" y1="104" x2="408" y2="104" stroke="#059669" stroke-width="1.8" marker-end="url(#arr-gpu)"/>
+  <text x="382" y="96" text-anchor="middle" font-size="9" fill="#059669">GPU</text>
+  <text x="382" y="116" text-anchor="middle" font-size="9" fill="#059669">텐서</text>
+
+  <!-- ─── STAGE 2: TensorRT Inference ─── -->
+  <rect x="410" y="44" width="164" height="120" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.8"/>
+  <text x="492" y="64" text-anchor="middle" font-size="11" font-weight="bold" fill="#2563EB">② 추론 (TensorRT)</text>
+  <text x="492" y="82" text-anchor="middle" font-size="10" fill="#374151">레이어 퓨전 커널</text>
+  <text x="492" y="97" text-anchor="middle" font-size="10" fill="#374151">INT8 / FP16 실행</text>
+  <text x="492" y="112" text-anchor="middle" font-size="10" fill="#374151">커널 오토튜닝</text>
+  <rect x="424" y="123" width="136" height="30" rx="4" fill="#BFDBFE" stroke="#2563EB" stroke-width="1"/>
+  <text x="492" y="137" text-anchor="middle" font-size="9" fill="#2563EB">TensorRT Backend</text>
+  <text x="492" y="150" text-anchor="middle" font-size="9" fill="#6B7280">피처 맵 → 출력 텐서</text>
+
+  <!-- arrow: TRT → Postprocess -->
+  <line x1="574" y1="104" x2="626" y2="104" stroke="#059669" stroke-width="1.8" marker-end="url(#arr-gpu)"/>
+  <text x="600" y="96" text-anchor="middle" font-size="9" fill="#059669">GPU</text>
+  <text x="600" y="116" text-anchor="middle" font-size="9" fill="#059669">텐서</text>
+
+  <!-- ─── STAGE 3: Postprocess ─── -->
+  <rect x="628" y="44" width="164" height="120" rx="8" fill="#FEF3C7" stroke="#D97706" stroke-width="1.8"/>
+  <text x="710" y="64" text-anchor="middle" font-size="11" font-weight="bold" fill="#D97706">③ 후처리</text>
+  <text x="710" y="82" text-anchor="middle" font-size="10" fill="#374151">NMS (박스 필터링)</text>
+  <text x="710" y="97" text-anchor="middle" font-size="10" fill="#374151">클래스 매핑</text>
+  <text x="710" y="112" text-anchor="middle" font-size="10" fill="#374151">결과 직렬화</text>
+  <rect x="642" y="123" width="136" height="30" rx="4" fill="#FDE68A" stroke="#D97706" stroke-width="1"/>
+  <text x="710" y="137" text-anchor="middle" font-size="9" fill="#D97706">Python / C++ Backend</text>
+  <text x="710" y="150" text-anchor="middle" font-size="9" fill="#6B7280">JSON 응답 생성</text>
+
+  <!-- arrow: postprocess → client -->
+  <line x1="792" y1="80" x2="800" y2="80" stroke="#374151" stroke-width="1.5"/>
+
+  <!-- ─── BLS Conditional Branch ─── -->
+  <rect x="192" y="238" width="600" height="110" rx="8" fill="#FFF7ED" stroke="#D97706" stroke-width="1.5"/>
+  <text x="492" y="258" text-anchor="middle" font-size="11" font-weight="bold" fill="#D97706">BLS (Business Logic Scripting) — 조건부 DAG 분기</text>
+
+  <!-- Detect box -->
+  <rect x="210" y="268" width="130" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
+  <text x="275" y="287" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">탐지 결과 판단</text>
+  <text x="275" y="302" text-anchor="middle" font-size="9" fill="#6B7280">객체 감지 여부 확인</text>
+
+  <!-- arrow detect → classify -->
+  <line x1="340" y1="290" x2="380" y2="290" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-bls)" stroke-dasharray="4,2"/>
+  <text x="360" y="283" text-anchor="middle" font-size="8" fill="#D97706">감지</text>
+
+  <!-- Classify box -->
+  <rect x="382" y="268" width="130" height="44" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="447" y="287" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">분류 모델 라우팅</text>
+  <text x="447" y="302" text-anchor="middle" font-size="9" fill="#6B7280">ResNet 세밀 분류</text>
+
+  <!-- arrow detect → skip -->
+  <line x1="340" y1="300" x2="380" y2="330" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-bls)" stroke-dasharray="4,2"/>
+  <text x="356" y="330" text-anchor="middle" font-size="8" fill="#D97706">미감지</text>
+
+  <!-- Skip box -->
+  <rect x="382" y="314" width="130" height="28" rx="6" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.2"/>
+  <text x="447" y="331" text-anchor="middle" font-size="9" fill="#6B7280">스킵 → 빈 결과 반환</text>
+
+  <!-- arrow → merge -->
+  <line x1="512" y1="290" x2="556" y2="290" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="512" y1="328" x2="556" y2="300" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Merge/Output box -->
+  <rect x="558" y="268" width="218" height="60" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="667" y="292" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">응답 병합 및 반환</text>
+  <text x="667" y="307" text-anchor="middle" font-size="9" fill="#6B7280">앙상블 출력 → 클라이언트</text>
+  <text x="667" y="320" text-anchor="middle" font-size="9" fill="#059669">엔드투엔드 지연 6x 감소</text>
+</svg>

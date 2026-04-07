@@ -1,0 +1,305 @@
+---
+title: "비전 모델 서빙 — CNN에서 Diffusion까지"
+slug: model-serving-1-vision
+date: 2026-04-07
+description: "LLM 서빙 시리즈에서 다룬 KV Cache·Continuous Batching은 autoregressive 생성에 특화된 기술이다. 비전 모델은 다른 병목을 가진다. TensorRT 레이어 퓨전, DALI GPU 전처리, Diffusion 가속, Triton 앙상블까지 — CNN·ViT·Diffusion 추론의 핵심을 정리한다."
+tags: ["ai", "serving", "inference", "vision", "tensorrt", "diffusion", "triton"]
+published: true
+series: "AI 모델 서빙"
+seriesOrder: 1
+category: "AI"
+---
+
+LLM 서빙 시리즈에서 다룬 기술들 — PagedAttention, Continuous Batching, Speculative Decoding — 은 하나의 공통된 문제를 풀기 위한 것이었다. 한 토큰씩 순차적으로 생성하는 autoregressive 구조가 만들어내는 메모리 폭발과 GPU 유휴 시간을 어떻게 다스릴 것인가.
+
+그렇다면 비전 모델은? 이미지 분류, 객체 탐지, 이미지 생성 — 이 모델들은 한 번의 forward pass로 끝난다. KV Cache가 없다. 요청 간 의존성이 없다. 비전 모델이 LLM 서빙 기술로 풀리지 않는 이유는 바로 그 차이 때문이다.
+
+이 시리즈는 "AI 모델 서빙"이라는 이름으로 LLM 너머의 도메인을 다룬다. 1편에서는 비전 모델, 2편에서는 음성과 멀티모달, 3편에서는 임베딩·추천 시스템과 공통 최적화 기술을 살펴본다.
+
+---
+
+## 이 글의 위치
+
+- **1편 (이 글)**: 비전 모델 — TensorRT, DALI, Diffusion 가속, Triton 앙상블
+- **2편**: 음성·멀티모달 — 실시간 ASR, TTS 스트리밍, VLM 서빙
+- **3편**: 임베딩·추천 + 공통 최적화 — 벡터 검색, 그래프 최적화, 엣지 배포
+
+---
+
+## LLM 서빙과 무엇이 다른가
+
+비전 모델과 LLM 서빙의 차이는 표면적이 아니라 구조적이다.
+
+![LLM 서빙과 비전 모델 서빙의 특성 비교 — 왼쪽 LLM은 Autoregressive 생성, KV Cache 누적, Memory-bound Decode, Continuous Batching이 특징이며 병목은 KV Cache 메모리 대역폭과 직렬 디코딩이다. 오른쪽 비전 모델은 Single Forward Pass, 피처 맵 즉시 해제, Compute-bound, CPU 전처리 병목이 특징이며 병목은 CPU 전처리와 가변 이미지 배치 비효율이다](/images/model-serving/llm-vs-vision-serving.svg)
+
+**KV Cache 없음**: LLM에서 KV Cache는 이전 토큰들의 Key/Value 행렬을 누적 저장해 재계산을 막는 핵심 구조다. 컨텍스트가 길어질수록 메모리 점유도 늘어난다. 비전 모델은 다르다. 이미지 패치를 처리하며 생성한 피처 맵은 forward pass가 끝나는 순간 해제된다. 누적이 없다<Ref id={1} />.
+
+**배치 완전 독립**: LLM 디코딩에서는 배치 내 요청들이 길이가 다르면 padding 비효율이 생긴다. Continuous Batching이 필요한 이유다. 비전 모델 요청은 서로 간에 의존성이 없다. 한 이미지의 처리 속도가 다른 이미지에 영향을 주지 않는다.
+
+**전처리가 새 병목**: LLM에서 병목은 GPU 메모리 대역폭이었다. 비전 파이프라인에서는 GPU가 이미지를 기다리는 상황이 발생한다. CPU에서 JPEG를 디코딩하고, 리사이즈하고, 정규화하는 동안 GPU가 유휴 상태로 대기한다. 전처리 속도가 추론 처리량의 상한선이 된다<Ref id={2} />.
+
+**연산 특성**: LLM Decode는 KV 읽기가 병목이라 memory-bound다. 비전 모델은 한 번의 forward pass에서 행렬 곱 연산이 집약적으로 일어나며 일관되게 compute-bound다. 최적화 방향이 다를 수밖에 없다.
+
+---
+
+## 추론 런타임
+
+### TensorRT — GPU별 최적 커널을 빌드 타임에 확정
+
+NVIDIA TensorRT는 학습된 모델을 받아 배포 대상 GPU에서 가장 빠르게 실행되는 커널 집합으로 컴파일한다. 두 가지 핵심 기술이 성능의 대부분을 만든다.
+
+**레이어 퓨전**: Conv → BatchNorm → ReLU처럼 별개의 커널로 실행되던 연산을 단일 커널로 통합한다. 중간 텐서를 GPU 메모리에 기록하고 다시 읽는 왕복이 사라진다. 메모리 대역폭이 절약되고 커널 런치 오버헤드도 줄어든다.
+
+**커널 오토튜닝**: 빌드 시점에 수백 개의 커널 구현을 실제 하드웨어에서 벤치마크하고 가장 빠른 것을 선택한다. A100에서 최적인 커널이 RTX 3090에서 최적이 아닐 수 있다. TensorRT는 GPU마다 다른 결정을 내린다<Ref id={3} />.
+
+실측 수치를 보면: YOLOv8 Small에서 PyTorch FP32 기준 15~20ms이던 지연이 TensorRT FP16에서 5~8ms로 줄었다(약 3배). DINOv2 ViT-Base에서는 PyTorch 25~30ms에서 TensorRT FP16 10~12ms로 개선됐다<Ref id={4} />.
+
+### ONNX Runtime과 TVM — 하드웨어 중립 선택지
+
+TensorRT가 NVIDIA GPU에 깊이 최적화된 반면, ONNX Runtime은 하드웨어 무관한 폴백을 제공한다. NVIDIA 환경에서는 TensorRT 실행 프로바이더를, Intel 환경에서는 OpenVINO를 선택하는 계층 구조를 구성할 수 있다<Ref id={5} />.
+
+Apache TVM은 다른 접근을 취한다. Swin Transformer에서 AutoTVM 튜닝을 적용한 결과, 874.48 samples/s로 PyTorch와 TensorRT를 동시에 앞섰다는 보고가 있다. 트랜스포머 기반 아키텍처에서 relay-to-CUDA 스케줄링이 특히 효과적이다<Ref id={5} />.
+
+| 런타임 | 장점 | 적합한 상황 |
+|--------|------|------------|
+| TensorRT | NVIDIA GPU 최고 성능 | 프로덕션 NVIDIA 서버 |
+| ONNX Runtime | 하드웨어 무관 폴백 | 멀티 하드웨어 환경 |
+| Apache TVM | 트랜스포머 스케줄링 유연성 | 커스텀 하드웨어 타겟 |
+
+---
+
+## 모델 경량화와 배치 전략
+
+### 양자화 — INT8과 QAD
+
+FP32에서 INT8로 양자화하면 모델 크기가 75% 줄고, 추론 속도는 2~4배 빨라진다. 정확도 손실은 ResNet-50 기준 1% 미만이다<Ref id={6} />.
+
+단순 PTQ(Post-Training Quantization) 너머로, NVIDIA의 QAD(Quantization-Aware Distillation)는 양자화 오류 보정과 교사 모델 지식 증류를 동시에 수행한다. 양자화로 손실된 표현력을 더 큰 모델의 출력 분포로 보완하는 방식이다<Ref id={7} />.
+
+**구조적 희소성**: NVIDIA ASP(Automatic SParsity)의 2:4 구조적 희소성은 A100에서 2배 처리량을 달성한다. 4개 값 중 2개를 0으로 강제해 Sparse Tensor Core를 활성화하는 방식으로, 하드웨어 지원이 있어야 효과가 있다<Ref id={6} />.
+
+### 가변 이미지 배치 — 세 가지 접근
+
+이미지 서빙에서 배치를 어떻게 구성하는가는 처리량에 직접 영향을 미친다. 이미지 해상도가 다양할 때 선택지가 갈린다.
+
+**패딩 기반 배치**: 배치 내 가장 큰 이미지 크기에 맞춰 나머지를 패딩한다. 구현이 단순하지만 연산 낭비가 크다.
+
+**버킷 샘플링**: 유사한 해상도 이미지끼리 묶어 배치를 구성한다. SDXL 학습 파이프라인에서 채택된 방식으로, 패딩 낭비를 줄이면서도 배치 단위로 동작한다<Ref id={8} />.
+
+**NaViT 패치 패킹**: 서로 다른 크기 이미지의 패치를 동일한 시퀀스에 패킹하고 마스킹 어텐션으로 이미지 간 혼용을 막는다. VariViT는 이 방향을 발전시켜 가변 패치 수에 대한 위치 임베딩 리사이즈를 도입했고, 계산 시간 30% 단축을 보고했다<Ref id={9} />.
+
+---
+
+## 전처리 가속: NVIDIA DALI
+
+CPU 전처리가 병목이라면, 전처리 자체를 GPU로 옮기는 것이 DALI(Data Loading Library)의 접근이다<Ref id={10} />.
+
+DALI는 JPEG 디코딩, 리사이즈, 정규화, 데이터 증강 등 전처리 파이프라인 전체를 GPU에서 실행한다. nvJPEG 하드웨어 JPEG 디코더를 활용해 CPU 소프트웨어 디코더보다 훨씬 빠르게 처리한다. 결과 텐서는 CPU 메모리를 경유하지 않고 GPU 메모리에 직접 적재된다.
+
+효과는 훈련 속도 벤치마크에서 확인된다: ResNet18에서 훈련 시간 72% 단축, ResNet50에서 37%, ResNet152에서 43% 단축이 보고됐다. 의료 영상 분야 U-Net3D에서는 CPU 파이프라인 대비 2배 속도 향상을 달성했다<Ref id={10} /><Ref id={11} />.
+
+---
+
+## Diffusion 모델 가속
+
+Stable Diffusion류 모델은 비전 서빙의 또 다른 패턴이다. 단일 forward pass가 아니라 수십 번의 반복적 denoising step이 필요하다. 가속 전략은 세 방향으로 나뉜다.
+
+### TensorRT 적용 — 스텝당 지연 줄이기
+
+각 denoising step의 UNet 추론 시간을 줄이는 것이 첫 번째 전략이다. RTX 3090 기준 실측: PyTorch FP16 기준 5.77초이던 지연이 FlashAttention 적용으로 2.80초(2.06배), TensorRT 적용으로 1.68초(3.43배)까지 감소했다<Ref id={12} />.
+
+### 스텝 수 감소 — 더 빠른 수렴
+
+**LCM-LoRA**: Latency Consistency Model의 LoRA 어댑터 버전. 원래 50스텝이 필요하던 생성을 4스텝으로 줄인다(약 9배). TensorRT와 결합하면 추가 가속이 가능하다<Ref id={13} />.
+
+**SDXL Turbo**: 25~50스텝에서 1~4스텝으로, 실시간에 근접한 수준을 달성한다<Ref id={13} />.
+
+**SDXS**: 50스텝을 1스텝으로 압축한다. SDXL 대비 약 60배 빠르며, 512×512 이미지를 단일 스텝으로 생성한다<Ref id={14} />.
+
+### 메모리 최적화 — 8GB VRAM에서 고해상도 생성
+
+HuggingFace Diffusers는 VRAM이 제한된 환경을 위한 세 가지 메모리 최적화를 제공한다<Ref id={15} />.
+
+**Model CPU Offload**: UNet, VAE, 텍스트 인코더를 GPU에서 순차 사용 후 CPU로 돌려보낸다. 지연은 약 10% 증가하지만 VRAM 요구량이 크게 줄어든다.
+
+**Sequential CPU Offload**: 서브모듈 단위로 더 세밀하게 CPU↔GPU를 이동한다. 최대 절감이 가능하지만 지연은 50% 이상 증가할 수 있다.
+
+**VAE Slicing/Tiling**: 고해상도 이미지를 타일로 나눠 VAE를 통과시킨다. 8GB VRAM에서 4K 이미지 생성이 가능해진다.
+
+---
+
+## Triton 앙상블 파이프라인
+
+개별 모델 최적화가 끝나면, 실제 서빙에서는 전처리→추론→후처리가 하나의 파이프라인으로 연결된다. NVIDIA Triton Inference Server의 앙상블 기능은 이 파이프라인을 DAG로 정의하고 서버 내에서 실행한다.
+
+![Triton 앙상블 파이프라인 — 클라이언트의 JPEG 이미지가 DALI 전처리 백엔드를 거쳐 GPU 메모리에 직접 적재되고, TensorRT 추론 백엔드에서 피처 맵을 생성한 뒤 후처리로 연결된다. 하단 BLS 레이어는 탐지 결과에 따라 분류 모델로 라우팅하거나 스킵하는 조건부 분기를 보여준다. 엔드투엔드 지연은 CPU 전후처리 대비 6배 감소한다](/images/model-serving/triton-ensemble-pipeline.svg)
+
+### DALI 백엔드
+
+Triton은 DALI 파이프라인을 직접 모델로 등록할 수 있다. 클라이언트가 원본 JPEG 바이트를 전송하면 Triton 내부에서 GPU 전처리가 완료되고, 결과 텐서는 CPU 복사 없이 TensorRT 백엔드로 전달된다<Ref id={16} />.
+
+### DAG 구성과 Zero-Copy 전달
+
+앙상블 파이프라인은 입출력 텐서 이름으로 모델 간 연결을 정의한다. DALI의 출력 텐서 이름이 TensorRT의 입력 텐서 이름과 일치하면 Triton이 GPU 메모리 내에서 직접 전달한다. CPU를 거치는 복사가 없다.
+
+NVIDIA 측 측정에 따르면, CPU 전후처리를 사용한 파이프라인 대비 GPU 전체 파이프라인 앙상블은 엔드투엔드 지연을 6배 낮췄다<Ref id={17} />.
+
+### BLS — 조건부 분기
+
+단순 선형 파이프라인이 아닌 분기가 필요한 경우, BLS(Business Logic Scripting)를 사용한다. Python 스크립트 안에서 Triton 모델을 동적으로 호출하고, 결과에 따라 다른 모델로 분기한다.
+
+탐지 모델이 객체를 감지했을 때만 분류 모델을 호출하는 파이프라인이 대표적 사례다. 객체가 없는 이미지에서 분류 추론을 건너뛰어 불필요한 연산을 아낀다<Ref id={17} />.
+
+### 자율주행 사례
+
+nvJPEG와 DALI 전처리 이후, 감지·세그멘테이션·깊이 추정 모델이 동일 입력에서 병렬로 실행되는 파이프라인이 Triton 앙상블로 구현된다. 카메라 프레임 하나가 여러 비전 태스크를 동시에 처리하는 구조다<Ref id={18} />.
+
+---
+
+## 정리
+
+비전 모델 서빙의 핵심 병목과 해결책을 정리하면 다음과 같다.
+
+| 문제 | 기술 | 효과 |
+|------|------|------|
+| 스텝당 지연 (Diffusion) | TensorRT | PyTorch FP16 대비 3.43배 |
+| 디코딩 스텝 수 | LCM/SDXS | 50스텝 → 1~4스텝 |
+| VRAM 부족 (Diffusion) | VAE Slicing/CPU Offload | 8GB에서 4K 생성 |
+| CPU 전처리 병목 | NVIDIA DALI | ResNet18 훈련 72% 단축 |
+| 파이프라인 지연 | Triton 앙상블 | 엔드투엔드 6배 감소 |
+| 모델 크기/속도 | INT8 양자화 | 75% 크기 감소, 2~4배 가속 |
+
+---
+
+2편에서는 음성과 멀티모달로 넘어간다. Whisper를 4배 빠르게 만드는 CTranslate2, 실시간 TTS 스트리밍의 조건, 그리고 비전 인코더와 LLM이 같은 GPU를 공유할 때 생기는 간섭 문제를 다룬다.
+
+---
+
+<References>
+  <RefItem
+    id={1}
+    tier="T3"
+    title="Computer Vision Pipeline Optimization — GPU Computing Guide"
+    source="RunPod, 2024"
+    url="https://www.runpod.io/articles/guides/computer-vision-pipeline-optimization-accelerating-image-processing-workflows-with-gpu-computing"
+  />
+  <RefItem
+    id={2}
+    tier="T2"
+    title="Case Study: DALI for ResNet-50"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/case-study-resnet50-dali/"
+  />
+  <RefItem
+    id={3}
+    tier="T2"
+    title="TensorRT Best Practices"
+    source="NVIDIA Deep Learning TensorRT Documentation"
+    url="https://docs.nvidia.com/deeplearning/tensorrt/latest/performance/best-practices.html"
+  />
+  <RefItem
+    id={4}
+    tier="T3"
+    title="Accelerating Vision AI Inference with TensorRT: YOLOv8 and DINOv2 Optimization in Practice"
+    source="Medium, 2024"
+    url="https://medium.com/@testth02/accelerating-vision-ai-inference-with-tensorrt-yolov8-and-dinov2-optimization-in-practice-287acd4c73e1"
+  />
+  <RefItem
+    id={5}
+    tier="T1"
+    title="Accelerating Deep Learning Inference on Diverse Hardware"
+    source="MDPI Electronics, 2025"
+    url="https://www.mdpi.com/2079-9292/14/15/2977"
+  />
+  <RefItem
+    id={6}
+    tier="T2"
+    title="Top 5 AI Model Optimization Techniques for Faster, Smarter Inference"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/top-5-ai-model-optimization-techniques-for-faster-smarter-inference/"
+  />
+  <RefItem
+    id={7}
+    tier="T1"
+    title="NVFP4-QAD: Quantization-Aware Distillation Report"
+    source="NVIDIA Research"
+    url="https://research.nvidia.com/labs/nemotron/files/NVFP4-QAD-Report.pdf"
+  />
+  <RefItem
+    id={8}
+    tier="T2"
+    title="Simple SDXL Optimizations"
+    source="HuggingFace Blog"
+    url="https://huggingface.co/blog/simple_sdxl_optimizations"
+  />
+  <RefItem
+    id={9}
+    tier="T1"
+    title="VariViT: Variable-Resolution Vision Transformer"
+    source="arXiv:2602.14615"
+    url="https://arxiv.org/html/2602.14615"
+  />
+  <RefItem
+    id={10}
+    tier="T2"
+    title="Fast AI Data Preprocessing with NVIDIA DALI"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/fast-ai-data-preprocessing-with-nvidia-dali/"
+  />
+  <RefItem
+    id={11}
+    tier="T2"
+    title="Accelerate Computer Vision Training Using GPU Preprocessing with NVIDIA DALI on Amazon SageMaker"
+    source="AWS Machine Learning Blog"
+    url="https://aws.amazon.com/blogs/machine-learning/accelerate-computer-vision-training-using-gpu-preprocessing-with-nvidia-dali-on-amazon-sagemaker/"
+  />
+  <RefItem
+    id={12}
+    tier="T3"
+    title="Stable Diffusion Accelerated Testing: FlashAttention vs TensorRT"
+    source="Novita AI Blog"
+    url="https://blogs.novita.ai/stable-diffusion-accelerated-testing/"
+  />
+  <RefItem
+    id={13}
+    tier="T2"
+    title="LCM-LoRA: A Universal Stable-Diffusion Acceleration Module"
+    source="HuggingFace Blog"
+    url="https://huggingface.co/blog/lcm_lora"
+  />
+  <RefItem
+    id={14}
+    tier="T1"
+    title="SDXS: Real-Time One-Step Latent Diffusion Models"
+    source="arXiv:2403.16627"
+    url="https://arxiv.org/html/2403.16627v2"
+  />
+  <RefItem
+    id={15}
+    tier="T2"
+    title="Memory and Speed Optimizations — Diffusers Documentation"
+    source="HuggingFace Diffusers"
+    url="https://huggingface.co/docs/diffusers/en/optimization/memory"
+  />
+  <RefItem
+    id={16}
+    tier="T2"
+    title="Accelerating Inference with Triton Inference Server and DALI"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/accelerating-inference-with-triton-inference-server-and-dali/"
+  />
+  <RefItem
+    id={17}
+    tier="T2"
+    title="Serving ML Model Pipelines on NVIDIA Triton with Ensemble Models"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/serving-ml-model-pipelines-on-nvidia-triton-inference-server-with-ensemble-models/"
+  />
+  <RefItem
+    id={18}
+    tier="T2"
+    title="Designing an Optimal AI Inference Pipeline for Autonomous Driving"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/designing-an-optimal-ai-inference-pipeline-for-autonomous-driving/"
+  />
+</References>

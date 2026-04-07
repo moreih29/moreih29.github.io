@@ -1,0 +1,242 @@
+---
+title: "음성·멀티모달 모델 서빙 — 실시간의 조건"
+slug: model-serving-2-audio-multimodal
+date: 2026-04-07
+description: "Whisper 최적화(faster-whisper 4x, 배치 추론 12.5x)부터 스트리밍 ASR·TTS, VLM의 비주얼 인코더 병목, EPD 분리 서빙으로 Goodput 2배를 달성하는 방법까지 음성·멀티모달 서빙의 핵심을 실무자 관점에서 정리합니다."
+tags: ["ai", "serving", "inference", "whisper", "asr", "tts", "multimodal", "vlm", "epd"]
+published: true
+series: "AI 모델 서빙"
+seriesOrder: 2
+category: "AI"
+---
+
+1편에서는 비전 모델 서빙을 다뤘다. CNN·ViT에서 Diffusion까지, TensorRT 레이어 퓨전과 DALI GPU 전처리로 정적 입력의 추론 효율을 끌어올리는 방법이었다. 이번 편이 다루는 음성과 멀티모달은 조건이 하나 더 붙는다. **실시간**이다.
+
+사용자가 말을 끝내기 전에 인식을 시작해야 하고, 텍스트 첫 글자가 도착하기 전에 합성 오디오가 재생을 준비해야 한다. 이미지와 텍스트를 동시에 처리하는 VLM은 수천 개의 비전 토큰이라는 새로운 병목을 만들어낸다. 지연 시간에 대한 요구가 근본적으로 다르다.
+
+---
+
+## 음성 인식(ASR): Whisper는 왜 느린가
+
+OpenAI Whisper는 멀티링구얼 ASR의 사실상 표준이 됐다. 그런데 프로덕션에 올려보면 예상보다 훨씬 느리다. 이유는 구조에 있다.
+
+Whisper는 인코더-디코더 구조다. 오디오를 로그-멜 스펙트로그램으로 변환한 뒤 Transformer 인코더가 처리하고, 디코더가 토큰을 **한 개씩 자기회귀적으로** 생성한다. LLM의 decode 단계와 본질적으로 같다. 입력이 30초 오디오 하나여도 출력 토큰 수만큼 순차 forward pass가 필요하다.
+
+![Whisper 추론 파이프라인 — 기본 파이프라인(오디오→Mel 스펙트로그램→Transformer 인코더→자기회귀 디코더→텍스트)과 세 가지 최적화 분기를 비교한 도식. faster-whisper는 CTranslate2 엔진(레이어 퓨전·INT8)으로 4x 가속과 VRAM 73% 절감을 달성하고, VAD 기반 배치 추론은 유성 구간만 묶어 12.5x 속도를 얻으며, 스트리밍 ASR은 CTC 디코더 초안과 Whisper 디코더 리랭킹을 직렬 연결해 저지연 실시간 출력을 낸다](/images/model-serving/whisper-inference-pipeline.svg)
+
+### faster-whisper: CTranslate2 엔진
+
+faster-whisper는 Whisper를 CTranslate2 런타임으로 변환한다. CTranslate2는 레이어 퓨전, 패딩 제거, 배치 재정렬, 인플레이스 연산을 조합해 원본 대비 최대 4배 속도를 낸다<Ref id={1} />. 13분 오디오 기준으로 원본 4분 30초에서 54초로 줄어든다.
+
+메모리 효과도 크다. INT8 양자화를 활성화하면 VRAM 사용량이 11.3GB에서 3.1GB로 줄어든다. GPU가 없는 환경에서는 CPU 추론 시간이 4분의 1이 된다.
+
+### 배치 추론: VAD가 열쇠
+
+단일 파일 하나를 빠르게 처리하는 것과, 다수 파일을 동시에 처리하는 것은 다른 문제다. MobiusML의 배치 추론 접근은 VAD(Voice Activity Detection)를 선행 단계로 활용한다<Ref id={2} />. 무음 구간을 먼저 제거하고 유성 구간만 추출해 배치로 묶는다. 평균 12.5배, 장시간 파일에서는 최대 380배 실시간 속도를 달성한다.
+
+### Distil-Whisper: 모델 자체를 줄이기
+
+구조적 접근도 있다. HuggingFace의 Distil-Whisper는 지식 증류로 Whisper Large v3 대비 6배 빠르고 49% 작은 모델을 만들었다<Ref id={3} />. WER(단어 오류율) 차이는 1% 이내이고, 반복 환각은 1.3배 적다. 다만 영어 전용이다. 다국어가 필요하면 faster-whisper + INT8이 현실적인 선택이다.
+
+| 방법 | 속도 향상 | 주요 트레이드오프 |
+|------|-----------|-----------------|
+| faster-whisper INT8 | 4x | GPU 없어도 적용 가능 |
+| VAD 배치 추론 | 12.5x (평균) | 배치 가능한 워크로드 전제 |
+| Distil-Whisper | 6x | 영어 전용 |
+
+---
+
+## 스트리밍 ASR: 오프라인에서 실시간으로
+
+배치 최적화는 오프라인 시나리오에 적합하다. 사용자가 말하는 도중에 인식하는 스트리밍 ASR은 다른 접근이 필요하다.
+
+Whisper의 기본 어텐션은 <strong>비인과적(bidirectional)</strong>이다. 전체 오디오 시퀀스를 보고 나서야 출력을 낸다. 이를 청크 단위 스트리밍으로 바꾸려면 인코더와 디코더 모두 수정이 필요하다.
+
+### Two-Pass(U2) 프레임워크
+
+가장 잘 정립된 접근은 Two-Pass 방식이다<Ref id={4} />. 인과적 어텐션을 쓰는 CTC 디코더가 0.1~1.0초 청크를 받아 빠른 초안을 낸다. 0.5초 무음이 감지되면 종단점(EPD)으로 판정하고, 원본 Whisper 디코더가 전체 발화를 받아 리랭킹한다. 첫 번째 패스의 속도와 두 번째 패스의 정확도를 결합하는 구조다.
+
+### CarelessWhisper
+
+CarelessWhisper는 Whisper 전체를 인과적 스트리밍 모델로 변환한다<Ref id={5} />. 별도 CTC 헤드 없이 표준 CPU에서 오프라인 Whisper에 준하는 정확도를 달성한다고 보고됐다. 배포 환경이 CPU로 제한될 때 고려할 수 있는 선택지다.
+
+---
+
+## TTS 스트리밍: 42ms의 목표
+
+TTS 스트리밍의 핵심 지표는 TTFB(Time to First Byte), 즉 첫 오디오 청크가 나오기까지의 지연이다. 인간이 자연스럽게 느끼는 기준은 200ms 이하다.
+
+전통적 TTS는 전체 텍스트를 처리한 뒤 오디오를 합성한다. 텍스트 길이에 비례해 TTFB가 늘어나고, 길어질수록 대화가 어색해진다.
+
+### SpeakStream: 청크 단위 방출
+
+SpeakStream(2025)은 TTS 지연 30ms와 보코더 15ms를 조합해 첫 청크 TTFB 42ms를 달성했다<Ref id={6} />. 비스트리밍 RichTTS와 동등한 MOS(Mean Opinion Score)를 유지하면서다.
+
+핵심 원리는 청크 단위 방출이다. 전체 시퀀스 완성을 기다리지 않고 완성된 청크를 즉시 보코더로 넘긴다. 시퀀스 길이 N에 비례하던 지연이 상수 시간으로 바뀐다. KV 캐시 재사용과 상태 체크포인팅이 청크 간 일관성을 보장한다<Ref id={7} />.
+
+모델 크기 측면에서는 INT8 양자화와 가지치기를 결합하면 모델을 4배 축소하고 추론을 2~3배 단축하면서 MOS 하락을 3% 이내로 유지할 수 있다.
+
+---
+
+## 멀티모달: 비주얼 인코더가 만드는 병목
+
+VLM(Vision-Language Model)이 LLM보다 서빙하기 어려운 이유는 단순히 모델이 크기 때문이 아니다. 구조가 다르다.
+
+순수 LLM은 입력 토큰을 처리하면 된다. VLM은 텍스트 처리 전에 **모든 이미지를 ViT 인코더로 처리**해야 한다. 이미지 한 장이 수천 개의 비전 토큰으로 변환된다. 이 토큰들이 KV 캐시에 올라가면 메모리 트래픽이 급증한다.
+
+문제는 간섭이다. 인코더와 LLM이 같은 GPU를 공유하면 compute-bound인 ViT 연산과 memory-bound인 LLM 디코드가 서로 간섭한다. GPU 활용률이 낮아지고 레이턴시가 예측하기 어려워진다.
+
+---
+
+## EPD 분리 서빙: 전용 GPU 세트로 분리
+
+이 문제의 구조적 해법이 EPD(Encoder-Prefill-Decode) 분리다. 인코더, 프리필, 디코드를 각각 전용 GPU 세트에 배치한다.
+
+![EPD 분리 서빙 아키텍처 비교 — 기존 방식(단일 GPU에서 비주얼 인코더·프리필·디코드가 공유, GPU 간섭으로 TTFT 높음)과 EPD 분리 방식(GPU E에서 ViT 실행, GPU P에서 prefill과 KV 생성, GPU D에서 연속 배치 디코드를 분리 배치)을 좌우로 대비하고 성능 수치를 표기한 도식](/images/model-serving/epd-disaggregation.svg)
+
+### vLLM EPD
+
+vLLM v0.11.1부터 EPD 분리 서빙이 지원된다<Ref id={8} />. 이미지 4장짜리 요청 기준으로 Goodput이 6 QPS에서 12 QPS로 2배 증가하고, P99 TTFT와 TPOT이 20~50% 감소한다.
+
+### ModServe
+
+ModServe(2025)는 EPD 분리를 동적 스케줄링과 결합한다<Ref id={9} />. vLLM 대비 평균/P99 TTFT가 Llama3.2 기준 27%/42%, InternVL 기준 46%/47% 개선된다. 정적 분리보다 처리량이 3.3~5.5배 높고, 전체 서빙 비용은 25~41.3% 줄어든다. 부하 패턴에 따라 GPU 간 역할을 동적으로 조정하는 것이 핵심이다.
+
+### 논문이 보고한 TTFT 감소
+
+EPD 분리 논문은 모델별 TTFT 감소 수치를 구체적으로 제시한다<Ref id={10} />. MiniCPM-V 2.6에서 71.9%, InternVL2-8B에서 32.8%, InternVL2-26B에서 44.9% 감소다. 모델 크기와 이미지 수에 따라 효과가 달라지지만, 방향은 일관적이다.
+
+---
+
+## 비전 토큰 최적화: 더 적게, 더 스마트하게
+
+EPD 분리가 GPU 배치 문제를 해결한다면, 비전 토큰 자체를 줄이는 접근도 있다.
+
+### LMCache: 동일 이미지 재사용
+
+같은 이미지로 반복 질문하는 시나리오는 흔하다. 문서 분석, 이미지 기반 QA, 멀티턴 대화 모두 해당된다. LMCache v0.3.1은 비전 임베딩을 캐시해 재사용한다<Ref id={11} />. 콜드 스타트에서 18초 걸리던 처리가 캐시 히트 시 1초로 줄어든다.
+
+### Dynamic-LLaVA: 희소화
+
+Dynamic-LLaVA는 시각-언어 컨텍스트에서 중요하지 않은 비전 토큰을 추론 중 동적으로 제거한다<Ref id={12} />. 연산량과 KV 캐시 메모리를 각각 약 50% 줄인다. 비전 토큰 수가 많을수록 효과가 크다.
+
+### MoE-LLaVA: 희소 활성화
+
+MoE-LLaVA는 Mixture-of-Experts 구조로 비전-언어 처리를 희소화한다<Ref id={13} />. 2.0B 희소 활성화 모델이 LLaVA-1.5-7B에 근접하고, 3.6B 변종은 이를 초과한다. 모델 크기 대비 성능 효율을 높이는 방향이다.
+
+---
+
+## 정리
+
+음성과 멀티모달 서빙의 어려움은 실시간 조건에서 비롯된다. 배치로 해결할 수 있는 것과 구조를 바꿔야 하는 것을 구분하는 것이 출발점이다.
+
+| 문제 | 접근 | 핵심 수치 |
+|------|------|-----------|
+| Whisper 느린 추론 | faster-whisper CTranslate2 | 4x 속도, VRAM 73% ↓ |
+| 대량 파일 처리 | VAD 기반 배치 추론 | 평균 12.5x |
+| 모델 크기 | Distil-Whisper | 6x 빠름, 49% 작음 |
+| 실시간 ASR | Two-Pass(U2) / CarelessWhisper | 청크 단위 저지연 |
+| TTS 첫 응답 | SpeakStream 청크 방출 | TTFB 42ms |
+| 비주얼 인코더 간섭 | EPD 분리 서빙 | Goodput 2x, TTFT 32-72% ↓ |
+| 비전 토큰 중복 | LMCache 재사용 | 18초 → 1초 |
+| 비전 토큰 과다 | Dynamic-LLaVA 희소화 | 연산·메모리 50% ↓ |
+
+---
+
+3편에서는 임베딩·추천 모델 서빙과 공통 최적화 기술을 다룬다. 고처리량 임베딩 파이프라인에서 CPU 토크나이제이션이 어떻게 GPU 추론의 90%를 잡아먹는지, 그리고 그래프 최적화와 CUDA 그래프가 여러 모달리티에 공통으로 어떤 이득을 주는지를 정리한다.
+
+---
+
+<References>
+  <RefItem
+    id={1}
+    tier="T2"
+    title="faster-whisper — GitHub SYSTRAN"
+    source="SYSTRAN, GitHub"
+    url="https://github.com/SYSTRAN/faster-whisper"
+  />
+  <RefItem
+    id={2}
+    tier="T2"
+    title="Batched Whisper — MobiusML Blog"
+    source="MobiusML, 2024"
+    url="https://mobiusml.github.io/batched_whisper_blog/"
+  />
+  <RefItem
+    id={3}
+    tier="T2"
+    title="distil-whisper — GitHub HuggingFace"
+    source="HuggingFace, GitHub"
+    url="https://github.com/huggingface/distil-whisper"
+  />
+  <RefItem
+    id={4}
+    tier="T1"
+    title="Adapting Whisper for Streaming ASR with Two-Pass Decoding"
+    source="arXiv:2506.12154"
+    url="https://arxiv.org/abs/2506.12154"
+  />
+  <RefItem
+    id={5}
+    tier="T1"
+    title="CarelessWhisper: Streaming ASR without Causal Retraining"
+    source="arXiv:2508.12301"
+    url="https://arxiv.org/abs/2508.12301"
+  />
+  <RefItem
+    id={6}
+    tier="T1"
+    title="SpeakStream: Low-Latency Streaming TTS"
+    source="arXiv:2505.19206"
+    url="https://arxiv.org/html/2505.19206v1"
+  />
+  <RefItem
+    id={7}
+    tier="T3"
+    title="Latency-Aware Text-to-Speech Pipeline"
+    source="EmergentMind"
+    url="https://www.emergentmind.com/topics/latency-aware-text-to-speech-tts-pipeline"
+  />
+  <RefItem
+    id={8}
+    tier="T2"
+    title="vLLM EPD: Encoder-Prefill-Decode Disaggregation"
+    source="vLLM Blog, 2025-12"
+    url="https://blog.vllm.ai/2025/12/15/vllm-epd.html"
+  />
+  <RefItem
+    id={9}
+    tier="T1"
+    title="ModServe: Efficient Multimodal LLM Serving"
+    source="arXiv:2502.00937"
+    url="https://arxiv.org/html/2502.00937"
+  />
+  <RefItem
+    id={10}
+    tier="T1"
+    title="EPD Disaggregation for VLM Serving"
+    source="arXiv:2501.05460"
+    url="https://arxiv.org/html/2501.05460"
+  />
+  <RefItem
+    id={11}
+    tier="T2"
+    title="LMCache v0.3.1: Multimodal Vision Embedding Cache"
+    source="LMCache Blog, 2025-07"
+    url="https://blog.lmcache.ai/2025-07-03-multimodal-models/"
+  />
+  <RefItem
+    id={12}
+    tier="T1"
+    title="Dynamic-LLaVA: Efficient Multimodal LLM via Dynamic Vision-Language Context"
+    source="OpenReview (NeurIPS)"
+    url="https://openreview.net/forum?id=hzVpZDrW73"
+  />
+  <RefItem
+    id={13}
+    tier="T1"
+    title="MoE-LLaVA: Mixture of Experts for Large Vision-Language Models"
+    source="PKU-YuanGroup, GitHub"
+    url="https://github.com/PKU-YuanGroup/MoE-LLaVA"
+  />
+</References>

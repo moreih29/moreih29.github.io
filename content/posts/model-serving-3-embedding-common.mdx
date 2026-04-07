@@ -1,0 +1,321 @@
+---
+title: "임베딩·추천 모델 서빙과 공통 최적화 기술 — AI 모델 서빙 최종편"
+slug: model-serving-3-embedding-common
+date: 2026-04-07
+description: "임베딩 서빙 16x 처리량 향상의 실제 사례, GPU 벡터 검색의 가속 수치, 추천 시스템 Feature Store 패턴 — 그리고 비전·오디오·임베딩 전 도메인을 관통하는 그래프 최적화·양자화·CUDA 그래프·엣지 배포 기술을 실무자 관점으로 정리합니다."
+tags: ["ai", "serving", "inference", "embedding", "vector-search", "recommendation", "quantization", "tensorrt", "edge"]
+published: true
+series: "AI 모델 서빙"
+seriesOrder: 3
+category: "AI"
+---
+
+1편에서는 CNN/ViT 추론 최적화와 Diffusion 모델 가속을 다뤘다. 2편에서는 Whisper ASR 스트리밍, TTS 합성, 멀티모달 VLM의 EPD 분리 서빙을 살펴봤다. 두 편에서 공통적으로 보인 주제가 있었다. "병목이 어디 있는가"라는 질문과, 그 병목을 해소하는 방식들이다.
+
+이번 3편은 두 축으로 구성된다. 먼저 눈에 잘 띄지 않지만 대규모 서비스 뒤에서 쉬지 않고 돌아가는 임베딩 모델과 추천 시스템 서빙을 해부한다. 그리고 도메인에 관계없이 반복 등장하는 공통 최적화 기술 — 그래프 최적화, 양자화 전략, CUDA 그래프, 엣지 배포 — 을 정리한다.
+
+---
+
+## 임베딩 고처리량 서빙 — GPU가 10%만 일하는 이유
+
+### 왜 다른가
+
+임베딩 모델은 LLM과 달리 출력이 단일 벡터다. 생성(generation) 루프가 없어 추론 자체는 짧다. 그런데 이 짧은 추론이 오히려 문제다. GPU가 추론하는 시간이 워낙 짧다 보니, CPU에서 이루어지는 토크나이제이션이 전체 지연의 90%를 차지하게 된다<Ref id={1} />.
+
+Snowflake가 임베딩 서비스를 vLLM으로 분석한 결과, GPU는 전체 시간의 10%만 사용하고 나머지 90%는 CPU 토크나이저를 기다리는 유휴 상태였다<Ref id={1} />. GPU 서버 비용을 지불하면서 GPU를 10%만 쓰고 있었던 셈이다.
+
+### 핵심 기술 — 3가지 최적화
+
+Snowflake가 적용한 최적화는 세 가지다.
+
+**직렬화 최적화**: 요청과 응답 직렬화 형식을 바꿔 네트워크 전송 오버헤드를 줄인다.
+
+**토크나이제이션/추론 파이프라인 분리**: 토크나이저를 독립 프로세스로 분리해 GPU 추론과 비동기로 실행한다. GPU가 이전 배치를 추론하는 동안 다음 배치 토크나이제이션이 CPU에서 병행된다.
+
+**다중 GPU 복제본**: GPU 인스턴스를 수평으로 늘려 토크나이저 풀이 여러 추론 서버에 동시에 공급하도록 구성한다.
+
+### 수치
+
+세 가지 최적화를 결합한 결과, 단문 기준 **16x 처리량 향상**, 장문 기준 4.2x 향상이 보고됐다. 최종 처리량은 초당 230,000 토큰이다<Ref id={1} />.
+
+![임베딩 서빙 파이프라인 최적화 — 기존(상단): 요청이 CPU 토크나이저(전체 시간 90% 소비, 병목)를 거쳐 GPU 추론(10%)에 도달하며 GPU가 대부분을 유휴 대기한다. 최적화 후(하단): 직렬화 최적화, 토크나이저·GPU 파이프라인 분리, 다중 GPU 복제본 3가지 개선을 적용해 16x 처리량을 달성한다](/images/model-serving/embedding-serving-pipeline.svg)
+
+---
+
+## 벡터 검색 최적화 — 인덱스 선택의 실제 기준
+
+### 왜 다른가
+
+임베딩 모델이 벡터를 만들면, 그 벡터를 저장하고 가장 가까운 이웃을 찾는 것이 벡터 검색이다. 데이터 규모와 검색 배치 크기에 따라 최적 인덱스 구조가 달라진다.
+
+### HNSW — 프로덕션 기본 선택지
+
+HNSW(Hierarchical Navigable Small World)는 수천만 벡터 규모까지 속도-정확도 균형이 우수해 프로덕션 기본 선택지로 자리잡았다<Ref id={2} />. CPU에서 동작하며 범용 클라우드 환경에서 추가 하드웨어 없이 사용 가능하다.
+
+### GPU CAGRA — 대규모 배치의 압도적 가속
+
+NVIDIA cuVS의 GPU CAGRA는 CPU HNSW 대비 인덱스 빌드 12.3x, 검색 4.7x 빠르다<Ref id={3} />. 90-95% recall 기준에서는 HNSW 대비 **33-77x** 성능 차이가 난다. 단, 소규모(쿼리 10개 이하) 상황에서는 GPU 초기화 오버헤드로 인해 CPU와 경쟁적 수준이다. 10,000개 이상 배치 쿼리 환경이 GPU CAGRA의 명확한 활용 구간이다<Ref id={3} />.
+
+### ScaNN — 클라우드 메모리 효율
+
+Google의 ScaNN은 데이터 분할과 비대칭 해싱(AH) 근사 거리를 조합해 메모리 효율을 높였다. 클라우드 환경에서 메모리 대역폭 비용을 줄이는 데 최적화됐다<Ref id={4} />.
+
+### 배치 규모별 트레이드오프
+
+| 규모 | 권장 인덱스 | 이유 |
+|------|------------|------|
+| 소규모 (쿼리 ≤10) | HNSW (CPU) | GPU 초기화 오버헤드 > 이득 |
+| 중규모 | HNSW 또는 ScaNN | 메모리·정확도 균형 |
+| 대규모 배치 (≥10K) | GPU CAGRA | 33-77x 검색 가속 |
+
+---
+
+## 추천 시스템 서빙 — 피처가 병목이 되는 구조
+
+### 왜 다른가
+
+추천 시스템은 임베딩과 벡터 검색을 포함하지만 고유한 문제가 있다. 추론 시점에 사용자·아이템·컨텍스트 피처를 밀리초 내에 조합해야 한다. 피처 조회가 느리면 추론 자체가 아무리 빠르더라도 전체 응답 지연이 늘어난다.
+
+### Feature Store 패턴
+
+엔티티별 피처 벡터를 NoSQL 인메모리 DB에 미리 저장하고, 추론 시점에 밀리초 수준으로 조회하는 패턴이다<Ref id={5} />. 온라인 피처 조회와 오프라인 피처 갱신을 분리해 추론 경로에서 무거운 연산을 제거한다.
+
+### Meta Adaptive Ranking — GPU 피처 전처리 오프로딩
+
+Meta는 2026년 광고 랭킹 시스템에 GPU 피처 전처리 오프로딩을 적용했다<Ref id={6} />. 결과는 광고 전환율 +3%, 클릭률 +5% 향상이다. CPU 피처 전처리가 병목이었던 구조에서 GPU로 오프로드해 추론 파이프라인 전체 처리량을 높였다.
+
+### 배치 vs 실시간 트레이드오프
+
+온라인 추천에서는 지연 예산 내 응답이 우선이다. 일반적인 패턴은 캐시된 추천을 우선 반환하고, 캐시 미스 시에만 경량 실시간 추론을 실행한다<Ref id={7} />. 대형 랭킹 모델은 배치로 사전 계산해 캐시에 적재하고, 실시간 추론은 소형 모델로 처리하는 이중 구조가 프로덕션 표준에 가깝다.
+
+---
+
+## 공통 기술 1: 그래프 최적화
+
+### 왜 다른가
+
+그래프 최적화는 LLM 전용이 아니다. 비전 모델, 임베딩 모델, 오디오 인코더 — 어느 딥러닝 모델이든 연산 그래프를 컴파일하면 중간 텐서 생성을 줄이고 메모리 접근 횟수를 낮출 수 있다. LLM 서빙 1편에서 다룬 양자화가 "얼마나 작게"의 문제라면, 그래프 최적화는 "얼마나 효율적으로 실행할 것인가"의 문제다.
+
+### TorchInductor — PyTorch 기본 컴파일러
+
+PyTorch 2.x에 포함된 TorchInductor는 Pointwise·Reduction 연산을 자동으로 퓨전한다<Ref id={8} />. A100에서 180개 이상의 모델 평균 **2.27x 추론 속도 향상**이 보고됐다. 별도 코드 수정 없이 `torch.compile(model)` 호출만으로 활성화된다.
+
+### XLA — TPU 긴밀 통합
+
+XLA(Accelerated Linear Algebra)는 규칙 기반 퓨전으로 TPU와 긴밀하게 통합돼 있다<Ref id={9} />. Google 인프라에서 TensorFlow/JAX 기반 모델의 그래프 최적화 기본 컴파일러다.
+
+### PluS — 언더퓨전·오버퓨전 해결 (2025 USENIX ATC)
+
+TorchInductor는 언더퓨전(퓨전 기회 누락)과 오버퓨전(레지스터 압력 증가) 사이에서 균형을 잡기 어렵다. USENIX ATC 2025에서 발표된 PluS는 이 두 문제를 동시에 해결하여 TorchInductor 대비 **4.04x**, TensorRT 대비 **1.77x** 성능 향상을 달성했다<Ref id={10} />.
+
+---
+
+## 공통 기술 2: 양자화 전략
+
+### 왜 다른가
+
+LLM 양자화(1편)가 GPTQ·AWQ·FP8 등 가중치 압축 방법론에 초점을 맞췄다면, 비-LLM 도메인에서는 "어떤 방식으로 양자화를 적용할 것인가" — 동적, 정적, 혼합 정밀도 — 의 선택이 더 실용적인 문제다. 임베딩 모델은 입력 길이가 가변적이고, 추천 모델은 레이어별 민감도가 다르기 때문이다.
+
+### 세 가지 방식
+
+**동적 양자화**: 가중치는 사전 양자화하고, 활성화는 추론 중 실시간으로 양자화한다. 보정 데이터 없이 적용 가능하지만 매 추론마다 양자화 계산 오버헤드가 발생한다.
+
+**정적 양자화**: 보정 데이터셋으로 활성화 분포를 측정한 뒤 스케일을 고정한다. 추론 중 추가 계산이 없어 빠르지만 보정 데이터 품질에 의존한다.
+
+**혼합 정밀도**: 민감한 레이어는 FP16으로 유지하고 나머지를 INT8 또는 INT4로 낮춘다. 정확도 손실을 최소화하면서 평균 비트폭을 낮추는 방식이다.
+
+### 수치
+
+FP8/INT8은 FP16 대비 최대 2x, FP32 대비 최대 4x 추론 속도를 달성한다<Ref id={11} />. SHMQ(Static Half Mixed Quantization)는 동적 양자화 대비 **1.83-4.21x 추론 속도 향상**을 보고했다<Ref id={11} />.
+
+---
+
+## 공통 기술 3: CUDA 그래프와 콜드 스타트
+
+### 왜 다른가
+
+GPU 커널 하나를 실행할 때마다 CPU→GPU API 호출 비용이 발생한다. 배치가 작거나 모델이 가벼울수록 이 오버헤드의 비율이 상대적으로 커진다. 임베딩처럼 추론 자체가 짧은 모델에서 커널 런치 비용이 병목이 되는 이유다.
+
+### CUDA 그래프 — 커널 런치 오버헤드 제거
+
+GPU 연산 시퀀스를 한 번 기록한 뒤 이후에는 단일 API 호출로 재생한다<Ref id={12} />. 커널 런치 오버헤드가 대폭 줄어든다. 웜업은 최소 3회(분산 학습 시 11회)를 권장한다.
+
+### 콜드 스타트 — 두 가지 접근
+
+**CUDA Checkpoint/Restore**: Modal과 vLLM이 함께 사용하는 방식으로, CUDA 컨텍스트를 체크포인트로 저장해 콜드 스타트 시 복원한다. 콜드 스타트 지연을 **10x 개선**한 사례가 보고됐다<Ref id={12} />.
+
+**NVIDIA Run:ai Model Streamer**: 스토리지에서 GPU로 모델 가중치를 직접 스트리밍해 CPU 메모리를 경유하지 않는다. 대형 모델의 첫 로드 시간을 줄이는 데 효과적이다<Ref id={12} />.
+
+---
+
+## 공통 기술 4: 엣지 배포
+
+### 왜 다른가
+
+클라우드 GPU 서버 대신 스마트폰, 엣지 디바이스, 온프레미스 하드웨어에서 추론을 실행하는 경우, 프레임워크 선택 자체가 달라진다. 하드웨어마다 최적화된 실행 경로가 다르기 때문이다.
+
+### 플랫폼별 프레임워크
+
+| 플랫폼 | 프레임워크 | 핵심 특징 |
+|--------|-----------|----------|
+| Android | LiteRT (구 TFLite) | Google AI Edge, NPU 가속 |
+| iOS | CoreML | Apple Neural Engine(ANE) 통합 |
+| NVIDIA Jetson | TensorRT | GPU 네이티브 최적화 |
+| Intel CPU/iGPU | OpenVINO | OpenVINO 최적화 레이어 |
+
+Android는 2024년 TensorFlow Lite를 LiteRT로 리브랜딩하며 Google AI Edge 생태계로 통합했다<Ref id={13} />. iOS의 CoreML은 Apple Neural Engine과 직접 통합돼 아이폰 NPU 최대 활용이 가능하다<Ref id={14} />.
+
+### 경량 아키텍처 — EfficientFormer
+
+엣지에서 트랜스포머 계열 모델을 실행할 때 아키텍처 선택이 중요하다. EfficientFormer-L3는 PoolFormer 대비 iPhone NPU에서 **3x**, CPU에서 **6.8x** 빠르면서 정확도는 1% 높다<Ref id={15} />. 경량 트랜스포머 아키텍처 비교 연구에 따르면, 전체 정확도 75-96%를 유지하면서 크기 4-10x 감소, 지연 3-9x 감소가 달성 가능하다<Ref id={16} />.
+
+### 하드웨어 가속 — Vulkan Cooperative Matrix
+
+범용 GPU(게임·모바일 GPU 포함)에서 ML 연산을 가속하는 방법으로 Vulkan Cooperative Matrix가 있다. 행렬 곱셈 프리미티브를 GPU에 직접 노출해 Android 기기의 다양한 GPU 벤더에서 ML 워크로드를 가속할 수 있다<Ref id={17} />.
+
+---
+
+## 시리즈를 마치며
+
+"AI 모델 서빙" 시리즈는 비전 모델부터 음성·멀티모달, 임베딩·추천, 그리고 공통 기술까지 3편에 걸쳐 도메인별 서빙 문제를 해부했다.
+
+세 편을 관통하는 핵심 인사이트를 정리하면 다음과 같다.
+
+**병목은 항상 GPU 밖에 있다.** 1편의 DALI(CPU 전처리 병목), 2편의 EPD 분리(인코더-디코더 간섭), 3편의 임베딩 토크나이저 분리(CPU 90% 점유) — 모두 GPU 추론이 아닌 주변 구간이 병목이었다. 최적화는 GPU를 더 빠르게 만드는 것이 아니라 GPU가 쉬지 않도록 만드는 것이다.
+
+**도메인마다 병목의 형태가 다르다.**
+
+| 도메인 | 주요 병목 | 핵심 해법 |
+|--------|----------|----------|
+| 비전 모델 | CPU 전처리, 가변 이미지 크기 | DALI, 버킷 샘플링, TensorRT |
+| 음성·멀티모달 | 스트리밍 지연, 비전 토큰 비용 | Two-Pass, EPD 분리, 비전 토큰 압축 |
+| 임베딩 | 토크나이저 CPU 병목 | 파이프라인 분리, 다중 복제본 |
+| 추천 시스템 | 피처 조회 지연 | Feature Store, GPU 피처 오프로딩 |
+
+**공통 기술은 도메인 경계를 넘는다.** 그래프 최적화(TorchInductor, PluS), 양자화, CUDA 그래프, 엣지 프레임워크는 특정 모델 타입에 묶이지 않는다. 어떤 도메인에서 시작하든 이 기술들을 쌓아 올리는 방향은 같다.
+
+서빙 최적화는 단일 기술의 선택이 아니라 파이프라인 전체를 보는 시야에서 나온다. 이 시리즈가 그 시야를 넓히는 데 조금이나마 도움이 됐기를 바란다.
+
+---
+
+<References>
+  <RefItem
+    id={1}
+    tier="T2"
+    title="Embedding Inference with Arctic: 16x Faster"
+    source="Snowflake Engineering Blog"
+    url="https://www.snowflake.com/en/engineering-blog/embedding-inference-arctic-16x-faster/"
+  />
+  <RefItem
+    id={2}
+    tier="T2"
+    title="A Practical Guide to Selecting HNSW Hyperparameters"
+    source="OpenSearch Blog"
+    url="https://opensearch.org/blog/a-practical-guide-to-selecting-hnsw-hyperparameters/"
+  />
+  <RefItem
+    id={3}
+    tier="T2"
+    title="Enhancing GPU-Accelerated Vector Search in FAISS with NVIDIA cuVS"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/enhancing-gpu-accelerated-vector-search-in-faiss-with-nvidia-cuvs/"
+  />
+  <RefItem
+    id={4}
+    tier="T2"
+    title="Efficient Serving with TF Recommenders and ScaNN"
+    source="TensorFlow Recommenders Docs"
+    url="https://www.tensorflow.org/recommenders/examples/efficient_serving"
+  />
+  <RefItem
+    id={5}
+    tier="T2"
+    title="Feature Store 101"
+    source="Aerospike Blog"
+    url="https://aerospike.com/blog/feature-store/"
+  />
+  <RefItem
+    id={6}
+    tier="T2"
+    title="Meta Adaptive Ranking: Bending the Inference Scaling Curve to Serve LLM-Scale Models for Ads"
+    source="Engineering at Meta Blog, 2026-03"
+    url="https://engineering.fb.com/2026/03/31/ml-applications/meta-adaptive-ranking-model-bending-the-inference-scaling-curve-to-serve-llm-scale-models-for-ads/"
+  />
+  <RefItem
+    id={7}
+    tier="T1"
+    title="A Survey of Real-World Recommender Systems"
+    source="arXiv:2509.06002"
+    url="https://arxiv.org/html/2509.06002v1"
+  />
+  <RefItem
+    id={8}
+    tier="T2"
+    title="PyTorch Performance Tuning Guide"
+    source="PyTorch Tutorials"
+    url="https://docs.pytorch.org/tutorials/recipes/recipes/tuning_guide.html"
+  />
+  <RefItem
+    id={9}
+    tier="T2"
+    title="PyTorch/XLA Overview"
+    source="PyTorch/XLA Docs"
+    url="https://docs.pytorch.org/xla/master/learn/xla-overview.html"
+  />
+  <RefItem
+    id={10}
+    tier="T1"
+    title="PluS: Better Operator Fusion for Deep Learning Compilers"
+    source="USENIX ATC 2025"
+    url="https://www.usenix.org/system/files/atc25-wu-ruofan.pdf"
+  />
+  <RefItem
+    id={11}
+    tier="T2"
+    title="Model Quantization: Concepts, Methods, and Why It Matters"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/model-quantization-concepts-methods-and-why-it-matters/"
+  />
+  <RefItem
+    id={12}
+    tier="T2"
+    title="CUDA Graph Best Practices for Deep Learning"
+    source="NVIDIA Docs"
+    url="https://docs.nvidia.com/dl-cuda-graph/torch-cuda-graph/best-practices.html"
+  />
+  <RefItem
+    id={13}
+    tier="T2"
+    title="Google AI Edge LiteRT"
+    source="Google AI Edge Docs"
+    url="https://ai.google.dev/edge/litert"
+  />
+  <RefItem
+    id={14}
+    tier="T3"
+    title="Edge AI: TensorFlow Lite vs ONNX Runtime vs PyTorch Mobile"
+    source="DZone"
+    url="https://dzone.com/articles/edge-ai-tensorflow-lite-vs-onnx-runtime-vs-pytorch"
+  />
+  <RefItem
+    id={15}
+    tier="T1"
+    title="EfficientFormer: Vision Transformers at MobileNet Speed"
+    source="arXiv:2206.01191"
+    url="https://arxiv.org/pdf/2206.01191"
+  />
+  <RefItem
+    id={16}
+    tier="T1"
+    title="Lightweight Transformer Architectures for Edge Deployment"
+    source="arXiv:2601.03290"
+    url="https://arxiv.org/pdf/2601.03290"
+  />
+  <RefItem
+    id={17}
+    tier="T2"
+    title="Machine Learning Acceleration with Vulkan Cooperative Matrices"
+    source="NVIDIA Developer Blog"
+    url="https://developer.nvidia.com/blog/machine-learning-acceleration-vulkan-cooperative-matrices/"
+  />
+</References>
