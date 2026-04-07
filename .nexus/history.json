@@ -1456,6 +1456,108 @@
           "created_at": "2026-04-07T01:33:23.257Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-04-07T02:41:18.150Z",
+      "branch": "feat/dino-deep-dive",
+      "plan": {
+        "id": 3,
+        "topic": "DINO 계열 비전 모델 기술 심층 블로그 포스트",
+        "issues": [
+          {
+            "id": 1,
+            "title": "포스트 구조 — 단독 포스트 vs 시리즈 분리",
+            "status": "decided",
+            "decision": "단일 포스트. 사용자가 \"포스팅\"(단수)으로 요청했고, 두 계열의 이름 혼동 정리가 단일 포스트의 핵심 가치. Writer rules \"분량 제한 없이 주제 복잡도에 따라 자연스럽게 결정\" 원칙 적용. SSL 계열(DINO→DINOv2→DINOv3)과 Detection 계열(DINO-DETR→Grounding DINO→DINO-X)을 한 포스트에서 포괄적으로 다룬다."
+          },
+          {
+            "id": 2,
+            "title": "시리즈 소속 — 기존 시리즈 편입 vs 독립",
+            "status": "decided",
+            "decision": "독립 포스트(시리즈 없음). 기존 시리즈와 주제 불일치 — \"AI 모델 서빙\"은 추론 최적화, 이 포스트는 모델 아키텍처/학습. 단일 포스트이므로 시리즈 불필요. slug: dino-family-deep-dive, category: AI."
+          },
+          {
+            "id": 3,
+            "title": "콘텐츠 목차/섹션 설계",
+            "status": "decided",
+            "decision": "8섹션 구조: (1) 도입 — \"DINO\"라는 이름의 두 세계 (2) SSL 배경 — Contrastive에서 Self-distillation까지 (3) DINO — Student-Teacher, multi-crop, centering+sharpening, emergent segmentation (4) DINOv2 — iBOT, LVD-142M, foundation model for vision (5) DINOv3 — 7B, Gram Anchoring, 고정 하이퍼파라미터, SOTA dense tasks (6) Detection 계보 — DINO-DETR → Grounding DINO → DINO-X (7) 실무 파이프라인 — Grounded-SAM, downstream 활용 (8) 마무리 — DINO가 비전 AI에 남긴 것"
+          },
+          {
+            "id": 4,
+            "title": "SVG 시각자료 목록 확정",
+            "status": "decided",
+            "decision": "SVG 7개: (1) DINO Student-Teacher 아키텍처 + multi-crop (2) Contrastive vs Self-distillation 비교 (3) DINOv2 데이터 파이프라인 LVD-142M (4) DINO→DINOv2→DINOv3 진화 비교 (5) DINOv3 Gram Anchoring 메커니즘 (6) Grounding DINO 아키텍처 (cross-modal) (7) DINO 계열 전체 계보도 (이름 혼동 정리). 스타일: system-ui 폰트, #374151 텍스트, 파스텔 fill, 투명 배경, 기존 블로그 SVG 스타일 준수."
+          },
+          {
+            "id": 5,
+            "title": "기술 깊이 — 수식 포함 수준 결정",
+            "status": "decided",
+            "decision": "핵심 수식 4개 포함: (1) DINO loss function (cross-entropy with temperature sharpening) (2) EMA update rule (momentum teacher) (3) centering update (batch mean subtraction) (4) DINOv3 Gram Anchoring loss (Frobenius norm). 각 수식에 직관적 해설 동반. Writer rules \"핵심 1-2개 포함\" 원칙 대비 확대하되, 사용자의 \"기술적으로 아주 상세하게\" 요청 반영."
+          }
+        ],
+        "research_summary": "## 리서치 요약\n\n### 두 독립 계보\nDINO라는 이름을 공유하지만 완전히 독립적인 두 연구 흐름이 존재한다.\n\n**계보 1: Self-Supervised DINO (Meta AI/FAIR)**\n- **DINO** (2021, arXiv:2104.14294): Self-distillation with no labels. Student-Teacher EMA 구조, centering+sharpening으로 collapse 방지, multi-crop 전략. ViT-B/16 ImageNet linear probe 80.1%. ViT attention에서 semantic segmentation이 자발적으로 출현.\n- **DINOv2** (2023, arXiv:2304.07193): LVD-142M 자동 큐레이션 데이터, iBOT loss 통합, Sinkhorn-Knopp centering, KoLeo regularizer. ViT-g/14 ImageNet 86.5%, ADE20K 60.2 mIoU. \"Foundation model for vision\".\n- **DINOv3** (2025.08, arXiv:2508.10104): 7B 파라미터, 1.689B 이미지. Gram Anchoring (장기 훈련 중 dense feature 열화 방지), Axial RoPE, SwiGLU FFN, 하이퍼파라미터 스케줄 제거. ImageNet 88.4%, ADE20K 63.0 mIoU, PASCAL VOC 86.6. Dense task에서 압도적.\n\n**계보 2: Detection DINO (IDEA Research)**\n- **DINO-DETR** (2022, arXiv:2203.03605): Contrastive denoising + mixed query selection + look forward twice. COCO 49.4→63.3 AP.\n- **Grounding DINO** (2023, arXiv:2303.05499): Open-set detection. Swin + BERT + cross-modal feature enhancer. COCO zero-shot 52.5 AP.\n- **Grounding DINO 1.5** (2024, arXiv:2405.10300): Pro 54.3 AP / Edge 75.2 FPS.\n- **DINO-X** (2024, arXiv:2411.14347): Universal object understanding. COCO zero-shot 56.0 AP, LVIS 59.8 AP.\n- **Grounded-SAM**: Grounding DINO + SAM, detection→segmentation 파이프라인.\n\n### 기존 블로그 상태\n- model-serving-1-vision.mdx에서 DINOv2 벤치마크 수치만 간략 언급\n- DINO 전용 심층 포스트 없음\n- 기존 6개 시리즈 (LLM 해부학, LLM 엔지니어링, 언어를 이해하는 기계의 여정, LLM 서빙, 공장에 심은 지능, AI 모델 서빙)\n\n### SSL 계보 맥락\nContrastive(SimCLR, MoCo) → negative 불필요(BYOL) → Self-distillation+ViT(DINO) → Scale+iBOT(DINOv2) → 7B+Gram(DINOv3). Negative 없이 학습 가능한 이유: EMA 비대칭성 + stop-gradient가 implicit feature decorrelation 효과.",
+        "created_at": "2026-04-07T02:20:37.627Z"
+      },
+      "tasks": [
+        {
+          "id": 1,
+          "title": "포닥 브리핑 — 리서치 통합 및 출처 티어 부여",
+          "context": "3개 리서치 리포트(dino-core-research.md, dino-extensions-research.md, dinov3-research.md)를 통합하여 라이터용 브리핑 문서를 작성한다. 출처에 T1/T2/T3 티어를 부여하고, 핵심 수치를 교차 검증한다.",
+          "approach": "리서치 리포트 3개를 읽고 통합 브리핑 작성. 출처별 티어 부여 (T1: 원논문, T2: 공식 블로그, T3: 커뮤니티). 핵심 수치 교차 검증. .nexus/reports/dino-postdoc-briefing.md에 저장.",
+          "acceptance": "1) 모든 출처에 T1/T2/T3 티어 부여 완료 2) 핵심 벤치마크 수치 교차 검증 완료 3) 라이터가 바로 사용할 수 있는 구조화된 브리핑 문서",
+          "risk": "리서치 리포트 간 수치 불일치 가능성",
+          "status": "completed",
+          "deps": [],
+          "plan_issue": 3,
+          "owner": "lead",
+          "created_at": "2026-04-07T02:21:53.360Z"
+        },
+        {
+          "id": 2,
+          "title": "MDX 포스트 작성 + SVG 7개 제작",
+          "context": "포닥 브리핑 기반으로 DINO 계열 심층 포스트(content/posts/dino-family-deep-dive.mdx) 작성 및 SVG 시각자료 7개(public/images/dino/) 제작. 8섹션 구조, 핵심 수식 4개, Ref/References 컴포넌트 사용.",
+          "approach": "writer-rules 준수. 8섹션 구조로 본문 작성. SVG 7개는 기존 블로그 스타일 (system-ui, #374151, 파스텔 fill, 투명 배경) 준수. 프론트매터: slug=dino-family-deep-dive, category=AI, published=true, date=2026-04-07. 수식은 직관적 해설 동반.",
+          "acceptance": "1) MDX 파일 생성 완료 2) SVG 7개 모두 제작 완료 3) Ref/RefItem 컴포넌트 사용 4) 수식 4개 + 직관적 해설 5) alt 텍스트 서술형 6) MDX bold 패턴 주의사항 준수",
+          "risk": "SVG 7개 제작 볼륨이 큼. 단일 에이전트 컨텍스트 한계 가능성.",
+          "status": "completed",
+          "deps": [
+            1
+          ],
+          "plan_issue": 3,
+          "owner": "writer",
+          "created_at": "2026-04-07T02:22:04.090Z"
+        },
+        {
+          "id": 3,
+          "title": "콘텐츠 리뷰 — 정확성, 출처, SVG 검증",
+          "context": "라이터가 작성한 포스트와 SVG를 검증한다. 기술적 정확성, 출처 일관성, 문법, SVG 스타일 가이드 준수 여부를 확인한다.",
+          "approach": "reviewer-rules 준수. 1) 기술적 주장과 출처 대조 2) 벤치마크 수치 원논문 대비 검증 3) SVG 스타일 가이드 준수 확인 4) MDX 문법 오류 점검 5) 한글 bold 패턴 위반 검사",
+          "acceptance": "1) 모든 기술적 주장에 출처 대응 확인 2) 수치 정확성 검증 완료 3) SVG 스타일 가이드 위반 없음 4) MDX 문법 오류 없음",
+          "risk": "리뷰어가 원논문 수치를 직접 검증할 수 없는 경우 리서치 리포트에 의존",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "plan_issue": 3,
+          "owner": "reviewer",
+          "created_at": "2026-04-07T02:22:09.073Z"
+        },
+        {
+          "id": 4,
+          "title": "빌드 검증 — velite build + lint",
+          "context": "포스트 작성 완료 후 velite build와 lint를 실행하여 빌드 성공을 확인한다.",
+          "approach": "bun run build 실행. 에러 발생 시 수정 후 재빌드.",
+          "acceptance": "1) velite build 성공 2) ESLint 에러 없음 3) 정적 빌드 out/ 생성 완료",
+          "risk": "MDX 파싱 에러 가능성",
+          "status": "completed",
+          "deps": [
+            2
+          ],
+          "plan_issue": 3,
+          "owner": "lead",
+          "created_at": "2026-04-07T02:22:12.533Z"
+        }
+      ]
     }
   ]
 }

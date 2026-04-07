@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" fill="none">
+  <defs>
+    <marker id="arrGray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3B82F6"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#374151" text-anchor="middle">DINOv2 — LVD-142M 데이터 큐레이션 파이프라인</text>
+
+  <!-- Step boxes (horizontal pipeline) -->
+
+  <!-- Step 1: 웹 크롤 -->
+  <rect x="20" y="60" width="130" height="90" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="85" y="87" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="#1D4ED8" text-anchor="middle">① 웹 크롤</text>
+  <text x="85" y="106" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">~13억 이미지</text>
+  <text x="85" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">인터넷 수집</text>
+  <text x="85" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">레이블 없음</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="150" y1="105" x2="175" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGray)"/>
+
+  <!-- Step 2: 시드 데이터셋 -->
+  <rect x="175" y="60" width="130" height="90" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="240" y="87" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="#6D28D9" text-anchor="middle">② 시드 앵커</text>
+  <text x="240" y="106" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">ImageNet-22k</text>
+  <text x="240" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Google Landmarks</text>
+  <text x="240" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Food-101 등</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="305" y1="105" x2="330" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGray)"/>
+
+  <!-- Step 3: 임베딩 검색 -->
+  <rect x="330" y="60" width="130" height="90" rx="8" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+  <text x="395" y="87" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="#059669" text-anchor="middle">③ 임베딩 검색</text>
+  <text x="395" y="106" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">ViT-H/16 임베딩</text>
+  <text x="395" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Cosine similarity</text>
+  <text x="395" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">시드 유사 이미지 검색</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="460" y1="105" x2="485" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGray)"/>
+
+  <!-- Step 4: 중복·안전 필터 -->
+  <rect x="485" y="60" width="130" height="90" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="550" y="83" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="700" fill="#92400E" text-anchor="middle">④ 필터링</text>
+  <text x="550" y="101" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">SSCD 중복 제거</text>
+  <text x="550" y="117" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">NSFW 필터</text>
+  <text x="550" y="133" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">얼굴 블러링</text>
+  <text x="550" y="148" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">테스트셋 누출 방지</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="615" y1="105" x2="645" y2="105" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGray)"/>
+
+  <!-- Step 5: LVD-142M -->
+  <rect x="645" y="60" width="155" height="90" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="2.5"/>
+  <text x="722" y="87" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#059669" text-anchor="middle">LVD-142M</text>
+  <text x="722" y="106" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">1억 4200만 이미지</text>
+  <text x="722" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">균형 잡힌 다양한 도메인</text>
+  <text x="722" y="138" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">자연·건축·예술·위성 등</text>
+
+  <!-- Reduction label -->
+  <text x="410" y="185" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280" text-anchor="middle">약 13억 → 1.42억 (약 11% 선별)</text>
+
+  <!-- Loss components box below -->
+  <rect x="80" y="215" width="660" height="120" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="410" y="238" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#374151" text-anchor="middle">DINOv2 복합 손실 함수</text>
+
+  <!-- DINO loss -->
+  <rect x="105" y="252" width="155" height="65" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="182" y="272" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#1D4ED8" text-anchor="middle">L_DINO</text>
+  <text x="182" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">CLS 토큰 기반</text>
+  <text x="182" y="306" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">이미지 수준 표현</text>
+
+  <!-- iBOT loss -->
+  <rect x="283" y="252" width="155" height="65" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+  <text x="360" y="272" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#059669" text-anchor="middle">L_iBOT</text>
+  <text x="360" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">마스킹 패치 복원</text>
+  <text x="360" y="306" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">패치 수준 표현</text>
+
+  <!-- KoLeo -->
+  <rect x="461" y="252" width="155" height="65" rx="6" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="538" y="272" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#6D28D9" text-anchor="middle">L_KoLeo</text>
+  <text x="538" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">특징 공간 균일 분포</text>
+  <text x="538" y="306" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">검색 +8%p 향상</text>
+
+  <!-- Sinkhorn-Knopp -->
+  <rect x="638" y="252" width="82" height="65" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="679" y="272" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">Sinkhorn-</text>
+  <text x="679" y="286" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">Knopp</text>
+  <text x="679" y="302" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#374151" text-anchor="middle">Centering</text>
+  <text x="679" y="315" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#374151" text-anchor="middle">안정화</text>
+</svg>
