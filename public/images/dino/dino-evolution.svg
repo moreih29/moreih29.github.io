@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" fill="none">
+  <defs>
+    <marker id="arrEvol" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" fill="#374151" text-anchor="middle">DINO 세대별 핵심 변경점</text>
+
+  <!-- Column headers -->
+  <rect x="30" y="48" width="250" height="44" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+  <text x="155" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#1D4ED8" text-anchor="middle">DINO (2021)</text>
+  <text x="155" y="84" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Caron et al. · ICCV 2021</text>
+
+  <rect x="325" y="48" width="250" height="44" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="2"/>
+  <text x="450" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#059669" text-anchor="middle">DINOv2 (2023)</text>
+  <text x="450" y="84" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Oquab et al. · TMLR 2024</text>
+
+  <rect x="620" y="48" width="250" height="44" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="745" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="700" fill="#6D28D9" text-anchor="middle">DINOv3 (2025)</text>
+  <text x="745" y="84" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Meta AI · arXiv 2508.10104</text>
+
+  <!-- Arrows between columns -->
+  <line x1="280" y1="70" x2="325" y2="70" stroke="#6B7280" stroke-width="2" marker-end="url(#arrEvol)"/>
+  <line x1="575" y1="70" x2="620" y2="70" stroke="#6B7280" stroke-width="2" marker-end="url(#arrEvol)"/>
+
+  <!-- Row: 학습 데이터 -->
+  <rect x="0" y="108" width="900" height="20" rx="0" fill="#F3F4F6"/>
+  <text x="450" y="122" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="middle">학습 데이터</text>
+
+  <rect x="30" y="130" width="250" height="50" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="155" y="151" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">ImageNet-1k / 22k</text>
+  <text x="155" y="170" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">표준 벤치마크 데이터</text>
+
+  <rect x="325" y="130" width="250" height="50" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="450" y="151" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">LVD-142M (1.42억)</text>
+  <text x="450" y="170" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">자체 큐레이션 웹 이미지</text>
+
+  <rect x="620" y="130" width="250" height="50" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="745" y="151" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">LVD-1689M (~17억)</text>
+  <text x="745" y="170" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">12배 규모 확대</text>
+
+  <!-- Row: 모델 규모 -->
+  <rect x="0" y="192" width="900" height="20" rx="0" fill="#F3F4F6"/>
+  <text x="450" y="206" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="middle">모델 규모</text>
+
+  <rect x="30" y="214" width="250" height="50" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="155" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">ViT-S / B / L</text>
+  <text x="155" y="254" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">최대 ~300M params</text>
+
+  <rect x="325" y="214" width="250" height="50" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="450" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">ViT-S / B / L / g</text>
+  <text x="450" y="254" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">최대 ViT-g/14 (~1B)</text>
+
+  <rect x="620" y="214" width="250" height="50" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="745" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">ViT-7B 교사 + 증류</text>
+  <text x="745" y="254" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">6,716M → 21M~840M</text>
+
+  <!-- Row: 손실 함수 -->
+  <rect x="0" y="276" width="900" height="20" rx="0" fill="#F3F4F6"/>
+  <text x="450" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="middle">손실 함수</text>
+
+  <rect x="30" y="298" width="250" height="50" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="155" y="319" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">DINO Loss + Centering</text>
+  <text x="155" y="338" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">배치 평균 기반 Centering</text>
+
+  <rect x="325" y="298" width="250" height="50" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="450" y="319" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">DINO + iBOT + KoLeo</text>
+  <text x="450" y="338" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">Sinkhorn-Knopp Centering</text>
+
+  <rect x="620" y="298" width="250" height="50" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="745" y="319" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">DINO + iBOT + KoLeo</text>
+  <text x="745" y="338" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">+ Gram Anchoring (신규)</text>
+
+  <!-- Row: 아키텍처 변경 -->
+  <rect x="0" y="360" width="900" height="20" rx="0" fill="#F3F4F6"/>
+  <text x="450" y="374" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="middle">아키텍처 / 위치 인코딩</text>
+
+  <rect x="30" y="382" width="250" height="50" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="155" y="403" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">Standard ViT</text>
+  <text x="155" y="422" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">고정 위치 임베딩</text>
+
+  <rect x="325" y="382" width="250" height="50" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="450" y="403" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">Standard ViT</text>
+  <text x="450" y="422" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">고정 위치 임베딩 유지</text>
+
+  <rect x="620" y="382" width="250" height="50" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="745" y="403" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#374151" text-anchor="middle">Axial RoPE + SwiGLU FFN</text>
+  <text x="745" y="422" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">다해상도 강건성 향상</text>
+
+  <!-- Row: ImageNet top-1 -->
+  <rect x="0" y="444" width="900" height="20" rx="0" fill="#F3F4F6"/>
+  <text x="450" y="458" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="middle">ImageNet Linear Probe (최고 모델)</text>
+
+  <rect x="30" y="466" width="250" height="34" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="155" y="488" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#1D4ED8" text-anchor="middle">80.1% (ViT-B/16)</text>
+
+  <rect x="325" y="466" width="250" height="34" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="450" y="488" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#059669" text-anchor="middle">86.5% (ViT-g/14)</text>
+
+  <rect x="620" y="466" width="250" height="34" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="745" y="488" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#6D28D9" text-anchor="middle">88.4% (ViT-7B)</text>
+</svg>

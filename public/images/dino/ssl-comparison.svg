@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 420" fill="none">
+  <defs>
+    <marker id="arrBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#EF4444"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#059669"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#374151" text-anchor="middle">Contrastive (SimCLR) vs Self-distillation (DINO)</text>
+
+  <!-- Divider -->
+  <line x1="410" y1="40" x2="410" y2="400" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- ===== LEFT: SimCLR / Contrastive ===== -->
+  <text x="205" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#1D4ED8" text-anchor="middle">SimCLR (Contrastive)</text>
+
+  <!-- Input image -->
+  <rect x="155" y="70" width="100" height="34" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="205" y="91" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1D4ED8" text-anchor="middle">이미지 x</text>
+
+  <!-- Two augmentations -->
+  <line x1="175" y1="104" x2="135" y2="140" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+  <line x1="235" y1="104" x2="275" y2="140" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+
+  <rect x="80" y="140" width="110" height="30" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="135" y="159" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Augmentation x₁</text>
+  <rect x="220" y="140" width="110" height="30" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="275" y="159" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Augmentation x₂</text>
+
+  <!-- Encoder f -->
+  <line x1="135" y1="170" x2="135" y2="205" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+  <line x1="275" y1="170" x2="275" y2="205" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+  <rect x="85" y="205" width="100" height="30" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="135" y="224" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#1D4ED8" text-anchor="middle">Encoder f(·)</text>
+  <rect x="225" y="205" width="100" height="30" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="275" y="224" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#1D4ED8" text-anchor="middle">Encoder f(·)</text>
+
+  <!-- NT-Xent loss + negative samples -->
+  <line x1="135" y1="235" x2="205" y2="272" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+  <line x1="275" y1="235" x2="205" y2="272" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+
+  <rect x="120" y="272" width="170" height="40" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+  <text x="205" y="290" font-family="monospace, 'Courier New'" font-size="11" font-weight="600" fill="#B91C1C" text-anchor="middle">NT-Xent Loss</text>
+  <text x="205" y="306" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Positive 가깝게, Negative 멀리</text>
+
+  <!-- Negative samples note -->
+  <rect x="60" y="330" width="290" height="55" rx="8" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="205" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#92400E" text-anchor="middle">요구 사항</text>
+  <text x="205" y="367" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">대형 배치 필요 (4096+)</text>
+  <text x="205" y="382" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Negative 샘플 설계 필요</text>
+
+  <!-- ===== RIGHT: DINO / Self-distillation ===== -->
+  <text x="615" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#059669" text-anchor="middle">DINO (Self-distillation)</text>
+
+  <!-- Input image -->
+  <rect x="565" y="70" width="100" height="34" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="615" y="91" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#059669" text-anchor="middle">이미지 x</text>
+
+  <!-- Two paths: Teacher (global), Student (global+local) -->
+  <line x1="590" y1="104" x2="535" y2="140" stroke="#059669" stroke-width="1.5" marker-end="url(#arrGreen)"/>
+  <line x1="645" y1="104" x2="700" y2="140" stroke="#059669" stroke-width="1.5" marker-end="url(#arrGreen)"/>
+
+  <rect x="455" y="140" width="160" height="30" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+  <text x="535" y="159" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Global crops x₁,x₂</text>
+  <rect x="625" y="140" width="160" height="30" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+  <text x="705" y="159" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">All crops (x₁,x₂,…x₁₀)</text>
+
+  <!-- Teacher / Student -->
+  <line x1="535" y1="170" x2="535" y2="205" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGreen)"/>
+  <line x1="705" y1="170" x2="705" y2="205" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGreen)"/>
+  <rect x="465" y="205" width="140" height="30" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <text x="535" y="224" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#1D4ED8" text-anchor="middle">Teacher ViT (EMA)</text>
+  <rect x="635" y="205" width="140" height="30" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="2"/>
+  <text x="705" y="224" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#059669" text-anchor="middle">Student ViT (역전파)</text>
+
+  <!-- Cross-entropy loss -->
+  <line x1="535" y1="235" x2="615" y2="272" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGreen)"/>
+  <line x1="705" y1="235" x2="615" y2="272" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrGreen)"/>
+
+  <rect x="515" y="272" width="200" height="40" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="2"/>
+  <text x="615" y="290" font-family="monospace, 'Courier New'" font-size="11" font-weight="600" fill="#059669" text-anchor="middle">L = H(P_teacher, P_student)</text>
+  <text x="615" y="306" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">Cross-entropy (분포 모방)</text>
+
+  <!-- Advantage note -->
+  <rect x="455" y="330" width="330" height="55" rx="8" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
+  <text x="620" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#059669" text-anchor="middle">장점</text>
+  <text x="620" y="367" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Negative 샘플 불필요</text>
+  <text x="620" y="382" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">소형 배치에서도 학습 가능</text>
+</svg>

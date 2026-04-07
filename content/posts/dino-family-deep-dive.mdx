@@ -1,0 +1,369 @@
+---
+title: "DINO 해부 — 자기지도 비전 모델에서 범용 객체 이해까지"
+slug: dino-family-deep-dive
+date: 2026-04-07
+description: "같은 이름, 다른 세계. Self-supervised DINO에서 DINOv3까지의 학습 혁명, 그리고 DINO-DETR에서 DINO-X까지의 탐지 혁명 — 두 DINO 계보의 기술을 해부한다."
+tags: ["ai", "vision", "self-supervised", "dino", "dinov2", "dinov3", "object-detection", "grounding-dino", "foundation-model"]
+published: true
+category: "AI"
+---
+
+비전 AI 문헌을 읽다 보면 같은 이름이 전혀 다른 맥락에 등장하는 순간이 있다. "DINO"가 그렇다. Self-supervised learning 논문에서 DINO는 레이블 없이 ViT를 학습시키는 기법이고, 객체 탐지 논문에서 DINO는 end-to-end detector의 이름이다. 같은 단어, 다른 세계.
+
+이 포스트는 그 두 계보를 한 자리에서 해부한다. Meta AI가 만든 SSL DINO 계열 — DINO, DINOv2, DINOv3 — 과 IDEA Research가 만든 Detection DINO 계열 — DINO-DETR, Grounding DINO, DINO-X — 을 각각의 기술적 맥락에서 살펴본다.
+
+---
+
+## "DINO"라는 이름의 두 세계
+
+두 계열은 acronym부터 다르다.
+
+**SSL DINO** (Caron et al., 2021): "self-**DI**stillation with **NO** labels." Meta AI와 INRIA 공동 연구로, Vision Transformer를 레이블 없이 학습하는 자기지도 학습 프레임워크다<Ref id={1} />.
+
+**DINO-DETR** (Zhang et al., 2022): "**D**ETR with **I**mproved de**N**o**I**sing anchor boxes." IDEA Research의 end-to-end 객체 탐지 모델이다<Ref id={4} />. Grounding DINO와 DINO-X로 이어지는 탐지 계열의 시작점이다.
+
+두 계열은 독립적 연구 흐름이다. 이름이 같은 이유는 우연이거나, "DINO"라는 단어가 좋은 acronym을 만들기 쉬운 글자 조합이어서일 뿐이다.
+
+![DINO 두 계열의 타임라인 — 왼쪽 SSL 계열은 Meta AI의 DINO(2021)에서 DINOv2(2023), DINOv3(2025)로 이어지고, 오른쪽 Detection 계열은 IDEA Research의 DINO-DETR(2022)에서 Grounding DINO(2023), GD 1.5와 DINO-X(2024)로 분기하는 독립 계보를 보여준다](/images/dino/dino-family-tree.svg)
+
+---
+
+## 자기지도 학습의 맥락 — Contrastive에서 Self-distillation까지
+
+SSL DINO를 이해하려면 그 이전 패러다임부터 짚어야 한다.
+
+### Contrastive Learning의 시대
+
+2020년 전후, SimCLR과 MoCo가 contrastive learning 방법의 가능성을 보여줬다<Ref id={9} />. 아이디어는 명쾌하다. 같은 이미지의 두 가지 다른 augmentation 결과를 "positive pair"로 가깝게, 다른 이미지들을 "negative pair"로 멀리 밀어내는 방식으로 표현 공간을 구성한다.
+
+그러나 구조적 한계가 있었다. SimCLR은 배치 크기 4096 이상에서 최고 성능을 냈고, negative pair 설계가 결과를 크게 좌우했다. 의미적으로 유사한 이미지가 잘못된 negative로 사용될 수 있다는 문제도 있었다.
+
+### BYOL의 전환점
+
+BYOL(Bootstrap Your Own Latent, 2020)은 negative sample 없이 학습이 가능함을 보여줬다. 두 네트워크가 서로의 표현을 모방하게 만드는 것만으로 의미 있는 표현을 학습할 수 있다는 것이었다. 단, BYOL은 collapse 방지를 위한 별도 구조가 필요했고, ViT와의 결합이 명확하지 않았다.
+
+DINO는 이 전환점을 이어받아 ViT에 최적화된 형태로 구현한다.
+
+![Contrastive Learning(SimCLR)과 Self-distillation(DINO) 비교 — 왼쪽 SimCLR은 동일 이미지의 두 augmentation을 NT-Xent Loss로 학습하며 대형 배치와 negative 샘플이 필요하고, 오른쪽 DINO는 global/local crop을 Teacher-Student 구조로 cross-entropy만으로 학습하며 negative 샘플이 불필요하다](/images/dino/ssl-comparison.svg)
+
+---
+
+## DINO — 레이블 없이 본다
+
+### Student-Teacher 구조
+
+DINO의 핵심은 두 네트워크의 비대칭 학습이다<Ref id={1} />. Student와 Teacher는 동일한 아키텍처를 공유하지만, 파라미터는 완전히 다르게 유지된다.
+
+- **Student 네트워크**: 역전파로 직접 학습된다
+- **Teacher 네트워크**: 그래디언트를 받지 않는다. Student 파라미터의 지수 이동 평균(EMA)으로만 업데이트된다
+
+Teacher가 "과거 Student들의 앙상블"처럼 동작하며 안정적인 학습 신호를 제공한다. 이것이 핵심이다.
+
+### EMA 업데이트
+
+Teacher 파라미터 `θ_t`는 다음 규칙으로 갱신된다:
+
+```
+θ_t ← λθ_t + (1−λ)θ_s
+λ: 0.996에서 시작 → cosine schedule로 1.0에 수렴
+```
+
+초기에는 Student 정보가 Teacher에 빠르게 반영되고, 훈련 후반에는 Teacher가 거의 고정된다. 이 점진적 고정이 훈련 안정성을 만든다<Ref id={1} />.
+
+### Multi-crop 전략
+
+같은 이미지에서 크기가 다른 여러 view를 생성한다:
+
+- **Global crops 2개**: 원본 이미지의 50% 이상을 커버, 224² 해상도
+- **Local crops 6~10개**: 원본 이미지의 50% 미만, 96² 해상도
+
+**비대칭이 핵심이다.** Student는 global crop과 local crop 모두를 처리한다. Teacher는 global crop만 처리한다. 이미지의 작은 부분만 본 Student가 이미지 전체를 본 Teacher의 표현을 따라가도록 강제된다. "부분을 보고 전체를 추론하는" 능력이 여기서 나온다<Ref id={1} />.
+
+### 손실 함수
+
+```
+L = Σ H(P_t(x), P_s(x'))
+```
+
+- `x ∈ V_g` (global views), `x' ∈ V` (모든 views, `x' ≠ x`)
+- `P_t`, `P_s`: Teacher/Student의 softmax 출력
+- `H`: cross-entropy
+
+Teacher가 global view를 보고 내린 판단을, Student가 다른 view(local 포함)를 보고 따라하게 만드는 것이다.
+
+![DINO Student-Teacher 구조 — 이미지에서 2개 global crop과 6~10개 local crop을 생성, Student는 모든 crop을 처리하고 Teacher는 global crop만 처리, Teacher는 EMA로 업데이트되며 centering과 sharpening으로 collapse를 방지한다](/images/dino/dino-architecture.svg)
+
+### Collapse 방지 — Centering과 Sharpening
+
+Self-distillation에서 가장 큰 위험은 **표현 붕괴**다. 네트워크가 모든 입력에 동일한 상수를 출력하면 loss는 최솟값에 도달하지만 아무것도 학습하지 못한다. DINO는 상보적인 두 메커니즘으로 이를 방지한다<Ref id={1} />.
+
+**Centering**: Teacher 출력에서 배치 단위 이동 평균을 뺀다.
+
+```
+c ← mc + (1−m) · mean_B(g_t),  m ≈ 0.9
+```
+
+특정 차원 하나가 지배적으로 활성화되는 것을 막는다. 단독으로 사용하면 모든 출력이 uniform distribution으로 향할 수 있다.
+
+**Sharpening**: Teacher softmax에 낮은 온도 `τ_t ≈ 0.04~0.07`을 적용한다. Student는 `τ_s ≈ 0.1`로 더 soft한 분포를 만든다. Teacher를 "날카롭게" 유지해 Student가 의미 있는 신호를 받게 한다. 단독으로 사용하면 단일 차원 독점으로 향할 수 있다.
+
+둘을 함께 사용할 때 양쪽 붕괴를 모두 막는다. 논문 ablation에서 어느 하나만 제거해도 학습이 붕괴됨을 확인했다<Ref id={1} />.
+
+### Emergent Segmentation — 학습 목표에 없었던 능력
+
+DINO에서 가장 놀라운 발견은 segmentation 없이 segmentation 능력이 나타난다는 것이다<Ref id={1} />. ViT-S/8로 학습된 DINO의 마지막 self-attention layer에서 `[CLS]` 토큰에 대한 attention을 시각화하면, 전경 객체가 배경과 선명하게 분리된다.
+
+이 현상은 supervised ViT에서는 나타나지 않는다. CNN backbone에서도 나타나지 않는다. ViT의 전역 self-attention 구조와 DINO의 multi-crop 전략이 결합한 결과다.
+
+kNN 분류에서도 이 표현의 품질이 드러난다. 학습 없이 kNN 분류기만 적용해도 ImageNet에서 **74.5%** 를 달성한다. 당시 self-supervised 방법들(BYOL, MoCo v2, SwAV)의 kNN 성능을 7.9%p 상회하는 수치다<Ref id={1} />.
+
+Linear probe에서는 ViT-B/16 기준 **80.1%** 를 기록했다<Ref id={1} />.
+
+---
+
+## DINOv2 — 비전의 Foundation Model
+
+DINOv2(Oquab et al., 2023)는 DINO의 아이디어를 스케일과 데이터 품질 두 축으로 확장한다<Ref id={2} />. 목표는 단순하다: 레이블 없이, fine-tuning 없이, frozen backbone만으로 다양한 비전 태스크에서 경쟁력 있는 성능을 내는 것.
+
+### LVD-142M — 데이터 큐레이션 파이프라인
+
+DINO의 한계 중 하나는 ImageNet 같은 기존 데이터셋에 의존한다는 점이었다. DINOv2는 웹에서 수집한 약 **13억 이미지**에서 **1.42억 장**을 자동 선별하는 파이프라인을 구축했다<Ref id={2} />.
+
+1. **시드 앵커**: ImageNet-22k, Google Landmarks, Food-101 등 큐레이션된 데이터셋을 기준으로 삼는다
+2. **임베딩 기반 검색**: ViT-H/16으로 모든 이미지를 임베딩, cosine similarity로 시드와 유사한 웹 이미지를 검색한다
+3. **중복 제거**: SSCD 기반 near-duplicate 제거
+4. **안전 필터링**: NSFW 필터링, 얼굴 블러링
+5. **테스트셋 누출 방지**: 다운스트림 평가 데이터와의 중복 제거
+
+결과는 자연·건축·예술·위성 이미지 등 다양한 도메인을 균형 있게 포함하는 1.42억 장이다<Ref id={2} />.
+
+![DINOv2 LVD-142M 큐레이션 파이프라인 — 약 13억 이미지 웹 크롤에서 시작, 시드 데이터셋 앵커를 기준으로 임베딩 검색, 중복·NSFW 필터링을 거쳐 1.42억 장을 선별하고, DINO+iBOT+KoLeo 복합 손실로 학습한다](/images/dino/dinov2-data-pipeline.svg)
+
+### 복합 손실 — DINO + iBOT + KoLeo
+
+DINOv2는 단일 손실 대신 세 항목을 결합한다:
+
+```
+L_total = L_DINO + L_iBOT + λ_KoLeo · L_KoLeo
+```
+
+- **L_DINO**: 기존과 동일. `[CLS]` 토큰 기반 이미지 수준 표현 학습
+- **L_iBOT**: 마스킹된 패치 위치의 Teacher 출력을 Student가 복원. 패치 수준 표현 학습. dense prediction 태스크(segmentation, depth estimation)에서 특히 효과적이다<Ref id={2} />
+- **L_KoLeo**: Kozachenko-Leonenko 미분 엔트로피 추정기 기반 정규화. 배치 내 특징들이 표현 공간에서 균일하게 퍼지도록 유도한다. instance retrieval 성능이 **+8%p 이상** 향상됐다<Ref id={2} />
+
+Centering에는 배치 평균 기반 방식 대신 Sinkhorn-Knopp 알고리즘(SwAV 방식, 3회 반복)을 사용해 더 안정적인 훈련을 달성한다.
+
+### 성능과 의미
+
+ViT-g/14 기준 ImageNet linear probe **86.5%**, ADE20K segmentation **60.2 mIoU**<Ref id={2} />. 당시 OpenCLIP ViT-G(86.2%)를 능가한 수치다.
+
+DINOv2의 핵심 주장은 수치보다 패러다임에 있다. Fine-tuning 없이 frozen backbone으로 다양한 태스크에서 경쟁력 있는 결과가 나온다는 것. NLP에서 GPT/BERT가 달성한 "범용 feature extractor"를 비전에서 구현한 것이다<Ref id={8} />.
+
+---
+
+## DINOv3 — 규모와 안정성의 도약
+
+DINOv3(Meta AI, 2025)는 두 가지 질문에 답한다. 더 큰 데이터와 더 큰 모델로 자기지도 학습을 밀어붙이면 어디까지 가는가. 그리고 그 과정에서 나타나는 새로운 불안정성을 어떻게 해결하는가<Ref id={3} />.
+
+### 규모
+
+- **모델**: ViT-7B (6,716M 파라미터). 임베딩 차원 4096, 헤드 수 32, 패치 크기 16
+- **데이터**: LVD-1689M — 약 17억 이미지. DINOv2의 12배
+
+LVD-1689M 구성 방식은 DINOv2와 유사하지만 출발점이 다르다. 공개 Instagram 게시물 기반 약 170억 이미지 풀에서 시작, 계층적 k-means 클러스터링을 5단계로 적용해 시각적 개념 커버리지를 극대화하고 중복을 최소화했다<Ref id={3} />.
+
+### 아키텍처 변경
+
+| 항목 | DINOv2 | DINOv3 |
+|------|--------|--------|
+| 위치 인코딩 | 고정 학습 가능 벡터 | Axial RoPE |
+| FFN | Standard | SwiGLU |
+| Register tokens | 4개 | 4개 유지 |
+
+**Axial RoPE**: 좌표를 배치마다 무작위로 jittering하여 다양한 해상도·스케일·종횡비에 강건하게 대응한다<Ref id={3} />.
+
+**SwiGLU FFN**: 표준 FFN을 게이트 MLP로 교체. 표현력을 높이는 동시에 파라미터 효율이 개선된다<Ref id={3} />.
+
+### Gram Anchoring — Dense Feature 열화 문제의 해결
+
+규모를 키우면서 새로운 문제가 나타났다. 대규모 데이터로 장기 학습하면 **dense feature map이 점진적으로 열화**된다. 전역 의미 이해 목적과 조밀한 특징 맵 품질 사이에 충돌이 일어나는 것이다. iBOT 손실만으로는 해결되지 않는, DINOv2 시대부터 알려진 미해결 문제였다<Ref id={3} />.
+
+DINOv3는 이를 **Gram Anchoring**으로 해결한다. 직관은 이렇다: "새로운 것을 배우더라도, 이미 알던 패치 간 공간 구조를 잊지 마라."
+
+```
+L_Gram = ‖X_S · X_Sᵀ − X_G · X_Gᵀ‖²_F
+```
+
+- `X_S`: 현재 Student의 패치 특징 행렬
+- `X_G`: 이전 체크포인트 "Gram teacher"의 패치 특징 행렬
+- Gram 행렬 `X·Xᵀ`: 모든 패치 쌍의 내적 — 패치들 사이의 관계 패턴을 인코딩한다
+
+Student의 Gram 행렬이 이전 단계 모델의 Gram 행렬과 가깝게 유지되도록 강제한다. 패치 간 공간 관계(공간적 일관성)를 보존하면서, 전역 목적 손실과의 충돌을 방지한다<Ref id={3} />.
+
+![DINOv3 Gram Anchoring 메커니즘 — 현재 Student 모델의 패치 특징으로 Gram 행렬을 계산하고, 이전 체크포인트 Gram teacher의 Gram 행렬과 Frobenius norm으로 비교하여 패치 간 공간 일관성을 보존한다](/images/dino/gram-anchoring.svg)
+
+### 다단계 학습 레시피
+
+DINOv3 학습은 5단계로 구성된다<Ref id={3} />:
+
+1. **대규모 사전학습**: ViT-7B를 LVD-1689M으로 표준 해상도 학습
+2. **Gram Anchoring 정제**: `L_Gram` 추가, dense feature 안정화
+3. **고해상도 적응**: 혼합 해상도 배치, 최대 4096×4096px 입력까지 노출
+4. **병렬 지식 증류**: 단일 ViT-7B 교사로 ViT-S/B/L/H+와 ConvNeXt 변형들을 동시에 학습
+5. **텍스트 정렬 (post-hoc)**: 비전 백본 고정, 상단에 2개 transformer 레이어 추가, 텍스트 매칭 ("dino.txt")
+
+DINOv2의 복잡한 하이퍼파라미터 스케줄링 대신, 학습률·weight decay·momentum을 **고정값으로** 유지해 대규모 학습의 복잡성을 줄였다<Ref id={6} />.
+
+### 성능
+
+| 벤치마크 | DINOv3 | DINOv2 | SigLIP 2 |
+|---------|--------|--------|---------|
+| ImageNet Top-1 | **88.4%** | 87.3% | 89.1% |
+| ADE20K mIoU | **63.0** | ~57* | ~50 |
+| PASCAL VOC mIoU | **86.6** | 83.1 | 72.7 |
+| COCO mAP | **66.1** | — | — |
+
+\*DINOv2 ADE20K 수치는 DINOv3 논문의 동일 프로토콜 재평가 기준. DINOv2 원논문에서는 60.2 mIoU(ViT-g/14, linear probe).
+
+Dense task(분할·탐지·깊이추정)에서 DINOv3는 자기지도·약지도 모델 모두를 압도한다. Gram Anchoring의 효과가 가장 두드러지는 영역이다<Ref id={3} /><Ref id={7} />.
+
+ImageNet 분류에서는 자기지도 최강이지만, 약지도 모델인 SigLIP 2(89.1%)와 Meta의 Perception Encoder(89.3%)에 소폭 뒤진다. 순수 자기지도 접근법의 현재 한계다<Ref id={3} />.
+
+비디오 추적에서는 DINOv2 대비 **+6.7 J&F-Mean**, 이미지 검색에서 **+10.9 GAP** 향상을 보였다<Ref id={3} />.
+
+![DINO→DINOv2→DINOv3 세대별 핵심 변경점 비교 — 학습 데이터(ImageNet→LVD-142M→LVD-1689M), 모델 규모(ViT-S/B→ViT-g→ViT-7B), 손실 함수(DINO→+iBOT+KoLeo→+Gram Anchoring), 아키텍처(고정 위치 임베딩→Axial RoPE+SwiGLU), ImageNet 성능(80.1%→86.5%→88.4%) 추이를 3열로 비교한다](/images/dino/dino-evolution.svg)
+
+---
+
+## 탐지의 DINO — DINO-DETR에서 DINO-X까지
+
+이제 다른 계보를 본다. IDEA Research가 만든 탐지 DINO 계열이다. 이들의 공통 질문은 하나다: **텍스트로 무엇이든 찾을 수 있는가?**
+
+### DINO-DETR — End-to-End 탐지의 전환점
+
+DINO-DETR(Zhang et al., 2022)은 DN-DETR, DAB-DETR, Deformable DETR을 결합한 end-to-end 객체 탐지 모델이다<Ref id={4} />. 세 가지 핵심 기술이 이전 DETR 계열을 앞선다.
+
+**① Contrastive Denoising Training (CDN)**: 동일한 ground truth box에 크기가 다른 두 가지 노이즈를 추가한다. 작은 노이즈 → positive, 큰 노이즈 → negative. 동일 객체에 대한 중복 예측이 억제된다.
+
+**② Mixed Query Selection**: 상위-K 이미지 feature의 **위치 정보만**으로 anchor box를 초기화하고, content query는 learnable 상태로 유지한다. Deformable DETR이 위치와 content 모두를 feature로 초기화했던 것과 달리, 초기 content feature의 모호성 문제를 분리해 해결한다.
+
+**③ Look Forward Twice**: 인접 레이어 간 gradient를 전달해, 이후 레이어에서 정제된 box 정보로 이전 레이어 파라미터를 최적화한다<Ref id={4} />.
+
+결과: ResNet-50 12 epoch에서 **49.4 COCO AP**, SwinL(Objects365 사전학습)에서 **63.2 AP**<Ref id={4} />. DN-DETR 대비 12 epoch 기준 +6.0 AP 향상이다.
+
+### Grounding DINO — 텍스트로 여는 Open-Set 탐지
+
+Grounding DINO(Liu et al., 2023)는 DINO-DETR에 언어 모달리티를 통합한다<Ref id={5} />. "고양이", "왼쪽의 빨간 자동차"처럼 임의의 텍스트 프롬프트로 학습 시 본 적 없는 객체를 탐지할 수 있다.
+
+**Dual-encoder single-decoder 구조**:
+- Image backbone: Swin Transformer (멀티스케일 시각 특징)
+- Text backbone: BERT (언어 특징)
+- Feature Enhancer: 두 모달리티 융합
+- Language-Guided Query Selection: 쿼리 초기화
+- Cross-Modality Decoder: 최종 예측
+
+**Feature Enhancer**가 핵심이다<Ref id={5} /><Ref id={12} />. 6개 레이어로 구성되며 각 레이어마다 세 가지 attention이 작동한다:
+1. 이미지 특징에 대한 Deformable self-attention
+2. 텍스트 특징에 대한 Vanilla self-attention
+3. 이미지↔텍스트 양방향 cross-attention
+
+언어 토큰이 시각 단서를 "읽고", 이미지 토큰이 텍스트 프롬프트 방향으로 바이어스된다.
+
+**Language-Guided Query Selection**: 고정된 learnable query 대신, 각 이미지 feature를 모든 텍스트 토큰과 비교해 점수 높은 상위 feature를 detector query로 초기화한다. 텍스트와 관련 높은 영역에 탐지가 집중된다.
+
+![Grounding DINO 아키텍처 — 이미지는 Swin Transformer로, 텍스트는 BERT로 인코딩되어 Feature Enhancer에서 양방향 cross-attention으로 융합되고, Language-Guided Query Selection으로 텍스트 관련 이미지 영역을 선별, Cross-Modality Decoder에서 최종 bounding box를 예측한다](/images/dino/grounding-dino-arch.svg)
+
+COCO minival zero-shot(COCO 학습 데이터 미사용) **52.5 AP**<Ref id={5} />. 학습 시 보지 않은 데이터셋에서 52.5라는 수치는 open-set 탐지의 실용성을 증명하는 이정표였다.
+
+### Grounding DINO 1.5 — Pro와 Edge
+
+Grounding DINO 1.5(Ren et al., 2024)는 두 가지 모델로 나뉜다<Ref id={10} />:
+
+**Pro**: 강화된 vision backbone과 20M 이상 이미지 grounding 어노테이션으로 학습. COCO detection **54.3 AP**, LVIS-minival zero-shot **55.7 AP**(당시 open-set SOTA).
+
+**Edge**: EfficientViT-L1 경량 backbone(약 22M 파라미터), TensorRT 최적화 시 **75.2 FPS**, LVIS-minival zero-shot 36.2 AP. 엣지 디바이스 배포에 최적화됐다.
+
+### DINO-X — 범용 객체 이해
+
+DINO-X(Ren et al., 2024)는 "open-set detection"을 넘어 "universal object understanding"으로 범위를 확장한다<Ref id={11} />.
+
+이전 모델들과 세 가지가 다르다:
+
+1. **입력 프롬프트의 다양화**: 텍스트 프롬프트 외에 시각 프롬프트(예시 이미지)와 Universal Object Prompt(프롬프트 없이 이미지 내 모든 객체 탐지)를 지원한다
+2. **다중 perception head**: 탐지에 더해 instance segmentation, keypoint detection(포즈 추정), object captioning, object-based QA를 통합했다
+3. **Grounding-100M**: 1억 개 이상의 고품질 grounding 어노테이션으로 구성된 자체 데이터셋으로 사전학습한다<Ref id={11} />
+
+성능: COCO zero-shot **56.0 AP**, LVIS-minival zero-shot **59.8 AP**, LVIS rare classes **63.3 AP**(이전 SOTA 대비 +5.8)<Ref id={11} />.
+
+탐지 계열의 zero-shot COCO AP 진화를 보면: Grounding DINO 52.5 → GD 1.5 Pro 54.3 → DINO-X 56.0. 2년 사이에 +3.5 AP가 쌓였다.
+
+---
+
+## 실무 파이프라인 — Grounded-SAM과 그 너머
+
+탐지는 절반이다. 탐지한 영역을 정확히 마스킹하는 segmentation이 결합할 때 활용의 폭이 열린다.
+
+### Grounded-SAM
+
+Grounded-SAM(Ren et al., 2024)은 Grounding DINO와 SAM(Segment Anything Model)을 조립한 파이프라인이다<Ref id={13} />:
+
+1. 텍스트 프롬프트 입력
+2. Grounding DINO → zero-shot bounding box 예측
+3. 예측된 box를 SAM의 prompt로 전달
+4. SAM → 정밀 instance segmentation mask 생성
+
+각 모델이 잘하는 것에 집중한다. Grounding DINO는 "무엇이 어디에 있는지" 찾고, SAM은 "그 경계를 정확히 그린다."
+
+SegInW zero-shot 벤치마크에서 **48.7 mean AP**<Ref id={13} />.
+
+### Grounded-SAM-2
+
+SAM 2 출시 이후 IDEA Research는 Grounded-SAM-2를 공개했다<Ref id={14} />. Grounding DINO + Florence-2 + SAM 2를 결합해 비디오에서 객체를 탐지·세그멘테이션·추적한다. 정적 이미지에서 비디오로의 자연스러운 확장이다.
+
+### 실무 활용
+
+두 파이프라인의 실용성은 특히 세 영역에서 두드러진다:
+
+**자동 라벨링**: 텍스트로 카테고리를 지정하면 박스와 마스크가 자동 생성된다. 학습 데이터 어노테이션 비용을 크게 낮춘다.
+
+**위성 이미지 분석**: 도메인 특화 레이블 없이도 고해상도 위성 이미지의 객체를 세그멘테이션한다.
+
+**의료 영상**: 학습 데이터가 제한된 환경에서의 zero-shot 세그멘테이션. DINOv3 기반 의료 연구들은 파인튜닝 없이도 경쟁력 있는 결과를 보고하고 있다<Ref id={15} />.
+
+---
+
+## 마무리 — DINO가 비전 AI에 남긴 것
+
+두 DINO 계열이 비전 AI에 남긴 것을 각각 한 문장으로 압축하면:
+
+**SSL DINO 계열**: 레이블 없이 보는 법을 가르쳤다. DINO의 Student-Teacher 구조는 self-supervised ViT 학습의 표준을 바꿨고, DINOv2는 "frozen backbone으로 모든 것"이라는 비전 foundation model 패러다임을 열었다. DINOv3는 그 경계를 7B 파라미터와 17억 이미지로 밀어붙이면서, 대규모 학습의 불안정성을 Gram Anchoring으로 해결했다.
+
+**Detection DINO 계열**: 텍스트로 무엇이든 찾을 수 있게 했다. DINO-DETR이 end-to-end 탐지의 성능 상한을 높였고, Grounding DINO가 open-set 탐지의 실용성을 증명했다. DINO-X는 탐지에서 시작해 segmentation·포즈·캡셔닝까지 통합하며 "범용 객체 이해"를 향해 나아가고 있다.
+
+두 흐름이 만나는 곳이 흥미롭다. DINOv3의 "dino.txt" 텍스트 정렬 버전은 SSL DINO의 강력한 dense feature를 텍스트와 연결하는 실험이다. Frozen backbone 패러다임은 거의 모든 응용 연구에서 표준이 되고 있다 — 로보틱스, 의료, 비디오, 3D 이해 모두에서 DINOv3 백본을 고정한 채 작은 헤드만 교체하는 방식이 자리잡아가고 있다<Ref id={3} />.
+
+비전 AI의 다음 전선은 아마 여기에 있을 것이다: 더 작은 레이블, 더 범용적인 표현, 더 넓은 도메인.
+
+---
+
+<References>
+  <RefItem id={1} tier="T1" title="DINO 원논문 — Emerging Properties in Self-Supervised Vision Transformers" source="arXiv:2104.14294, ICCV 2021" url="https://arxiv.org/abs/2104.14294" />
+  <RefItem id={2} tier="T1" title="DINOv2 원논문 — Learning Robust Visual Features without Supervision" source="arXiv:2304.07193, TMLR 2024" url="https://arxiv.org/abs/2304.07193" />
+  <RefItem id={3} tier="T1" title="DINOv3 원논문 — Scaling Self-Supervised Learning for Vision Foundation Models" source="arXiv:2508.10104, Meta AI 2025" url="https://arxiv.org/abs/2508.10104" />
+  <RefItem id={4} tier="T1" title="DINO-DETR 원논문 — DETR with Improved DeNoising Anchor Boxes" source="arXiv:2203.03605, ICLR 2023" url="https://arxiv.org/abs/2203.03605" />
+  <RefItem id={5} tier="T1" title="Grounding DINO 원논문 — Marrying DINO with Grounded Pre-Training" source="arXiv:2303.05499, ECCV 2024" url="https://arxiv.org/abs/2303.05499" />
+  <RefItem id={6} tier="T2" title="lightly.ai — DINOv3 Technical Deep Dive" source="lightly.ai blog" url="https://www.lightly.ai/blog/dinov3" />
+  <RefItem id={7} tier="T3" title="deeplearning.ai The Batch — Meta's DINOv3" source="deeplearning.ai" url="https://www.deeplearning.ai/the-batch/metas-dinov3-gets-an-updated-loss-term-and-improved-vision-performance/" />
+  <RefItem id={8} tier="T2" title="Meta AI Blog — DINOv2 공식 발표" source="Meta AI Blog" url="https://ai.meta.com/blog/dino-v2-computer-vision-self-supervised-learning/" />
+  <RefItem id={9} tier="T1" title="SimCLR 원논문 — A Simple Framework for Contrastive Learning" source="arXiv:2002.05709, ICML 2020" url="https://arxiv.org/abs/2002.05709" />
+  <RefItem id={10} tier="T1" title="Grounding DINO 1.5 원논문" source="arXiv:2405.10300, IDEA Research 2024" url="https://arxiv.org/abs/2405.10300" />
+  <RefItem id={11} tier="T1" title="DINO-X 원논문 — A Unified Vision Model for Open-World Object Detection" source="arXiv:2411.14347, IDEA Research 2024" url="https://arxiv.org/abs/2411.14347" />
+  <RefItem id={12} tier="T2" title="Hugging Face Transformers — Grounding DINO 공식 문서" source="HuggingFace Transformers docs" url="https://huggingface.co/docs/transformers/en/model_doc/grounding-dino" />
+  <RefItem id={13} tier="T1" title="Grounded SAM 원논문 — Assembling Open-World Models for Diverse Visual Tasks" source="arXiv:2401.14159, 2024" url="https://arxiv.org/abs/2401.14159" />
+  <RefItem id={14} tier="T2" title="GitHub — IDEA-Research/Grounded-SAM-2" source="IDEA Research 공식 리포지터리" url="https://github.com/IDEA-Research/Grounded-SAM-2" />
+  <RefItem id={15} tier="T1" title="Does DINOv3 Set a New Medical Vision Standard?" source="arXiv:2509.06467, 2025" url="https://arxiv.org/abs/2509.06467" />
+  <RefItem id={16} tier="T2" title="Meta AI Blog — DINOv3 공식 발표" source="Meta AI Blog" url="https://ai.meta.com/blog/dinov3-self-supervised-vision-model/" />
+  <RefItem id={17} tier="T2" title="GitHub — facebookresearch/dinov3" source="Meta AI 공식 코드" url="https://github.com/facebookresearch/dinov3" />
+  <RefItem id={18} tier="T2" title="GitHub — IDEA-Research/GroundingDINO" source="IDEA Research 공식 구현" url="https://github.com/IDEA-Research/GroundingDINO" />
+  <RefItem id={19} tier="T3" title="encord.com — DINOv3 Explained" source="encord blog" url="https://encord.com/blog/dinov3-explained-scaling-self-supervised-vision-tr/" />
+</References>

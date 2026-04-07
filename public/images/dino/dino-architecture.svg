@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 530" fill="none">
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#6B7280"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#059669"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#8B5CF6"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" fill="#374151" text-anchor="middle">DINO — Student-Teacher Self-Distillation</text>
+
+  <!-- Input Image -->
+  <rect x="340" y="50" width="140" height="40" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="410" y="75" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#8B5CF6" text-anchor="middle">이미지</text>
+
+  <!-- Multi-crop arrows down-left and down-right -->
+  <line x1="380" y1="90" x2="240" y2="130" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+  <line x1="440" y1="90" x2="580" y2="130" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+
+  <!-- Multi-crop box (left: Student) -->
+  <rect x="130" y="130" width="220" height="80" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="240" y="157" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#6D28D9" text-anchor="middle">Multi-crop (Student)</text>
+  <text x="240" y="177" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">2 global crops (224²)</text>
+  <text x="240" y="195" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">+ 6~10 local crops (96²)</text>
+
+  <!-- Multi-crop box (right: Teacher) -->
+  <rect x="470" y="130" width="220" height="80" rx="8" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="580" y="157" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#1D4ED8" text-anchor="middle">Multi-crop (Teacher)</text>
+  <text x="580" y="177" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">2 global crops만 처리</text>
+  <text x="580" y="195" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">(local crop 미사용)</text>
+
+  <!-- Arrow: crops to networks -->
+  <line x1="240" y1="210" x2="240" y2="255" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="580" y1="210" x2="580" y2="255" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Student Network -->
+  <rect x="110" y="255" width="260" height="70" rx="8" fill="#ECFDF5" stroke="#059669" stroke-width="2"/>
+  <text x="240" y="283" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#059669" text-anchor="middle">Student ViT (θ_s)</text>
+  <text x="240" y="305" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">역전파로 직접 학습</text>
+
+  <!-- Teacher Network -->
+  <rect x="450" y="255" width="260" height="70" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <text x="580" y="283" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#1D4ED8" text-anchor="middle">Teacher ViT (θ_t)</text>
+  <text x="580" y="305" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">그래디언트 없음 (stop-grad)</text>
+
+  <!-- Output arrows -->
+  <line x1="240" y1="325" x2="240" y2="368" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="580" y1="325" x2="580" y2="368" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Student output: Sharpening label -->
+  <rect x="160" y="368" width="160" height="45" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="240" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#92400E" text-anchor="middle">P_s (τ_s ≈ 0.1)</text>
+  <text x="240" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Student 분포</text>
+
+  <!-- Teacher output: Centering + Sharpening -->
+  <rect x="500" y="368" width="160" height="45" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="580" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#92400E" text-anchor="middle">P_t (τ_t ≈ 0.04)</text>
+  <text x="580" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Teacher 분포 (sharp)</text>
+
+  <!-- Loss -->
+  <line x1="320" y1="390" x2="415" y2="440" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <line x1="500" y1="390" x2="415" y2="440" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <rect x="330" y="440" width="160" height="45" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="410" y="462" font-family="monospace, 'Courier New'" font-size="12" font-weight="700" fill="#6D28D9" text-anchor="middle">L = H(P_t, P_s)</text>
+  <text x="410" y="478" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#374151" text-anchor="middle">Cross-entropy Loss</text>
+
+  <!-- Backprop to Student -->
+  <path d="M 330 462 Q 200 480 200 325" stroke="#059669" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#arrowGreen)"/>
+  <text x="175" y="445" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#059669" text-anchor="middle">역전파</text>
+
+  <!-- EMA Update arrow -->
+  <path d="M 240 270 Q 240 240 400 230 Q 540 220 580 255" stroke="#3B82F6" stroke-width="2" stroke-dasharray="6,3" fill="none" marker-end="url(#arrowBlue)"/>
+  <rect x="315" y="210" width="190" height="32" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="410" y="224" font-family="monospace, 'Courier New'" font-size="11" fill="#1D4ED8" text-anchor="middle">θ_t ← λθ_t + (1−λ)θ_s</text>
+  <text x="410" y="237" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#374151" text-anchor="middle">EMA Update (λ: 0.996→1.0)</text>
+
+  <!-- Centering box -->
+  <rect x="622" y="368" width="178" height="80" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="711" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#92400E" text-anchor="middle">Centering</text>
+  <text x="711" y="406" font-family="monospace, 'Courier New'" font-size="10" fill="#374151" text-anchor="middle">c ← mc+(1−m)·mean(g_t)</text>
+  <text x="711" y="422" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">단일 차원 독점 방지</text>
+  <text x="711" y="438" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">+ Sharpening (낮은 τ_t)</text>
+  <line x1="660" y1="390" x2="660" y2="390" stroke="none"/>
+  <line x1="580" y1="413" x2="622" y2="405" stroke="#F59E0B" stroke-width="1" stroke-dasharray="4,2"/>
+</svg>
