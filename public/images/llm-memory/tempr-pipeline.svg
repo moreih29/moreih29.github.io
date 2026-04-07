@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 460" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="28" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">TEMPR: 4방향 병렬 검색 파이프라인</text>
+
+  <!-- Query box -->
+  <rect x="330" y="48" width="160" height="40" rx="8" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="410" y="64" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">사용자 쿼리</text>
+  <text x="410" y="80" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Query Input</text>
+
+  <!-- 4 parallel searcher boxes -->
+  <!-- Semantic -->
+  <rect x="40" y="140" width="155" height="70" rx="8" fill="#EDE9FE" stroke="#374151" stroke-width="1.5"/>
+  <text x="117" y="162" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Semantic Search</text>
+  <text x="117" y="177" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Dense embedding</text>
+  <text x="117" y="191" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">cosine similarity</text>
+
+  <!-- BM25 -->
+  <rect x="220" y="140" width="155" height="70" rx="8" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="297" y="162" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">BM25 Sparse</text>
+  <text x="297" y="177" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Keyword matching</text>
+  <text x="297" y="191" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">TF-IDF weighted</text>
+
+  <!-- Graph traversal -->
+  <rect x="400" y="140" width="155" height="70" rx="8" fill="#FEF3C7" stroke="#374151" stroke-width="1.5"/>
+  <text x="477" y="162" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Graph Traversal</text>
+  <text x="477" y="177" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Entity & relation</text>
+  <text x="477" y="191" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">hop-based search</text>
+
+  <!-- Temporal -->
+  <rect x="580" y="140" width="155" height="70" rx="8" fill="#FCE7F3" stroke="#374151" stroke-width="1.5"/>
+  <text x="657" y="162" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Temporal Filter</text>
+  <text x="657" y="177" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Recency decay</text>
+  <text x="657" y="191" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">time-window index</text>
+
+  <!-- Arrows: query → each -->
+  <line x1="380" y1="88" x2="180" y2="140" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="400" y1="88" x2="340" y2="140" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="420" y1="88" x2="460" y2="140" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="440" y1="88" x2="620" y2="140" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- RRF Merge box -->
+  <rect x="270" y="262" width="280" height="50" rx="8" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="410" y="282" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">RRF 병합 (Reciprocal Rank Fusion)</text>
+  <text x="410" y="300" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">score = Σ 1/(k + rank_i) across retrievers</text>
+
+  <!-- Arrows: each → RRF -->
+  <line x1="117" y1="210" x2="320" y2="262" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="297" y1="210" x2="370" y2="262" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="477" y1="210" x2="440" y2="262" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="657" y1="210" x2="490" y2="262" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Cross-Encoder Reranker -->
+  <rect x="295" y="360" width="230" height="50" rx="8" fill="#FEF9C3" stroke="#374151" stroke-width="1.5"/>
+  <text x="410" y="381" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Cross-Encoder Reranker</text>
+  <text x="410" y="398" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">query ↔ candidate 쌍 전체 재채점</text>
+
+  <!-- RRF → Reranker -->
+  <line x1="410" y1="312" x2="410" y2="360" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Result box -->
+  <rect x="330" y="428" width="160" height="24" rx="6" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="410" y="444" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">최종 검색 결과</text>
+
+  <!-- Reranker → Result -->
+  <line x1="410" y1="410" x2="410" y2="428" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Label: parallel -->
+  <rect x="40" y="120" width="695" height="20" rx="4" fill="#F3F4F6" stroke="none"/>
+  <text x="388" y="133" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">병렬 실행 (Parallel Retrieval)</text>
+</svg>

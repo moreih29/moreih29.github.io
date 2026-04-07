@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 500" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563EB"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#D97706"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">Memory Consolidation 비교 — EverMemOS / SleepGate / MemoryOS</text>
+
+  <!-- ===== Row headers ===== -->
+  <!-- System labels on left -->
+  <rect x="20" y="54" width="100" height="80" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="70" y="88" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Ever</text>
+  <text x="70" y="103" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">MemOS</text>
+  <text x="70" y="120" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">3단계 계층</text>
+
+  <rect x="20" y="194" width="100" height="80" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="70" y="228" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Sleep</text>
+  <text x="70" y="243" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Gate</text>
+  <text x="70" y="260" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">수면 사이클</text>
+
+  <rect x="20" y="334" width="100" height="80" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="70" y="368" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Memory</text>
+  <text x="70" y="383" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">OS</text>
+  <text x="70" y="400" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">계층형 전환</text>
+
+  <!-- ===== EverMemOS Row ===== -->
+  <!-- Stage 1 -->
+  <rect x="138" y="54" width="152" height="80" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="214" y="76" text-anchor="middle" font-family="monospace" font-size="10" fill="#7C3AED" font-weight="bold">① Episodic Trace</text>
+  <text x="214" y="93" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">MemCell</text>
+  <text x="214" y="108" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">원시 에피소드 기록</text>
+  <text x="214" y="124" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">타임스탬프 + 감정값</text>
+
+  <line x1="290" y1="94" x2="308" y2="94" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- Stage 2 -->
+  <rect x="308" y="54" width="152" height="80" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="384" y="76" text-anchor="middle" font-family="monospace" font-size="10" fill="#7C3AED" font-weight="bold">② Semantic Consol.</text>
+  <text x="384" y="93" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">MemScene 클러스터링</text>
+  <text x="384" y="108" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">유사 에피소드 병합</text>
+  <text x="384" y="124" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">의미 패턴 추출</text>
+
+  <line x1="460" y1="94" x2="478" y2="94" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- Stage 3 -->
+  <rect x="478" y="54" width="152" height="80" rx="6" fill="#DDD6FE" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="554" y="76" text-anchor="middle" font-family="monospace" font-size="10" fill="#7C3AED" font-weight="bold">③ Reconstructive</text>
+  <text x="554" y="93" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Recollection</text>
+  <text x="554" y="108" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">쿼리 시 재구성</text>
+  <text x="554" y="124" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">맥락적 재합성</text>
+
+  <line x1="630" y1="94" x2="648" y2="94" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- Output -->
+  <rect x="648" y="62" width="152" height="64" rx="6" fill="#C4B5FD" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="724" y="84" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">장기 의미 기억</text>
+  <text x="724" y="100" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">구조화 지식</text>
+  <text x="724" y="114" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">에피소드 → 의미</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="150" x2="800" y2="150" stroke="#E5E7EB" stroke-width="1.0" stroke-dasharray="4,3"/>
+
+  <!-- ===== SleepGate Row ===== -->
+  <!-- Input events -->
+  <rect x="138" y="194" width="130" height="80" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="203" y="216" text-anchor="middle" font-family="monospace" font-size="10" fill="#2563EB" font-weight="bold">입력 이벤트</text>
+  <text x="203" y="232" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Attention Entropy</text>
+  <text x="203" y="248" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">높음 → Wake 상태</text>
+  <text x="203" y="264" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">낮음 → Sleep 트리거</text>
+
+  <line x1="268" y1="234" x2="286" y2="234" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- Sleep cycle -->
+  <rect x="286" y="194" width="130" height="80" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="351" y="216" text-anchor="middle" font-family="monospace" font-size="10" fill="#2563EB" font-weight="bold">수면 마이크로</text>
+  <text x="351" y="231" text-anchor="middle" font-family="monospace" font-size="10" fill="#2563EB" font-weight="bold">사이클</text>
+  <text x="351" y="248" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">Conflict-Aware</text>
+  <text x="351" y="261" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">Temporal Tagger</text>
+  <text x="351" y="274" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">시간 충돌 감지</text>
+
+  <line x1="416" y1="234" x2="434" y2="234" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- Forgetting gate -->
+  <rect x="434" y="194" width="120" height="80" rx="6" fill="#BFDBFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="494" y="216" text-anchor="middle" font-family="monospace" font-size="10" fill="#2563EB" font-weight="bold">Forgetting</text>
+  <text x="494" y="231" text-anchor="middle" font-family="monospace" font-size="10" fill="#2563EB" font-weight="bold">Gate</text>
+  <text x="494" y="248" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">중요도 낮은</text>
+  <text x="494" y="261" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">기억 제거</text>
+  <text x="494" y="274" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">선택적 망각</text>
+
+  <line x1="554" y1="234" x2="572" y2="234" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- Consolidation -->
+  <rect x="572" y="194" width="120" height="80" rx="6" fill="#93C5FD" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="632" y="216" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Consolidation</text>
+  <text x="632" y="231" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Module</text>
+  <text x="632" y="248" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">장기 기억 통합</text>
+  <text x="632" y="261" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">PI 깊이 5: 99.5%</text>
+  <text x="632" y="274" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">PI 깊이 10: 97.0%</text>
+
+  <line x1="692" y1="234" x2="710" y2="234" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <rect x="710" y="206" width="90" height="56" rx="6" fill="#60A5FA" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="755" y="228" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">강화된 LTM</text>
+  <text x="755" y="244" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">비교군: 18%↓</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="292" x2="800" y2="292" stroke="#E5E7EB" stroke-width="1.0" stroke-dasharray="4,3"/>
+
+  <!-- ===== MemoryOS Row ===== -->
+  <!-- STM -->
+  <rect x="138" y="334" width="140" height="80" rx="6" fill="#FFFBEB" stroke="#D97706" stroke-width="1.2"/>
+  <text x="208" y="356" text-anchor="middle" font-family="monospace" font-size="10" fill="#D97706" font-weight="bold">단기 기억 (STM)</text>
+  <text x="208" y="373" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">FIFO 큐</text>
+  <text x="208" y="388" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">최근 대화 버퍼</text>
+  <text x="208" y="403" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">용량 초과 → MTM</text>
+
+  <!-- Arrow with threshold label -->
+  <line x1="278" y1="374" x2="296" y2="374" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-amber)"/>
+  <text x="287" y="368" text-anchor="middle" font-family="monospace" font-size="7" fill="#D97706">용량↑</text>
+
+  <!-- MTM -->
+  <rect x="296" y="334" width="160" height="80" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
+  <text x="376" y="356" text-anchor="middle" font-family="monospace" font-size="10" fill="#D97706" font-weight="bold">중기 기억 (MTM)</text>
+  <text x="376" y="373" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">세그먼트 페이지</text>
+  <text x="376" y="388" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">heat score 계산</text>
+  <text x="376" y="403" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">heat 높음 → LTM</text>
+
+  <line x1="456" y1="374" x2="474" y2="374" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-amber)"/>
+  <text x="465" y="368" text-anchor="middle" font-family="monospace" font-size="7" fill="#D97706">heat↑</text>
+
+  <!-- LTM -->
+  <rect x="474" y="334" width="160" height="80" rx="6" fill="#FDE68A" stroke="#D97706" stroke-width="1.2"/>
+  <text x="554" y="356" text-anchor="middle" font-family="monospace" font-size="10" fill="#D97706" font-weight="bold">장기 기억 (LTM)</text>
+  <text x="554" y="373" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">고빈도 접근 기억</text>
+  <text x="554" y="388" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">구조화 지식베이스</text>
+  <text x="554" y="403" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">영구 보존</text>
+
+  <line x1="634" y1="374" x2="652" y2="374" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-amber)"/>
+
+  <!-- Retrieval -->
+  <rect x="652" y="346" width="148" height="56" rx="6" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>
+  <text x="726" y="368" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">검색 가속</text>
+  <text x="726" y="384" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">계층별 우선순위</text>
+  <text x="726" y="398" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">LTM → MTM → STM</text>
+
+  <!-- Bottom note -->
+  <rect x="20" y="432" width="780" height="52" rx="6" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.0"/>
+  <text x="410" y="452" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">공통점 vs 차이점</text>
+  <text x="410" y="470" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">공통: 에피소드 → 의미 변환 | EverMemOS: 클러스터 재구성 | SleepGate: 수면 트리거 | MemoryOS: 접근 빈도 기반 heat score</text>
+</svg>

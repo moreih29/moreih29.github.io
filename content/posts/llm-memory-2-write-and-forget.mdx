@@ -1,0 +1,299 @@
+---
+title: "기억을 쓰는 순간 — 중요도 평가, 충돌 해결, 망각"
+slug: llm-memory-2-write-and-forget
+date: 2026-04-07
+description: "무엇을 기억하고 무엇을 잊을 것인가. 중요도 평가(Generative Agents·A-MAC), 기억 통합(EverMemOS·SleepGate), 충돌 해결(Zep·Mem0·Kumiho), 의도적 망각(MemoryBank·FSRS-6)까지 — 기억이 만들어지는 순간의 메커니즘을 해부한다."
+tags: ["llm", "ai", "memory", "importance-scoring", "forgetting", "conflict-resolution", "memory-consolidation"]
+published: true
+series: "LLM 기억의 기술"
+seriesOrder: 2
+category: "AI"
+---
+
+1편에서 LLM 기억 시스템의 구조와 분류를 살펴봤다. 어디에 저장하는가, 어떤 형식으로 인코딩하는가, 어떤 시스템이 어떤 계층을 쓰는가. 2편은 그 기억이 **만들어지는 순간**을 들여다본다.
+
+핵심 질문은 하나다. **무엇을 기억하고 무엇을 잊을 것인가.**
+
+모든 대화가 기억할 가치가 있는 것은 아니다. "안녕하세요"는 저장할 필요가 없다. "내 생일은 3월 15일이야"는 나중에 필요하다. 그런데 이 판단을 어떻게 자동화할 것인가? 모순된 기억이 들어오면 어떻게 해결할 것인가? 오래된 기억은 언제, 어떻게 지울 것인가?
+
+이 세 질문이 2편의 주제다.
+
+---
+
+## Write-Time Gating — 저장 전 심사
+
+기억을 저장하기 전에 걸러내는 것, 이것이 Write-Time Gating이다. 아무 정보나 메모리에 쌓으면 두 가지 문제가 생긴다. 첫째, 검색 시 노이즈가 늘어나 중요한 기억이 묻힌다. 둘째, 저장·임베딩·검색 비용이 선형적으로 증가한다. 게이팅은 이 두 문제를 동시에 공략한다.
+
+### Generative Agents — 세 축의 곱
+
+Stanford의 Generative Agents(2023)는 LLM 기반 시뮬레이션 에이전트에 인간 기억을 모델링한 최초 시스템 중 하나다<Ref id={1} />. 기억 저장 점수는 세 축의 가중 합산으로 계산한다.
+
+```
+score = α_r × recency + α_i × importance + α_v × relevance
+```
+
+세 가중치(α)는 모두 1.0으로 동일하다. **Recency**는 최근 접근 시점에서 시간이 경과할수록 지수 감쇠하는 값이다. **Importance**는 LLM에게 "이 기억이 에이전트의 삶에서 얼마나 중요한가?"를 0-10 척도로 평가하게 한 결과다. **Relevance**는 현재 쿼리와의 코사인 유사도다.
+
+직관적 설계다. 최근에 일어났고, 중요하며, 지금 상황과 관련 있는 기억이 높은 점수를 받는다. 다만 세 축의 기여가 동등하다고 가정하는 것, 그리고 LLM 평가 기반 importance가 과제에 따라 불안정할 수 있다는 점은 이 시스템의 잠재적 약점이다.
+
+### Selective Memory — 방해자를 걸러내다
+
+Selective Memory는 더 현실적인 문제에서 출발한다. 검색 공간에 잘못된 정보(distractors)가 섞여 있을 때 어떻게 할 것인가<Ref id={2} />.
+
+이 시스템이 제안하는 Composite Salience Score는 세 요소의 가중 합산이다.
+
+```
+salience = w₁ × source_reputation + w₂ × novelty + w₃ × reliability
+```
+
+**Source reputation**은 정보 출처의 신뢰도, **novelty**는 기존 기억 대비 새로운 정보량, **reliability**는 사실 일관성이다. 게이팅 임계값 이하인 기억은 저장을 거부한다.
+
+효과는 극적이었다. 방해자 8개 대 정답 1개(8:1) 환경에서 게이팅 없는 기준선의 정확도는 13%였다. Self-RAG는 0%로 완전히 붕괴했다. Selective Memory는 100%를 유지했다<Ref id={2} />.
+
+수치가 인상적인 만큼 환경 설정의 인위성에 주의해야 한다. 실제 환경에서는 방해자 비율이 훨씬 복잡하게 변화하며, 게이팅 임계값 자체의 최적화가 새로운 하이퍼파라미터 문제를 낳는다.
+
+### A-MAC — 5차원 분해
+
+A-MAC(Adaptive Memory-Augmented Controller)은 중요도 평가를 5개 독립 차원으로 분해한다<Ref id={3} />.
+
+```
+S(m) = Σᵢ wᵢ · fᵢ(m)
+```
+
+| 차원 | 가중치 | 설명 |
+|------|-------|------|
+| Future Utility | 0.10 | 미래 태스크에서의 활용 가능성 |
+| Factual Confidence | 0.10 | 사실 정확성에 대한 신뢰도 |
+| Semantic Novelty | 0.10 | 기존 기억 대비 새로운 의미 정보량 |
+| Temporal Recency | 0.10 | 최신성 |
+| Content Type Prior | 0.60 | 콘텐츠 유형별 사전 중요도 |
+
+눈에 띄는 점은 Content Type Prior가 전체 가중치의 60%를 차지한다는 것이다. 이는 "무엇에 관한 정보인가"라는 유형 분류가 세부 품질 지표보다 훨씬 강한 신호라는 설계 판단을 반영한다. 예를 들어 개인 일정 정보는 일반 사실보다 높은 사전 가중치를 갖는다.
+
+임계값 θ*=0.55에서 F1 스코어가 최대화됐다<Ref id={3} />. 임계값이 너무 낮으면 노이즈가 저장되고, 너무 높으면 유용한 기억이 버려진다.
+
+![세 시스템(Generative Agents, Selective Memory, A-MAC)의 중요도 평가 메커니즘 비교 — 입력 기억 후보에서 점수 산정 방식, 가중치 구조, 임계값 적용까지의 흐름과 성과 비교](/images/llm-memory/importance-scoring-comparison.svg)
+
+---
+
+## Memory Consolidation — 에피소드에서 의미로
+
+기억을 저장했다고 끝이 아니다. 개별 에피소드들은 시간이 지나면서 더 추상적인 의미 기억으로 통합되어야 한다. "오늘 점심을 먹었다"는 에피소드 100개보다 "이 사람은 주로 한식을 좋아한다"는 의미 기억이 검색에 더 유용하다.
+
+### EverMemOS — 3단계 계층 통합
+
+EverMemOS는 인간 기억의 공고화 과정을 세 단계로 모델링한다<Ref id={4} />.
+
+**① Episodic Trace (MemCell)**: 원시 에피소드를 타임스탬프, 감정 값, 문맥과 함께 저장한다. 이 단계에서는 정보를 그대로 보존한다.
+
+**② Semantic Consolidation (MemScene 클러스터링)**: 유사한 에피소드들을 클러스터링해 공통 패턴을 추출한다. 개별 이벤트들이 하나의 "장면(scene)"으로 압축된다.
+
+**③ Reconstructive Recollection**: 쿼리가 들어오면 단순히 저장된 기억을 반환하는 게 아니라 관련 기억들을 조합해 맥락에 맞게 재구성한다. 인간 기억의 재구성 특성을 모델링한 설계다.
+
+이 접근의 핵심은 에피소드 정보를 즉시 버리지 않는다는 점이다. 의미 기억이 만들어진 후에도 원본 에피소드는 참조 가능한 형태로 남아 있다.
+
+### SleepGate — 수면 사이클 기반 통합
+
+SleepGate는 생물학적 수면 중 기억 공고화를 직접 모방한다<Ref id={5} />. 핵심 아이디어는 **attention entropy**를 수면 트리거로 쓰는 것이다.
+
+Attention entropy가 높다 = 입력 정보가 다양하고 새롭다 = 깨어 있는 상태(Wake). Attention entropy가 낮다 = 입력이 반복적이거나 처리할 게 없다 = 수면 마이크로 사이클 트리거.
+
+수면 사이클 동안 세 모듈이 순서대로 작동한다.
+
+1. **Conflict-Aware Temporal Tagger**: 현재 기억들 사이의 시간적 충돌을 탐지하고 태깅
+2. **Forgetting Gate**: 중요도 낮은 기억을 선택적으로 제거
+3. **Consolidation Module**: 남은 기억들을 장기 기억에 통합
+
+성과는 주목할 만하다. Periodic Injection(PI) 깊이 5에서 99.5%, 깊이 10에서 97.0%의 기억 보유율을 달성했다<Ref id={5} />. 비교군은 깊이 10에서 18% 이하로 떨어졌다.
+
+### MemoryOS — 열 점수 기반 계층 전환
+
+MemoryOS는 운영체제의 메모리 계층 구조에서 직접 영감을 받았다<Ref id={6} />. 단기(STM) → 중기(MTM) → 장기(LTM)의 세 계층이 각각 다른 저장 정책을 갖는다.
+
+**STM**은 FIFO 큐로 최근 대화를 버퍼한다. 용량이 초과되면 가장 오래된 항목이 MTM으로 이동한다.
+
+**MTM**은 세그먼트 페이지 구조를 쓴다. 각 기억은 열 점수(heat score)를 가지며, 접근 빈도에 따라 갱신된다. 열 점수가 임계값을 초과하면 LTM으로 승격된다.
+
+**LTM**은 구조화된 장기 지식 베이스다. 자주 필요한 정보가 여기에 영구 보존된다.
+
+검색 시에는 LTM → MTM → STM 순서로 우선순위가 높은 계층부터 확인한다. OS의 캐시 계층 구조와 동일한 논리다.
+
+![EverMemOS(3단계 클러스터링), SleepGate(attention entropy 기반 수면 사이클), MemoryOS(STM→MTM→LTM 계층 전환)의 Memory Consolidation 과정 비교 플로우차트](/images/llm-memory/memory-consolidation-flow.svg)
+
+---
+
+## Conflict Resolution — 기억이 충돌할 때
+
+사용자가 "나는 서울에 산다"고 했다가 6개월 후 "부산으로 이사했어"라고 말한다. 두 기억이 동시에 존재할 수 없다. 어떻게 해결할 것인가?
+
+### Zep / Graphiti — 무효화 타임스탬프
+
+Zep과 그 기반 기술인 Graphiti는 지식 그래프를 **bi-temporal** 구조로 관리한다<Ref id={7} />. 모든 엣지(사실 관계)에 두 종류의 타임스탬프를 붙인다.
+
+- **t_valid**: 이 사실이 유효해진 시점
+- **t_invalid**: 이 사실이 더 이상 유효하지 않게 된 시점
+
+새로운 모순 사실이 들어오면 기존 엣지를 **삭제하지 않는다**. 대신 기존 엣지의 t_invalid를 현재 시점으로 설정하고, 새 엣지를 t_valid=현재로 추가한다.
+
+이 방식의 강점은 **시간 여행 쿼리**다. "2024년 1월 기준으로 이 사람은 어디에 살았는가?"라는 쿼리에 정확히 답할 수 있다. 이력이 완전히 보존되기 때문이다.
+
+약점은 그래프 복잡도 증가다. 엣지가 계속 누적되므로 장기 운용 시 그래프 크기 관리가 필요하다.
+
+### Mem0 — 4가지 연산으로 단순화
+
+Mem0는 충돌 해결을 LLM의 판단에 위임한다<Ref id={8} />. 새 정보가 들어오면 LLM이 기존 기억과 비교해 네 가지 연산 중 하나를 선택하도록 지시한다.
+
+- **ADD**: 새로운 독립 정보 추가
+- **UPDATE**: 기존 기억을 새 정보로 덮어쓰기
+- **DELETE**: 더 이상 유효하지 않은 기억 제거
+- **NOOP**: 변경 없음 (새 정보가 기존 기억과 일치하거나 무관)
+
+연산 선택은 LLM Tool Call로 이루어진다. 모델이 "이 새 정보는 기존 기억과 모순된다"고 판단하면 UPDATE나 DELETE를 선택한다.
+
+설계가 간단하고 유연하다는 것이 강점이다. 반면 LLM의 판단이 틀릴 수 있고, 매번 LLM 호출이 발생하므로 고빈도 환경에서는 비용이 문제가 된다. 또한 Zep과 달리 이력이 보존되지 않는다.
+
+### Kumiho — 논리적 일관성 보장
+
+Kumiho는 철학적 믿음 개정 이론인 AGM 공리(Alchourrón, Gärdenfors, Makinson)를 AI 기억 시스템에 적용한다<Ref id={9} />.
+
+AGM 공리는 믿음 집합을 어떻게 개정해야 논리적으로 일관성을 유지하는지에 대한 형식 이론이다. 세 기본 연산이 있다.
+
+- **Contraction**: 기존 믿음 일부를 제거 (새 정보와 모순되는 부분 축소)
+- **Expansion**: 새 믿음 추가 (모순 없는 경우)
+- **Revision**: 모순 해결을 위한 최소 변화 개정
+
+Kumiho는 각 기억 상태를 **불변(immutable) 버전 체인**으로 관리한다. 개정이 일어나면 기존 버전은 유지하고 새 버전이 체인에 추가된다. 이는 Zep의 bi-temporal 접근과 유사하지만, 논리적 일관성을 공리로 수학적으로 보장한다는 점에서 다르다.
+
+LoCoMo 벤치마크에서 F1 0.447을 달성했다<Ref id={9} />. 구현 복잡도가 높다는 것이 실용적 한계다.
+
+![세 가지 충돌 해결 전략 비교 — Zep/Graphiti의 bi-temporal 무효화, Mem0의 4-op LLM 판단, Kumiho의 AGM 공리 기반 버전 체인](/images/llm-memory/conflict-resolution-strategies.svg)
+
+---
+
+## Forgetting — 의도적 망각
+
+망각은 결함이 아니다. 적절한 망각은 기억 시스템의 효율을 유지하고, 오래된 오류 정보가 검색에 영향을 미치지 않도록 한다.
+
+### MemoryBank — 에빙하우스 기반 감쇠
+
+MemoryBank(AAAI 2024)는 에빙하우스 망각 곡선을 직접 구현한다<Ref id={10} />.
+
+```
+R(t) = e^(-t/S)
+```
+
+여기서 R은 기억 보유율, t는 경과 시간, S는 기억 강도(Strength)다. S는 회상 이벤트가 발생할 때마다 1씩 증가한다. 즉, 자주 참조되는 기억은 S가 커지므로 같은 시간이 지나도 보유율이 높게 유지된다.
+
+```
+회상 발생 시: S → S + 1
+R(t) 임계값 미만 → 기억 삭제 후보
+```
+
+### FOREVER — 모델 시간 기반 재생
+
+FOREVER는 일반 캘린더 시간이 아닌 <strong>모델 시간(model time)</strong>을 기준으로 기억 재생을 스케줄한다<Ref id={11} />. 모델 시간은 옵티마이저 업데이트 횟수(또는 처리한 토큰 수)로 측정된다.
+
+왜 모델 시간인가? LLM의 "망각"은 실제 학습에서 이전 정보를 덮어쓰는 파라미터 업데이트로 발생한다. 캘린더 시간이 아니라 모델이 얼마나 많은 새 정보를 처리했는지가 실제 망각 속도를 결정한다는 가설이다.
+
+### Smara — 유사도와 감쇠의 혼합
+
+Smara는 검색 점수를 유사도와 시간 감쇠를 혼합해 계산한다.
+
+```
+retrieval_score = similarity × 0.7 + decay_score × 0.3
+```
+
+코사인 유사도가 70%, 시간 기반 감쇠 점수가 30%를 차지한다. 순수 유사도 검색보다 오래된 기억이 서서히 밀려나는 효과가 있다.
+
+### Vestige — 간격 반복 알고리즘
+
+Vestige는 플래시카드 앱에서 쓰이는 **FSRS-6**(Free Spaced Repetition Scheduler, 21개 파라미터)을 AI 기억 관리에 적용한다<Ref id={12} />. 간격 반복(spaced repetition)의 핵심은 복습 타이밍 최적화다 — 기억이 막 잊히려는 순간에 복습하면 장기 기억이 가장 효율적으로 강화된다.
+
+### 에빙하우스 모델의 인지과학적 한계
+
+AI 망각 시스템이 에빙하우스 곡선을 광범위하게 차용한다는 점은 비판적으로 살펴볼 필요가 있다.
+
+에빙하우스 원실험(1885)에는 세 가지 근본적 제약이 있다<Ref id={13} />.
+
+**첫째, 실험 대상**: 에빙하우스 본인 단 한 명이었다. 무의미 음절(DAX, BUP 같은 비단어)을 스스로 암기하고 망각을 측정했다. 의미 있는 정보(예: 사람의 이름, 사건)는 훨씬 느리게 잊힌다.
+
+**둘째, 간섭 이론 부재**: 망각의 주요 원인 중 하나는 다른 기억과의 간섭이다 — 선행 학습이 새 기억을 방해하거나(순행 간섭), 새 학습이 기존 기억을 덮어쓰는(역행 간섭) 효과. 단순 감쇠 모델은 이를 무시한다.
+
+**셋째, LLM은 인간 뇌가 아니다**: 인간 기억은 해마-피질 시스템의 생물학적 메커니즘에서 나온다. LLM의 "기억"은 벡터 데이터베이스의 엔트리이거나 파라미터 가중치다. 생물학적 뉴런의 망각 패턴이 이 시스템에 그대로 적용된다는 이론적 근거는 없다.
+
+에빙하우스 모델은 시스템 설계의 직관적 출발점으로는 유용하다. 그러나 망각 속도나 회상 강화 공식의 계수를 실험적으로 검증 없이 이 모델에서 직접 도출하는 것은 과학적 근거가 약하다.
+
+![에빙하우스 원본 망각 곡선(R=e^(-t/S))과 AI 시스템들의 망각 모델 비교 — MemoryBank 회상 강화, Smara 혼합 점수, Vestige FSRS-6 간격 반복의 보유율 곡선 차이](/images/llm-memory/forgetting-curves.svg)
+
+---
+
+## "기억하기"와 "잊기"의 최적점
+
+지금까지 살펴본 접근들을 다섯 가지 전략으로 정리할 수 있다.
+
+### 1. Write-time 필터링
+
+Selective Memory와 A-MAC이 대표한다. 저장 시점에 게이팅해서 노이즈를 원천 차단하는 방식이다. 한번 거부된 기억은 이후 단계에서 고려하지 않아도 된다는 점에서 파이프라인 전체의 효율을 높인다.
+
+비용은 게이팅 임계값 설정이다. 임계값이 맥락에 따라 달라져야 한다면(긴급 상황에서는 모든 정보가 중요할 수 있다) 고정 임계값의 한계가 드러난다.
+
+### 2. 맥락 부가 (Contextual Retrieval)
+
+Anthropic이 제안한 Contextual Retrieval은 저장 전에 각 청크에 문서 수준의 맥락을 LLM으로 생성해 추가한다<Ref id={14} />. 단독으로는 의미가 불명확한 청크("회사 수익은 전 분기 대비 3% 증가했다")에 "이것은 ABC 회사의 2023 Q3 실적 보고서에서 발췌한 내용이다"를 붙이는 식이다.
+
+Contextual Embeddings + BM25 + 재순위(reranker) 조합에서 검색 실패율이 67% 감소했다<Ref id={14} />. 이는 저장을 거부하는 게 아니라 저장 품질을 높이는 접근이다.
+
+### 3. 계층형 통합
+
+MemoryOS의 STM→MTM→LTM 구조가 대표 사례다. 모든 기억이 동일한 저장소에 쌓이는 대신, 접근 빈도와 중요도에 따라 적절한 계층에 위치한다. 캐시 계층 구조와 동일한 논리로, 자주 쓰는 기억은 빠른 접근이 가능한 위치에 있어야 한다.
+
+### 4. 시간 감쇠
+
+MemoryBank의 R=e^(-t/S) 접근이다. 오래된 기억은 자동으로 낮은 점수를 받고, 회상될 때마다 강화된다. 별도의 관리 없이 자연스럽게 기억 사용 패턴이 반영된다.
+
+주의할 점은 앞서 언급한 에빙하우스 모델의 한계다. 감쇠 공식을 설계할 때 "인간 뇌와 유사하게"가 아니라 "이 시스템에서 실제로 무엇이 얼마나 오래 유효한가"를 기준으로 경험적으로 검증해야 한다.
+
+### 5. 형식적 충돌 해결
+
+Zep/Graphiti의 bi-temporal 그래프와 Kumiho의 AGM 공리가 여기 속한다. 논리적 일관성이 중요한 도메인(법률, 의료 기록, 계약 조건 추적)에서는 임시방편적 업데이트보다 형식적 접근이 필요하다.
+
+### Sparse Memory Finetuning — 파라미터 업데이트의 딜레마
+
+기억을 파라미터에 직접 통합하는 접근(continual learning)에서는 다른 문제가 생긴다. 새 기억을 학습하면 기존 기억이 손상되는 **catastrophic forgetting**이다.
+
+Full finetuning에서는 이전 태스크 성능이 89% 하락했다. Sparse Memory Finetuning은 11% 하락으로 억제했다<Ref id={15} />. 전체 파라미터가 아닌 일부만 업데이트하는 방식이다. 어떤 파라미터를 건드릴지 선택하는 것이 핵심 문제가 된다.
+
+---
+
+## 마무리
+
+2편에서 다룬 내용을 한 줄씩 요약한다.
+
+- **Write-time gating**: 저장 전 심사로 노이즈를 차단 (Selective Memory에서 8:1 방해자 환경 100% vs 13%)
+- **Consolidation**: 에피소드를 의미로 압축 (SleepGate에서 PI 깊이 10 기준 97.0% vs 18%)
+- **Conflict resolution**: 충돌 시 이력 보존(bi-temporal) vs 최신 상태 유지(4-op) vs 논리 보장(AGM) 중 선택
+- **Forgetting**: 에빙하우스 모델이 직관적 기준선을 제공하지만, 시스템별 경험적 검증이 필요
+
+기억을 저장하는 것은 시작일 뿐이다. 저장한 기억에서 올바른 것을 찾아내는 것, 그리고 에이전트가 스스로 기억을 관리하는 것은 별개의 문제다.
+
+다음 편(3편)은 그 질문을 다룬다 — **기억을 찾는 기술**: 검색 전략, 반성적 메모리 관리, 자율 기억 에이전트.
+
+---
+
+<References>
+  <RefItem id={1} tier="T1" title="Generative Agents: Interactive Simulacra of Human Behavior" source="Park et al., UIST 2023" url="https://arxiv.org/abs/2304.03442" />
+  <RefItem id={2} tier="T2" title="Selective Memory: Enhancing LLM Reliability in RAG through Write-Time Filtering" source="arXiv:2503.14476" url="https://arxiv.org/abs/2503.14476" />
+  <RefItem id={3} tier="T2" title="A-MAC: Adaptive Memory Admission Control for LLM Agents" source="arXiv:2603.04549, 2026" url="https://arxiv.org/abs/2603.04549" />
+  <RefItem id={4} tier="T2" title="EverMemOS: A Memory Management OS for LLM Agents" source="arXiv:2503.07601" url="https://arxiv.org/abs/2503.07601" />
+  <RefItem id={5} tier="T2" title="SleepGate: Sleep-Inspired Selective Memory Consolidation for LLMs" source="arXiv:2504.08947" url="https://arxiv.org/abs/2504.08947" />
+  <RefItem id={6} tier="T2" title="MemoryOS: Memory Management for LLM Agents Inspired by Operating Systems" source="arXiv:2409.14430" url="https://arxiv.org/abs/2409.14430" />
+  <RefItem id={7} tier="T2" title="Graphiti: A Temporal Knowledge Graph Framework for AI Agents" source="Zep AI, 2024" url="https://github.com/getzep/graphiti" />
+  <RefItem id={8} tier="T2" title="Mem0: The Memory Layer for Personalized AI" source="Mem0 Technical Report, 2024" url="https://arxiv.org/abs/2504.19413" />
+  <RefItem id={9} tier="T2" title="Kumiho: AGM Belief Revision for LLM Memory Conflict Resolution" source="arXiv:2505.02341" url="https://arxiv.org/abs/2505.02341" />
+  <RefItem id={10} tier="T1" title="MemoryBank: Enhancing Large Language Models with Long-Term Memory" source="Zhong et al., AAAI 2024" url="https://arxiv.org/abs/2305.10250" />
+  <RefItem id={11} tier="T2" title="FOREVER: Frequency-Based Experience Replay for LLM Memory Management" source="arXiv:2504.11223" url="https://arxiv.org/abs/2504.11223" />
+  <RefItem id={12} tier="T2" title="Vestige: Spaced Repetition Memory for AI Assistants via FSRS-6" source="arXiv:2504.19765" url="https://arxiv.org/abs/2504.19765" />
+  <RefItem id={13} tier="T1" title="Memory: A Contribution to Experimental Psychology" source="Ebbinghaus, H., 1885 (번역: Ruger & Bussenius, 1913)" url="https://psychclassics.yorku.ca/Ebbinghaus/memory-intro.htm" />
+  <RefItem id={14} tier="T3" title="Contextual Retrieval" source="Anthropic Blog, 2024" url="https://www.anthropic.com/news/contextual-retrieval" />
+  <RefItem id={15} tier="T2" title="Sparse Memory Finetuning: Selective Parameter Update for Continual Learning in LLMs" source="arXiv:2501.18893" url="https://arxiv.org/abs/2501.18893" />
+</References>

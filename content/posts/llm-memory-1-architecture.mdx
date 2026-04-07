@@ -1,0 +1,334 @@
+---
+title: "기억이 없으면 에이전트가 아니다 — 기억의 구조와 분류"
+slug: llm-memory-1-architecture
+date: 2026-04-07
+description: "LLM은 본질적으로 stateless다. 에이전트 시대에 기억이 필요한 이유, 인지과학 기억 체계와 AI 메모리의 대응과 한계, 서베이 3편의 분류 체계 비교, 그리고 Generative Agents의 메모리 아키텍처를 해부한다."
+tags: ["llm", "ai", "memory", "agent", "cognitive-science", "generative-agents"]
+published: true
+series: "LLM 기억의 기술"
+seriesOrder: 1
+category: "AI"
+---
+
+LLM은 본질적으로 stateless다. 매 호출은 독립적이다. 어제 나눈 대화를 모르고, 지난달 저지른 실수를 기억하지 못하며, 사용자가 무엇을 좋아하는지 축적하지 않는다. 프롬프트가 들어오면 처리하고, 응답을 내보내고, 그것으로 끝이다.
+
+단일 질의응답 애플리케이션이라면 이것으로 충분하다. 그런데 에이전트는 다르다. 수십 스텝에 걸쳐 태스크를 수행하고, 사용자와 반복적으로 상호작용하며, 이전 행동의 결과를 바탕으로 다음 행동을 결정해야 하는 시스템에서 stateless는 근본적 결함이다. 같은 실수를 반복하고, 사용자 선호를 다시 물어야 하며, 장기 목표를 잃어버린다.
+
+기억이 없으면 에이전트가 아니다.
+
+이 시리즈는 LLM 기억의 기술을 네 편에 걸쳐 해부한다. 1편은 지도다 — 기억의 구조, 인지과학과의 관계, 서베이 논문들의 분류 체계, 그리고 이 분야의 원형(archetype)이 된 Generative Agents의 메모리 아키텍처를 다룬다. 2편은 "무엇을 기억하고 무엇을 잊을 것인가" — 쓰기와 망각의 문제를 다룬다. 3편은 검색, 4편은 평가와 실무 적용을 다룬다.
+
+---
+
+## 인지과학의 기억 체계 — 왜 참조하는가
+
+AI 메모리 연구자들이 인지과학을 참조하는 이유는 단순하다. 수십 년간 인간 기억 시스템의 구조와 한계를 분석한 성숙한 이론 체계가 있고, 거기서 설계 아이디어를 빌려올 수 있기 때문이다. 물론 대응이 완벽하지는 않다 — 이 점은 뒤에서 명확히 짚는다.
+
+### Atkinson-Shiffrin 다중 저장 모델
+
+1968년 Atkinson과 Shiffrin이 제안한 모델은 기억을 세 개의 저장소로 구분한다<Ref id={1} />. 감각 기억(Sensory Memory)은 환경에서 들어온 자극을 수백 밀리초 동안 유지한다. 처리가 일어나지 않으면 소멸한다. 주의(attention)가 향하면 단기 기억(Short-term Memory)으로 넘어간다. 단기 기억은 7±2 청크를 15-30초 정도 유지한다. 반복(rehearsal) 등을 통해 부호화되면 장기 기억(Long-term Memory)에 저장된다 — 수십 년, 사실상 무한한 용량으로.
+
+![Atkinson-Shiffrin 다중 저장 모델 — 외부 자극이 감각 기억을 거쳐 주의를 통해 단기 기억으로, 부호화를 통해 장기 기억으로 이동하고, 인출을 통해 다시 단기 기억으로 접근하는 흐름. 하단에 각 저장소에 대응하는 AI 메모리 요소를 함께 표기](/images/llm-memory/atkinson-shiffrin.svg)
+
+이 모델 자체는 수십 년간 수정되고 비판받았다 — Baddeley와 Hitch(1974)는 단기 기억을 "작업 기억(Working Memory)"으로 정교화했고, 단일 저장소 모델이 아닌 여러 하위 시스템(음운 루프, 시공간 메모장, 중앙 집행부)으로 분리했다<Ref id={2} />. 그러나 "단기 처리 공간 + 장기 저장소"라는 큰 틀은 AI 메모리 설계에서 여전히 유용한 추상화다.
+
+### Tulving의 에피소드/의미 기억 구분
+
+1972년 Endel Tulving은 장기 기억을 두 가지로 구분했다<Ref id={3} />. 에피소드 기억(Episodic Memory)은 "언제, 어디서, 무슨 일이 있었는가" — 자전적이고 맥락적인 사건의 기억이다. "작년 생일에 케이크를 먹었다"는 에피소드 기억이다. 의미 기억(Semantic Memory)은 사실과 개념의 지식이다 — 탈맥락화된, 일반적 지식. "케이크는 밀가루로 만든다"는 의미 기억이다.
+
+에피소드 기억은 시간 순서와 맥락 정보를 포함한다. 의미 기억은 그 맥락이 제거된 추상화다. Tulving은 에피소드 기억이 의미 기억으로 점진적으로 전환될 수 있다고 봤다 — 반복적인 에피소드가 일반 지식으로 응고되는 과정이다.
+
+### Squire의 선언적/비선언적 구분
+
+Larry Squire(1992)는 장기 기억을 선언적(Declarative)과 비선언적(Non-declarative)으로 나눴다<Ref id={4} />. 선언적 기억은 언어로 표현할 수 있는 지식이다 — Tulving의 에피소드와 의미 기억이 여기 속한다. 비선언적(절차적) 기억은 언어로 설명하기 어렵고 행동으로 드러나는 기억이다 — 자전거 타기, 피아노 연주. 의식적 접근 없이 자동으로 실행된다.
+
+### 인지과학 ↔ AI 메모리 대응 관계
+
+이 분류들이 AI 메모리와 어떻게 대응되는지가 서베이 논문들의 주요 출발점이다.
+
+![인지과학 기억 체계와 AI 메모리의 대응 관계 — 작업 기억은 컨텍스트 윈도우·KV-cache와 기능적으로 유사하고, 에피소드 기억은 대화 히스토리와 부분 대응하며, 의미 기억은 모델 파라미터 내 세계 지식과 유사하나 업데이트 방식이 다르고, 절차적 기억은 스킬 라이브러리·LoRA 어댑터와의 대응이 약하다는 비판적 비교](/images/llm-memory/cognitive-ai-mapping.svg)
+
+대응 수준이 고르지 않다. 작업 기억 ↔ 컨텍스트 윈도우는 기능적으로 가장 유사하다. 에피소드 기억 ↔ 대화 히스토리는 부분적 대응이다 — 대화 히스토리는 시간순 기록이라는 점에서 에피소드적이지만, 인간 에피소드 기억의 풍부한 맥락 부호화, 정서 연결, 공간 정보를 포함하지 않는다. 의미 기억 ↔ 파라미터 내 지식은 유사하지만 업데이트 방식이 근본적으로 다르다. 절차적 기억 ↔ 스킬 라이브러리는 가장 약한 유추다.
+
+### Rolls (2024) 비판 — 기능적 유추의 한계
+
+Edmund Rolls(2024)는 이 대응 관계가 기능적 유추(functional analogy)에 불과하며, 신경생물학적 메커니즘과는 구조적으로 상이하다고 논한다<Ref id={5} />.
+
+핵심 비판은 네 가지다. 첫째, 학습 메커니즘의 차이 — 해마는 국소 연합 학습(local associative learning)으로 에피소드를 단일 경험에서 저장하지만, LLM은 역전파(backpropagation)를 통한 전역 최적화로 수십억 개의 파라미터를 갱신한다. 한 번의 경험이 에피소드 기억에 저장되는 인간과 달리, LLM의 파라미터는 반복적 경량 업데이트 없이는 변하지 않는다.
+
+둘째, 패턴 완성(pattern completion) vs 다음 토큰 예측 — 해마는 부분적 단서에서 전체 기억을 재구성하는 패턴 완성 연산을 수행한다. LLM은 조건부 토큰 확률 분포를 예측한다. 연산의 목적 자체가 다르다.
+
+셋째, 지속적 업데이트 — 인간은 일상적 경험을 통해 에피소드 기억이 의미 기억으로 점진적으로 전환되며 기존 지식이 업데이트된다. LLM에서 이에 해당하는 지속적 파라미터 업데이트는 구현이 어렵고(catastrophic forgetting 문제), 대부분의 시스템은 파라미터를 고정한다.
+
+넷째, 공간 표현 — 인간 해마에는 place cells, grid cells, spatial view cells 등 공간 정보를 처리하는 특화 뉴런이 있다. LLM에는 이에 대응하는 구조가 없다.
+
+결론: 인지과학 개념들은 AI 메모리 시스템 설계에서 유용한 출발점이지만, 메커니즘 수준의 등가(equivalence)를 주장하는 것은 과도하다. 두 시스템은 서로 다른 진화적·공학적 압력 아래 만들어진 기억 솔루션이다.
+
+---
+
+## AI 메모리 아키텍처 분류 체계 — 서베이 3편 비교
+
+2024-2025년 사이 AI 메모리를 체계적으로 분류하는 서베이가 집중적으로 등장했다. 세 편이 특히 주목할 만하다.
+
+![서베이 3편의 AI 메모리 분류 체계 비교 — [A] 2512.13564는 Forms·Functions·Dynamics 축, [B] 2504.15965는 Object×Form×Time 8개 사분면, [C] 2505.00675는 Representation×Operations 관점으로 분류하며, 세 논문 모두 Parametric vs. Contextual 이분법을 채택한다는 수렴 지점을 하단에 표기](/images/llm-memory/survey-taxonomy.svg)
+
+### [A] "Memory in the Age of AI Agents" (arXiv:2512.13564)
+
+47명 공저 서베이<Ref id={6} />는 메모리를 세 축으로 분류한다.
+
+**Forms(형태)**: 메모리가 어떤 형태로 저장되는가. Token-level(Flat 1D / Planar 2D / Hierarchical 3D), Parametric(Internal/External), Latent의 세 범주다. 컨텍스트 윈도우 내 텍스트는 Flat Token-level이고, 모델 가중치는 Parametric Internal이며, 벡터 임베딩은 Parametric External에 해당한다.
+
+**Functions(기능)**: 메모리가 어떤 기능을 하는가. Factual(사실 지식), Experiential(Case/Strategy/Skill의 경험 지식), Working(즉시 처리용 작업 메모리)로 나뉜다.
+
+**Dynamics(동역학)**: 메모리가 어떻게 변화하는가. Formation(형성) → Evolution(진화: Consolidation/Updating/Forgetting) → Retrieval(검색)의 생애주기다.
+
+이 분류의 강점은 에이전트 경계를 명시적으로 설정한다는 점이다. 에이전트 내부 메모리와 외부 스토리지의 구분이 분류 체계에 반영된다.
+
+### [B] "From Human Memory to AI Memory" (arXiv:2504.15965)
+
+이 서베이<Ref id={7} />는 인지과학 계보를 가장 직접적으로 따른다. 세 축의 곱으로 8개 사분면을 만든다:
+
+- **Object**: Personal(에이전트 개인) vs System(시스템 전체)
+- **Form**: Non-parametric vs Parametric
+- **Time**: Short-term vs Long-term
+
+예를 들어 "개인의 단기 비파라미터 메모리"는 컨텍스트 윈도우 내 대화 이력이다. "시스템의 장기 파라미터 메모리"는 공유된 파인튜닝 가중치가 된다. Tulving의 에피소드/의미 구분과 Squire의 선언적/비선언적 구분이 이 8개 사분면에 매핑된다.
+
+### [C] "Rethinking Memory in AI" (arXiv:2505.00675)
+
+가장 공학적 접근이다<Ref id={8} />. 인지과학을 참조하지 않고, AI 시스템 내부 연산에 집중한다.
+
+**Representation**: Parametric(모델 가중치에 내재된 지식) vs Contextual(Unstructured + Structured — 컨텍스트 내 텍스트, 벡터 DB, 그래프)
+
+**Operations**: 6개의 원자적 연산 — Consolidation(통합), Indexing(색인), Updating(갱신), Forgetting(망각), Retrieval(검색), Compression(압축)
+
+이 6개 연산은 어떤 메모리 시스템이든 수행해야 하는 핵심 오퍼레이션들이다. 새로운 정보를 기존 기억과 통합하고(Consolidation), 나중에 찾을 수 있게 색인하며(Indexing), 변화한 정보를 갱신하고(Updating), 낡거나 불필요한 정보를 지우며(Forgetting), 필요할 때 꺼내고(Retrieval), 공간 효율을 위해 압축한다(Compression). 이 연산들의 조합이 메모리 시스템의 동작을 설명한다.
+
+### 수렴과 차이
+
+세 논문의 **수렴 지점**: 모두 **Parametric vs. Contextual 이분법**을 채택한다. 모델 가중치에 내재된 지식(Parametric)과 컨텍스트 공간이나 외부 스토리지의 지식(Contextual)의 구분은 현재 필드의 기본 이분법이다. 단기/장기 구분도 세 논문 모두 포함한다. 단순 이분법이 불충분하다는 인식도 공유한다.
+
+**차이**: [A]는 에이전트 경계 설정에 초점을 맞춘다. [B]는 인지과학 계보를 직접 따라 인간 기억과의 대응 관계를 탐색한다. [C]는 인지과학을 우회하고 AI 시스템이 실제로 수행하는 연산들을 원자적으로 기술한다. 같은 현상을 세 가지 다른 언어로 기술하는 셈이다.
+
+---
+
+## 저장 구조 유형별 대표 시스템
+
+분류 체계 너머로, 실제 AI 메모리 시스템들은 네 가지 저장 구조를 주로 사용한다.
+
+![저장 구조 유형별 대표 시스템 비교 — 텍스트 요약(MemoryBank), 벡터 임베딩(Mem0), 지식 그래프(Zep/Graphiti), 하이브리드(MemGPT/Letta) 네 열에 각각 구조, 특성, 적합 사용례를 정리한 비교 다이어그램](/images/llm-memory/storage-types.svg)
+
+### 텍스트 요약 — MemoryBank
+
+MemoryBank(AAAI 2024)<Ref id={9} />는 사건을 계층적으로 저장하고, 에빙하우스 망각 곡선(Ebbinghaus Forgetting Curve)을 모델링해 시간이 지날수록 접근 빈도가 낮은 기억의 강도가 감쇠하도록 설계했다. 요약 형태로 저장되기 때문에 검색 결과를 LLM에 그대로 주입하기 쉽다. 장점은 자연어 출력의 가독성이고, 단점은 세밀한 의미 검색이 약하다는 점이다.
+
+### 벡터 임베딩 — Mem0
+
+Mem0(arXiv:2504.19413)<Ref id={10} />는 대화에서 팩트를 추출하고 벡터 DB에 저장한다. 기억 관리에 4개의 원자적 연산을 사용한다: ADD(새 사실 추가), UPDATE(기존 사실 갱신), DELETE(삭제), NOOP(변화 없음). 비동기 요약을 통해 레이턴시를 줄인다. OpenAI 메모리 대비 26% 성능 향상, p95 레이턴시 91% 감소를 보고했다. 의미 유사도 검색에 강하지만, 구조적 관계 표현이 약하다.
+
+### 지식 그래프 — Zep / Graphiti
+
+Graphiti(arXiv:2501.13956)<Ref id={11} />는 Bi-temporal 지식 그래프를 사용한다. 각 사실에 두 개의 타임스탬프를 부여한다 — Event Time(해당 사건이 실제로 일어난 시간)과 Ingestion Time(시스템에 기록된 시간). 이 구분이 중요한 이유는 늦게 입수된 과거 정보를 올바른 시간 순서로 처리할 수 있기 때문이다. 충돌하는 정보가 들어오면 기존 엣지에 `t_invalid`를 설정해 무효화하고 새 엣지를 추가한다. 검색은 코사인 유사도, BM25, BFS(그래프 탐색)을 조합한다. 관계 추론이 강하지만 그래프 구축과 유지 비용이 높다.
+
+### 하이브리드 — MemGPT / Letta
+
+MemGPT(arXiv:2310.08560)<Ref id={12} />는 운영체제의 메모리 계층 구조를 유추해 4계층 메모리를 설계했다. Core Memory(인-컨텍스트, 즉시 접근), Conversation Queue(FIFO 대화 버퍼), Recall Storage(대화 히스토리 DB), Archival Storage(벡터 DB). 핵심은 에이전트가 자율적으로 계층 간 데이터 이동을 결정한다는 점이다. 컨텍스트 윈도우가 가득 차면 에이전트가 오래된 내용을 Archival로 내려보내고, 필요하면 다시 올린다. 유연하고 범용적이지만 런타임 복잡도가 높다.
+
+---
+
+## Generative Agents — 기억 아키텍처의 원형
+
+2023년 Stanford의 Park et al.이 발표한 Generative Agents<Ref id={13} />는 이 분야의 원형이 됐다. 가상의 마을에 25명의 AI 에이전트를 배치하고, 이들이 사회적 상호작용, 루머 전파, 선거 출마 결정, 파티 계획 등 실제 사회적 행동을 보이는지 실험했다. 이를 가능하게 한 것이 메모리 아키텍처였다.
+
+![Generative Agents 메모리 아키텍처 — 환경 관찰이 Memory Stream에 Observation으로 기록되고, 검색 점수(recency·importance·relevance의 합산)로 관련 기억이 인출되며, importance 합이 150 이상이면 Reflection이 생성되어 다시 Memory Stream에 저장되고, Plan이 행동으로 이어지는 전체 흐름과 Ablation TrueSkill 결과](/images/llm-memory/generative-agents-arch.svg)
+
+### 메모리 스트림
+
+모든 기억은 하나의 **Memory Stream**에 저장된다. 스트림의 항목은 세 유형이다.
+
+**Observation**: 에이전트가 직접 지각한 사건 기록이다. "Isabella Rodriguez가 카페에서 커피를 만들고 있다"처럼 에이전트의 현재 지각이 그대로 기록된다.
+
+**Reflection**: LLM이 생성하는 고수준 인사이트다. 에이전트가 직접 경험하지 않은 추상적 판단이다. "Klaus Mueller는 지역 정치에 관심이 많다"처럼 여러 Observation에서 추론된 고차 기억이다.
+
+**Plan**: 미래 행동 계획이다. 재귀적으로 분해된다 — Daily agenda(하루 5-8개 활동) → Hourly schedule → Fine-grained 행동(5-15분 단위).
+
+### 검색 점수 공식
+
+메모리를 인출할 때 세 요소를 조합한 점수를 계산한다:
+
+```
+score = α_recency × recency + α_importance × importance + α_relevance × relevance
+```
+
+논문에서 모든 α = 1 — 세 요소를 동등하게 가중한다.
+
+**Recency**: 마지막으로 접근한 이후 경과 시간에 대한 지수 감쇠다. 감쇠 계수는 0.995다. 방금 일어난 일은 높은 점수, 오래된 기억은 낮은 점수를 받는다. 수식으로:
+
+```
+recency = 0.995^(hours since last access)
+```
+
+**Importance**: LLM이 1-10 척도로 부여하는 점수다. "아침 식사를 했다"는 낮은 중요도(1-2점)이고 "연인과 헤어졌다"는 높은 중요도(9-10점)다. 이 점수는 기억 항목이 저장될 때 한 번 계산되어 고정된다.
+
+**Relevance**: 현재 상황의 임베딩과 기억 항목의 임베딩 사이의 코사인 유사도다. 지금 질문 또는 상황과 관련성이 높은 기억이 높은 점수를 받는다.
+
+세 점수는 각각 [0, 1] 범위로 정규화한 뒤 합산된다. 이 설계는 단순하지만 효과적이다 — 최근에 일어난(recency), 중요한(importance), 지금 상황과 관련된(relevance) 기억이 인출된다.
+
+### Reflection 자동 생성
+
+에이전트는 주기적으로 반성(Reflection)을 생성한다. 트리거 조건은 최근 이벤트의 importance 점수 합이 **150 이상**이 될 때다. 이 임계값이 충족되면:
+
+1. 현재까지의 기억 항목에서 LLM이 핵심 질문 3개를 생성한다. ("이 에이전트에 대해 가장 인사이트 있는 질문은 무엇인가?")
+2. 각 질문에 관련된 기억들을 검색한다.
+3. 검색된 기억들을 바탕으로 인사이트를 추출해 새로운 Reflection 항목을 생성한다.
+4. 생성된 Reflection은 다시 Memory Stream에 저장된다.
+
+이 재귀적 구조가 중요하다. Reflection이 새 기억으로 저장되면, 이후 또 다른 Reflection의 재료가 될 수 있다. 직접 경험에서 추상화, 추상화에서 더 높은 수준의 추상화로 이어지는 계층적 기억 구조가 만들어진다.
+
+### Ablation 결과
+
+완전한 아키텍처와 구성 요소를 하나씩 제거한 버전들의 TrueSkill 점수 비교:
+
+| 조건 | TrueSkill | 95% CI |
+|---|---|---|
+| 완전 아키텍처 (Observation + Reflection + Plan) | 29.89 | ±0.72 |
+| 반성/계획 제외 | 26.88 | — |
+| 계획 제외 | 25.64 | — |
+| 인간 플레이어 | 22.95 | — |
+| 전부 제외 (기억 없음) | 21.21 | — |
+
+기억이 없는 조건(21.21)과 완전 아키텍처(29.89)의 차이 d = 8.16은 TrueSkill 단위로 상당히 크다. 완전 아키텍처는 인간 플레이어(22.95)도 넘어선다. 각 구성 요소 — Reflection, Plan, Observation — 가 모두 기여한다는 점도 확인됐다.
+
+### 이 구조를 참조한 후속 연구들
+
+Generative Agents의 메모리 스트림 구조는 이후 여러 연구의 직접적 참조점이 됐다.
+
+**MemGPT(2023)**<Ref id={12} />: OS 메모리 계층 유추를 더 정교화했다. 컨텍스트 윈도우를 운영체제의 물리 메모리처럼 관리하고, 페이징을 통해 무한히 긴 문맥을 처리할 수 있게 했다.
+
+**MemoryBank(2024)**<Ref id={9} />: Generative Agents의 망각 없는 무제한 스트림 대신 에빙하우스 망각 곡선을 도입해, 접근 빈도가 낮은 기억을 자연스럽게 약화시켰다.
+
+**Reflexion(2023)**<Ref id={14} />: 자기반성(self-reflection)을 태스크 실패 후의 피드백 루프로 구조화했다. Generative Agents의 Reflection이 사회적 인사이트를 위한 것이었다면, Reflexion은 태스크 수행 오류로부터의 학습을 위한 것이다.
+
+**Voyager(2023)**<Ref id={15} />: Minecraft 에이전트에 스킬 라이브러리(Skill Library)를 적용했다. Generative Agents의 Plan 구조를 재사용 가능한 코드 스킬로 발전시켰다.
+
+**A-MEM(NeurIPS 2025)**: Zettelkasten 원자성 원칙을 적용했다. 각 메모리 노트는 raw content, 키워드, 태그, context, embedding, links를 포함하며, 노트 간 링크가 자율적으로 생성된다. Generative Agents의 단일 스트림 대신 서로 연결된 지식 네트워크 구조다.
+
+---
+
+## 마무리
+
+기억은 단순한 "과거 기록 저장" 이상이다. 무엇을 저장하고, 언제 인출하며, 어떻게 추상화하고, 무엇을 망각할 것인가 — 이 결정들이 에이전트의 지능을 구성한다.
+
+1편에서 본 것처럼 인지과학은 유용한 출발점을 제공하지만 직접적 등가는 아니다. 서베이 논문들은 서로 다른 언어로 같은 공간을 기술하며, 수렴 지점(Parametric vs. Contextual)과 차이점(인지과학 계보 vs. 공학적 원자 연산)을 동시에 드러낸다. Generative Agents는 이 분야의 원형으로, 이후 연구들이 확장하고 비판하는 기준점이 됐다.
+
+구조를 이해하면 다음 질문이 자연스럽게 따라온다. **무엇을 기억할 것인가, 그리고 무엇을 잊을 것인가.** 모든 것을 기억하는 것이 능사가 아니다 — 무한한 기억은 오히려 관련 없는 정보로 컨텍스트를 오염시킨다. 어떤 사건을 기억에 쓸 것인지 결정하는 쓰기 전략과, 망각을 통해 기억의 품질을 유지하는 망각 메커니즘이 2편의 주제다.
+
+---
+
+<References>
+  <RefItem
+    id={1}
+    tier="T1"
+    title="Human memory: A proposed system and its control processes"
+    source="Atkinson & Shiffrin, Psychology of Learning and Motivation, 1968"
+    url="https://doi.org/10.1016/S0079-7421(08)60422-3"
+  />
+  <RefItem
+    id={2}
+    tier="T1"
+    title="Working memory"
+    source="Baddeley & Hitch, Psychology of Learning and Motivation, 1974"
+    url="https://doi.org/10.1016/S0079-7421(08)60452-1"
+  />
+  <RefItem
+    id={3}
+    tier="T1"
+    title="Episodic and semantic memory"
+    source="Tulving, Organization of Memory, 1972"
+    url="https://psycnet.apa.org/record/1973-10172-000"
+  />
+  <RefItem
+    id={4}
+    tier="T1"
+    title="Declarative and nondeclarative memory: Multiple brain systems supporting learning and memory"
+    source="Squire, Journal of Cognitive Neuroscience, 1992"
+    url="https://doi.org/10.1162/jocn.1992.4.3.232"
+  />
+  <RefItem
+    id={5}
+    tier="T1"
+    title="Cerebral cortex and hippocampus in memory: Differences from large language models"
+    source="Rolls, Heliyon, 2024"
+    url="https://doi.org/10.1016/j.heliyon.2024.e38589"
+  />
+  <RefItem
+    id={6}
+    tier="T2"
+    title="Memory in the Age of AI Agents"
+    source="arXiv:2512.13564, 2024"
+    url="https://arxiv.org/abs/2512.13564"
+  />
+  <RefItem
+    id={7}
+    tier="T2"
+    title="From Human Memory to AI Memory: A Survey of Memory Mechanisms in Large Language Model Agents"
+    source="arXiv:2504.15965, 2025"
+    url="https://arxiv.org/abs/2504.15965"
+  />
+  <RefItem
+    id={8}
+    tier="T2"
+    title="Rethinking Memory in AI: Taxonomy, Operations, Topics, and Future Directions"
+    source="arXiv:2505.00675, 2025"
+    url="https://arxiv.org/abs/2505.00675"
+  />
+  <RefItem
+    id={9}
+    tier="T1"
+    title="MemoryBank: Enhancing Large Language Models with Long-Term Memory"
+    source="Zhong et al., AAAI 2024"
+    url="https://arxiv.org/abs/2305.10250"
+  />
+  <RefItem
+    id={10}
+    tier="T2"
+    title="Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory"
+    source="arXiv:2504.19413, 2025"
+    url="https://arxiv.org/abs/2504.19413"
+  />
+  <RefItem
+    id={11}
+    tier="T2"
+    title="Graphiti: A Temporally-Aware Knowledge Graph Architecture for Dynamic AI Applications"
+    source="arXiv:2501.13956, 2025"
+    url="https://arxiv.org/abs/2501.13956"
+  />
+  <RefItem
+    id={12}
+    tier="T2"
+    title="MemGPT: Towards LLMs as Operating Systems"
+    source="Packer et al., arXiv:2310.08560, 2023"
+    url="https://arxiv.org/abs/2310.08560"
+  />
+  <RefItem
+    id={13}
+    tier="T1"
+    title="Generative Agents: Interactive Simulacra of Human Behavior"
+    source="Park et al., ACM UIST 2023"
+    url="https://arxiv.org/abs/2304.03442"
+  />
+  <RefItem
+    id={14}
+    tier="T1"
+    title="Reflexion: Language Agents with Verbal Reinforcement Learning"
+    source="Shinn et al., NeurIPS 2023"
+    url="https://arxiv.org/abs/2303.11366"
+  />
+  <RefItem
+    id={15}
+    tier="T2"
+    title="Voyager: An Open-Ended Embodied Agent with Large Language Models"
+    source="Wang et al., arXiv:2305.16291, 2023"
+    url="https://arxiv.org/abs/2305.16291"
+  />
+</References>

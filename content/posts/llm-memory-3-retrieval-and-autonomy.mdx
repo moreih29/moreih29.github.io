@@ -1,0 +1,238 @@
+---
+title: "기억을 찾는 기술 — 검색, 반성, 자율 관리"
+slug: llm-memory-3-retrieval-and-autonomy
+date: 2026-04-07
+description: "저장된 기억을 어떻게 찾는가. 4방향 병렬 검색 TEMPR, 에이전트가 스스로 기억을 관리하는 A-MEM·Letta·MAGMA, 그래프 기반 KG 메모리, Reflection 메커니즘, RAG와 Memory의 구조적 차이까지 — 기억 시스템의 검색과 자율 관리를 해부한다."
+tags: ["llm", "ai", "memory", "retrieval", "agentic-memory", "knowledge-graph", "rag"]
+published: true
+series: "LLM 기억의 기술"
+seriesOrder: 3
+category: "AI"
+---
+
+1편에서 기억의 구조를 — Sensory부터 Long-Term까지 계층을 어떻게 쌓는지 — 살펴봤다. 2편에서는 기억을 어떻게 쓰고, 통합하고, 잊는지 — 형성과 진화의 메커니즘을 다뤘다. 3편은 그 다음 질문이다. **저장된 기억을 어떻게 찾는가. 그리고 에이전트는 어떻게 기억을 스스로 관리하는가.**
+
+단일 벡터 유사도 검색은 오래전부터 표준이었다. 그런데 2024-2025년 사이, 이 표준이 흔들리기 시작했다. 검색 방식이 복잡해질수록, 기억 품질 지표가 가파르게 올랐다.
+
+---
+
+## Multi-Strategy Retrieval — 단일 벡터를 넘어
+
+### 왜 하나의 검색 방식으로는 부족한가
+
+벡터 유사도 검색은 의미적 근접성을 잘 잡는다. 그런데 "지난주 화요일에 사용자가 뭐라고 했는지"를 물으면, 벡터는 시간을 모른다. "사용자의 취향이 어떻게 바뀌었는지"는 단일 hop 검색으로 답하기 어렵다. 각기 다른 유형의 기억 질문에는 각기 다른 검색 전략이 필요하다.
+
+### TEMPR: 4방향 병렬 검색
+
+Hindsight가 개발한 TEMPR(Temporal-Entity-Meta-Preference Retrieval)은 이 문제를 병렬화로 해결한다<Ref id={1} />. 네 가지 검색기를 동시에 실행하고, 결과를 합쳐 재채점한다.
+
+![TEMPR 4방향 병렬 검색 파이프라인 — Semantic, BM25, Graph Traversal, Temporal Filter가 동시에 실행되고 RRF로 병합, Cross-Encoder Reranker로 최종 정렬](/images/llm-memory/tempr-pipeline.svg)
+
+- **Semantic Search**: Dense embedding + cosine similarity. 의미적 유사성 포착.
+- **BM25 Sparse**: 키워드 매칭 기반 TF-IDF 가중치. 고유명사나 특정 용어에 강하다.
+- **Graph Traversal**: Entity와 관계를 hop 단위로 탐색. 연결 관계 기반 검색.
+- **Temporal Filter**: Recency decay와 time-window 인덱스. 시간 범위 질의에 특화.
+
+네 결과는 <strong>RRF(Reciprocal Rank Fusion)</strong>로 병합된다. 각 검색기의 순위를 합산해 통합 점수를 만드는 방식이다: score = Σ 1/(k + rank_i). 이후 **Cross-Encoder Reranker**가 쿼리-후보 쌍을 전체적으로 재채점한다. Bi-encoder 방식보다 느리지만 정밀도가 높다.
+
+결과는 주목할 만하다. LongMemEval 기준 Gemini 3 Pro Preview와 조합 시 <strong>91.4%</strong>를 달성했다<Ref id={1} />. 가장 큰 개선 영역은 multi-session(+66.1pp), temporal-reasoning(+59.4pp), preference(+60.0pp)였다. 단일 벡터 검색이 특히 약한 영역들이다.
+
+---
+
+## Agentic Memory — 에이전트가 기억을 관리한다
+
+지금까지의 기억 시스템 대부분은 인간이 큐레이션한다. 무엇을 저장할지, 어떻게 인덱싱할지, 어떤 기억을 유지할지 — 설계자가 결정한다. Agentic Memory는 이 역할을 에이전트 자신에게 넘긴다.
+
+세 시스템이 각기 다른 방향에서 이 문제를 풀었다.
+
+![A-MEM, Letta/MemGPT, MAGMA 세 자율 기억 시스템의 아키텍처 비교 — 각각 Zettelkasten 노트 진화, OS 계층 이동, 4개 직교 그래프 정책으로 자율 관리](/images/llm-memory/agentic-memory-comparison.svg)
+
+### A-MEM: Zettelkasten 방법론
+
+A-MEM(Agentic Memory, NeurIPS 2025)<Ref id={2} />은 학자들이 지식을 연결하는 방법론인 **Zettelkasten** 을 LLM 기억에 적용했다. 핵심 아이디어는 기억이 고립된 항목이 아니라, 서로 연결된 노트 네트워크여야 한다는 것이다.
+
+작동은 3단계다.
+
+1. **Note Construction**: 새 기억이 들어오면 에이전트가 키워드, 맥락, 태그를 추출해 구조화된 노트로 만든다.
+2. **Autonomous Link Generation**: 기존 노트와 유사도·관련성을 비교해 링크를 자동 생성한다. 링크에는 관계 레이블이 붙는다.
+3. **Memory Evolution**: 새 입력이 기존 노트와 충돌하거나 보완하면, 기존 노트를 업데이트한다. 기억이 정적으로 쌓이는 것이 아니라 진화한다.
+
+저장은 이중 구조다. **ChromaDB**가 벡터 검색을 담당하고, **NetworkX DiGraph**가 링크 그래프를 관리한다. 검색 시 두 인덱스를 결합한다.
+
+LoCoMo Multi-Hop 벤치마크에서 ROUGE-L **44.27**을 기록했다. 기준선(18.09) 대비 2.4배 향상이다<Ref id={2} />. Multi-hop 질문 — "A를 통해 B에 관련된 것은?" 같은 유형 — 에서 링크 네트워크의 효과가 두드러진다.
+
+### Letta / MemGPT: OS 메모리 유추
+
+MemGPT(2023), 이후 Letta로 이어진 시스템<Ref id={3} />은 운영체제의 메모리 계층 구조를 LLM에 직접 유추했다. 컨텍스트 창은 한정되어 있다. OS가 한정된 RAM을 어떻게 쓰는지를 보면 답이 있다.
+
+4계층 구조다.
+
+- **Core Memory (RAM)**: 항상 컨텍스트에 올라와 있는 핵심 정보. 사용자 프로필, 현재 태스크 상태.
+- **Message History (캐시)**: 현재 세션의 대화 히스토리. 일정 토큰 이상이 되면 Recall로 이동.
+- **Recall Memory (디스크 캐시)**: 과거 대화를 검색 가능한 형태로 저장. 필요 시 Core로 호출.
+- **Archival Memory (콜드 스토리지)**: 무제한 외부 벡터 DB. 장기 지식 저장소.
+
+에이전트는 **tool call**로 계층 간 데이터를 자율적으로 이동시킨다. `memory_replace`, `memory_insert`, `memory_rethink`로 Core를 수정하고, `archival_memory_insert`, `archival_memory_search`로 장기 저장소를 관리한다. `conversation_search`, `conversation_search_date`로 과거 대화를 검색한다.
+
+Letta는 이 구조를 명시적으로 확장해 멀티 에이전트 환경에서도 기억을 공유할 수 있게 했다<Ref id={3} />.
+
+### MAGMA: 4개 직교 그래프
+
+MAGMA(Multi-Aspect Graph Memory Architecture)<Ref id={4} />는 기억을 단일 그래프가 아닌 **4개의 직교(orthogonal) 그래프**로 분해한다. 각 그래프는 기억의 다른 차원을 포착한다.
+
+- **Semantic Graph**: 의미 유사성 기반 연결
+- **Temporal Graph**: 시간 순서 기반 연결
+- **Causal Graph**: 인과 관계 기반 연결
+- **Entity Graph**: 개체 관계 기반 연결
+
+검색은 **Policy-Guided Retrieval**로 작동한다. 쿼리의 의도를 먼저 분류한다 — "무슨 일이 있었는지"면 Temporal, "왜 그랬는지"면 Causal, "누가 관련됐는지"면 Entity. 분류된 유형에 맞는 그래프를 우선 탐색한다.
+
+LoCoMo에서 **0.700**을 기록했다. Full Context(0.563) 대비 +24.3%다<Ref id={4} />. 전체 대화를 다 집어넣는 것보다 구조화된 그래프 메모리가 더 좋다는 의미다.
+
+---
+
+## 그래프 기반 메모리 — 관계를 기억하다
+
+벡터 기반과 그래프 기반의 차이는 단순히 "빠름 vs 풍부함"이 아니다. 근본적으로 다른 정보를 저장한다.
+
+![그래프 기반 메모리(Graphiti/Zep)와 벡터 기반 메모리의 비교 — 벡터는 유사도 스코어만, 그래프는 CAUSED·HAS·PRIOR 등 관계 레이블과 bi-temporal 추적을 보존](/images/llm-memory/graph-vs-vector-memory.svg)
+
+벡터 기반은 기억을 고차원 공간의 점으로 만든다. 두 기억이 얼마나 가까운지는 알 수 있지만, 왜 연결되어 있는지는 저장하지 않는다. "기억 A와 기억 B는 유사하다" — 그게 전부다.
+
+그래프 기반은 기억을 노드로, 관계를 엣지로 명시한다. "기억 A가 기억 B를 CAUSED했다", "기억 B는 기억 C에 의해 UPDATED됐다" — 관계의 타입이 보존된다.
+
+### Zep / Graphiti: Bi-temporal KG
+
+Zep의 오픈소스 핵심인 Graphiti<Ref id={5} />는 **Bi-temporal Knowledge Graph**를 구현한다. 두 개의 시간 축을 독립적으로 추적한다.
+
+- **Valid Time (사건 시간)**: 사건이 실제로 발생한 시간 (`entity_valid_at`)
+- **Transaction Time (기록 시간)**: 시스템이 그 사건을 기록한 시간 (`fact_valid_at`)
+
+왜 두 축이 필요한가. 사람이 "3년 전 일"을 오늘 말했다면, 기록 시간은 오늘이지만 사건 시간은 3년 전이다. 단일 타임스탬프는 이 둘을 구분하지 못한다.
+
+이중 추적이 유리한 시나리오:
+
+- **시간 순서 비교**: "2년 전과 지금 사용자의 선호가 어떻게 달라졌나"
+- **Multi-hop 관계 탐색**: "A를 좋아하는 사람이 연결된 B는 무엇인가"
+- **과거 상태 복원**: "6개월 전 시점의 사용자 프로필을 재구성"
+
+DMR(Document Matching Rate) **94.8%**, LongMemEval <strong>+18.5%</strong>를 보고했다<Ref id={5} />.
+
+### Kumiho: AGM Belief Revision
+
+Kumiho<Ref id={6} />는 다른 방향에서 그래프 메모리에 접근한다. **AGM(Alchourrón-Gärdenfors-Makinson) belief revision** 형식 이론을 기억 관리에 적용했다. AGM은 논리적으로 일관성을 유지하면서 믿음(belief)을 어떻게 수정해야 하는지를 다루는 이론이다.
+
+Kumiho는 AGM의 K*2~K*6 공리와 Hansson의 Relevance/Core-Retainment 속성을 **100% 준수**한다고 보고했다<Ref id={6} />. 모순된 정보가 들어올 때 형식 증명된 방식으로 기존 믿음을 수정한다.
+
+저장은 듀얼 스토어 구조다. **Redis**가 작업 메모리(Working Memory)를, **Neo4j**가 장기 그래프를 담당한다.
+
+성능: LoCoMo F1 **0.565**, 적대적 거부(adversarial rejection) **97.5%**<Ref id={6} />. 적대적 입력 — 일관성이 없거나 잘못된 정보를 주입하려는 시도 — 에 대한 저항성이 높다는 점이 주목할 만하다.
+
+---
+
+## MemoryOS — OS 메타포가 만드는 설계 결정
+
+EMNLP 2025 Oral로 발표된 MemoryOS<Ref id={7} />는 OS 메타포를 가장 체계적으로 적용한 시스템 중 하나다. Letta의 계층 구조와 개념적으로 유사하지만, OS의 구체적인 알고리즘을 직접 차용했다.
+
+**3계층 구조**:
+
+| 계층 | OS 유추 | 역할 |
+|------|---------|------|
+| STM (Short-Term Memory) | CPU 캐시 | 현재 대화 및 최근 상호작용 |
+| MTM (Mid-Term Memory) | RAM | 세션 간 활성 메모리 |
+| LTM (Long-Term Memory) | 디스크 | 장기 지식 저장소 |
+
+OS 개념의 직접 대응:
+
+- **FIFO 페이지 교체**: STM이 가득 차면 오래된 항목을 MTM으로 밀어낸다
+- **Segmented Page Organization**: 기억을 의미 단위 세그먼트로 관리
+- **Heat Score**: LRU(Least Recently Used) 유사 점수. 자주 접근하는 기억은 상위 계층 유지
+- **Persona Module**: 사용자 특성, 선호, 습관을 요약한 영구 프로필
+
+LoCoMo에서 F1 **+49.11%**, BLEU-1 <strong>+46.18%</strong>를 기록했다<Ref id={7} />. OS 알고리즘이 기억 시스템에 직접 이전 가능하다는 것을 보여준 사례다.
+
+---
+
+## Reflection과 Self-Assessment
+
+검색과 저장만으로는 충분하지 않다. 축적된 기억에서 더 높은 수준의 패턴을 추출하는 과정 — **Reflection** — 이 필요하다.
+
+### Generative Agents의 Reflection
+
+Park et al.(2023)의 Generative Agents<Ref id={8} />는 Reflection을 처음 구체적으로 구현한 시스템 중 하나다. 중요도(importance) 점수를 기억마다 부여하고, 최근 기억들의 중요도 합이 특정 임계값(≥ 150)을 넘으면 **higher-order abstraction**을 생성한다. 단순 사실의 나열이 아닌, 패턴이나 인사이트 수준의 기억을 만드는 것이다.
+
+이 절차는 기억 품질에 직접 영향을 준다. 반성이 없는 에이전트는 세부 사실만 기억하고, 반성이 있는 에이전트는 "이 사람은 이런 경향이 있다"는 더 추상적인 기억을 형성한다.
+
+### MemR³: Closed-Loop 제어
+
+MemR³(Memory Retrieval, Reflection, Revision)<Ref id={9} />는 반성을 일회성 이벤트가 아닌 **폐쇄 루프 제어**로 설계했다. **evidence-gap tracker**가 현재 기억 상태를 모니터링한다. 답변 생성 후 필요한 근거가 기억에 없다고 판단하면, 추가 검색과 반성을 트리거한다. 한 번 답하고 끝이 아니라, 기억 품질을 지속적으로 평가하는 메커니즘이다.
+
+### RMM: Prospective + Retrospective
+
+RMM(Reflective Memory Module, ACL 2025)<Ref id={10} />은 반성의 시점을 두 방향으로 확장했다.
+
+- **Prospective Reflection**: 상호작용 전 — "이 쿼리에 어떤 기억이 필요할지"를 예측
+- **Retrospective Reflection**: 상호작용 후 — "이번 대화에서 무엇을 배워야 할지"를 평가
+
+LongMemEval에서 **+10%** 향상을 보고했다<Ref id={10} />.
+
+### Self-Assessment: 무엇을 방지하고 무엇을 못 하는가
+
+Self-assessment — 에이전트가 자신의 기억 품질을 평가하는 것 — 는 환각(hallucination) 방지에 기여한다. 일관성(consistency)과 관련성(relevance) 향상에는 효과적임이 여러 연구에서 확인됐다. 에이전트가 "이 기억이 다른 기억과 모순되는가", "이 기억이 현재 쿼리와 관련 있는가"를 스스로 평가하면 품질이 올라간다.
+
+그러나 **거짓 기억(false memory)을 원천 차단하는 것은 아직 열린 문제다**. 모델이 자신 없는 기억을 만들어내는 현상을 self-assessment만으로 완전히 막지는 못한다. 일관성 검사는 내부 논리를 검토하지만, 사실 여부를 외부 세계와 대조하는 것은 다른 메커니즘이 필요하다.
+
+---
+
+## RAG와 메모리의 경계
+
+RAG와 Memory는 비슷해 보인다. 둘 다 외부 저장소에서 정보를 가져와 LLM에 제공한다. 그런데 Letta의 기술 문서는 명시적으로 주장한다: **"RAG is not Agent Memory"**<Ref id={3} />.
+
+![RAG와 Agent Memory의 구조적 차이 — RAG는 Read-Only Stateless 지식 저장소, Memory는 Read-Write Stateful 에이전트 스토어. 경계 모호 영역으로 Agentic RAG, Mem0, Graphiti](/images/llm-memory/rag-vs-memory.svg)
+
+구조적 차이는 두 가지 축에서 나뉜다.
+
+| | RAG | Agent Memory |
+|---|---|---|
+| 읽기/쓰기 | Read-Only | Read-Write |
+| 상태 | Stateless | Stateful |
+| 지식 형성 | 인간 큐레이션 | 에이전트 자율 형성 |
+| 갱신 주기 | 외부 인덱싱 | 실시간 자율 갱신 |
+
+**Anthropic Contextual Retrieval**<Ref id={11} />은 이 분류에서 RAG에 해당한다. 각 청크에 문서 맥락을 BM25 친화적으로 부여하고, 이를 통해 검색 정확도를 높이는 방식이다. 오류를 67% 줄인다고 보고됐지만, 저장소를 에이전트가 수정하지는 않는다. 구조적으로 Read-Only, Stateless다.
+
+경계가 모호해지는 시나리오도 있다:
+
+- **Agentic RAG**: 에이전트가 검색 전략을 동적으로 결정한다. 읽기는 여전히 Read-Only지만, 검색 과정에 에이전트 의사결정이 개입한다.
+- **Mem0 하이브리드**: 사용자 선호를 자동 추출해 저장한다. 쓰기가 일어나지만, 원본 지식 베이스는 수정되지 않는다.
+- **Graphiti**: 그래프 KG에 읽고 쓴다. Memory에 더 가깝다.
+
+경계를 명확히 하는 이유는 실용적이다. RAG로 설계된 시스템에 메모리 기대를 갖거나, 메모리 시스템을 RAG처럼 최적화하면 둘 다 기대에 못 미친다.
+
+---
+
+## 마무리
+
+3편을 통해 기억 시스템의 두 번째 절반 — 저장된 기억을 찾고 관리하는 방법 — 을 살펴봤다.
+
+검색은 단일 벡터에서 4방향 병렬 전략으로 진화하고 있다. 관리는 인간 큐레이션에서 에이전트 자율 관리로 이동하고 있다. 그래프는 벡터가 저장하지 못하는 관계와 시간을 보존한다. Reflection은 단순 사실 기억에서 패턴 기억으로 질을 높인다.
+
+그런데 아직 해결되지 않은 질문들이 있다. 이 시스템들이 실제로 얼마나 좋은가 — 벤치마크는 무엇을 측정하고, 무엇을 놓치는가. 기억 시스템의 근본적 한계는 무엇인가.
+
+다음 편(4편)은 그 질문들을 정면으로 다룬다. **벤치마크, 한계, 그리고 열린 문제들.**
+
+---
+
+<References>
+  <RefItem id={1} tier="T1" title="TEMPR: Multi-Strategy Retrieval Pipeline (Hindsight)" source="LongMemEval 91.4%, Hindsight 기술 보고" url="https://hindsight.so" />
+  <RefItem id={2} tier="T1" title="A-MEM: Agentic Memory for LLM Agents" source="NeurIPS 2025, arXiv:2502.12110" url="https://arxiv.org/abs/2502.12110" />
+  <RefItem id={3} tier="T1" title="MemGPT / Letta: Towards LLMs as Operating Systems" source="arXiv:2310.08560; Letta 공식 문서" url="https://arxiv.org/abs/2310.08560" />
+  <RefItem id={4} tier="T1" title="MAGMA: Multi-Aspect Graph Memory Architecture" source="arXiv:2502.13591" url="https://arxiv.org/abs/2502.13591" />
+  <RefItem id={5} tier="T1" title="Graphiti: Bi-temporal Knowledge Graph for Agent Memory" source="Zep AI, GitHub" url="https://github.com/getzep/graphiti" />
+  <RefItem id={6} tier="T1" title="Kumiho: AGM Belief Revision for Agent Memory" source="arXiv:2505.10172" url="https://arxiv.org/abs/2505.10172" />
+  <RefItem id={7} tier="T1" title="MemoryOS: OS-Inspired Memory Management for LLM Agents" source="EMNLP 2025 Oral, arXiv:2506.06326" url="https://arxiv.org/abs/2506.06326" />
+  <RefItem id={8} tier="T1" title="Generative Agents: Interactive Simulacra of Human Behavior" source="UIST 2023, arXiv:2304.03442" url="https://arxiv.org/abs/2304.03442" />
+  <RefItem id={9} tier="T2" title="MemR³: Memory Retrieval, Reflection, and Revision" source="arXiv:2410.11102" url="https://arxiv.org/abs/2410.11102" />
+  <RefItem id={10} tier="T1" title="RMM: Reflective Memory Module for Long-Term Personalization" source="ACL 2025, arXiv:2503.13901" url="https://arxiv.org/abs/2503.13901" />
+  <RefItem id={11} tier="T2" title="Anthropic Contextual Retrieval" source="Anthropic Research Blog" url="https://www.anthropic.com/news/contextual-retrieval" />
+</References>

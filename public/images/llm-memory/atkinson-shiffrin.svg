@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr-back" markerWidth="9" markerHeight="9" refX="2" refY="3" orient="auto">
+      <path d="M9,0 L9,6 L0,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">Atkinson-Shiffrin 다중 저장 모델</text>
+
+  <!-- External Stimuli -->
+  <rect x="20" y="80" width="120" height="54" rx="8" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+  <text x="80" y="103" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">외부 자극</text>
+  <text x="80" y="121" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Sensory Input</text>
+
+  <!-- Sensory Memory -->
+  <rect x="185" y="64" width="140" height="86" rx="8" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="255" y="89" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">감각 기억</text>
+  <text x="255" y="107" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Sensory Memory</text>
+  <text x="255" y="123" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">~0.5초 / 아이코닉</text>
+  <text x="255" y="139" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">용량: 무제한(빠른 소멸)</text>
+
+  <!-- Short-term Memory -->
+  <rect x="370" y="64" width="140" height="86" rx="8" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="440" y="89" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">단기 기억</text>
+  <text x="440" y="107" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Short-term Memory</text>
+  <text x="440" y="123" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">15-30초 / 7±2 청크</text>
+  <text x="440" y="139" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">용량: 제한적</text>
+
+  <!-- Long-term Memory -->
+  <rect x="555" y="64" width="140" height="86" rx="8" fill="#EDE9FE" stroke="#374151" stroke-width="1.5"/>
+  <text x="625" y="89" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">장기 기억</text>
+  <text x="625" y="107" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Long-term Memory</text>
+  <text x="625" y="123" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">수십 년 / 무제한</text>
+  <text x="625" y="139" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">용량: 사실상 무한</text>
+
+  <!-- Arrow: External → Sensory -->
+  <line x1="140" y1="107" x2="183" y2="107" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrow: Sensory → Short-term (attention) -->
+  <line x1="325" y1="96" x2="368" y2="96" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="346" y="88" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">주의</text>
+
+  <!-- Arrow: Short-term → Long-term (encoding) -->
+  <line x1="510" y1="96" x2="553" y2="96" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="531" y="88" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">부호화</text>
+
+  <!-- Return arrow: Long-term → Short-term (retrieval) -->
+  <path d="M 555 122 Q 530 170 510 122" stroke="#374151" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="532" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">인출</text>
+
+  <!-- Decay annotations -->
+  <text x="255" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#9CA3AF">빠른 소멸</text>
+  <line x1="255" y1="150" x2="255" y2="165" stroke="#9CA3AF" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="440" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#9CA3AF">소멸/간섭</text>
+  <line x1="440" y1="150" x2="440" y2="165" stroke="#9CA3AF" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- AI correspondence label -->
+  <text x="380" y="205" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">AI 대응</text>
+  <rect x="185" y="215" width="140" height="30" rx="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="255" y="234" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">임베딩 레이어 입력</text>
+  <rect x="370" y="215" width="140" height="30" rx="6" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="440" y="234" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">컨텍스트 윈도우</text>
+  <rect x="555" y="215" width="140" height="30" rx="6" fill="#EDE9FE" stroke="#A78BFA" stroke-width="1"/>
+  <text x="625" y="234" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">모델 파라미터 / 외부 DB</text>
+</svg>

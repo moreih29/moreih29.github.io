@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">LongMemEval vs LoCoMo — 벤치마크 설계 비교</text>
+
+  <!-- Left column header: LongMemEval -->
+  <rect x="30" y="44" width="340" height="36" rx="8" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="200" y="58" text-anchor="middle" font-family="monospace" font-size="12" fill="#374151" font-weight="bold">LongMemEval</text>
+  <text x="200" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">ICLR 2025 · Wu et al.</text>
+
+  <!-- Right column header: LoCoMo -->
+  <rect x="430" y="44" width="340" height="36" rx="8" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="600" y="58" text-anchor="middle" font-family="monospace" font-size="12" fill="#374151" font-weight="bold">LoCoMo</text>
+  <text x="600" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">ACL 2024 · Maharana et al.</text>
+
+  <!-- Row label: 규모 -->
+  <text x="10" y="112" font-family="monospace" font-size="9" fill="#9CA3AF" writing-mode="lr">규모</text>
+  <rect x="30" y="94" width="340" height="42" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="200" y="111" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">500문항 · 대화 히스토리 최대 115K+ 토큰</text>
+  <text x="200" y="127" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">단일 사용자 장기 대화 시뮬레이션</text>
+
+  <rect x="430" y="94" width="340" height="42" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="600" y="111" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">대화 10개 · 평균 300턴 / 9K토큰 / 35세션</text>
+  <text x="600" y="127" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">기계-인간 하이브리드 파이프라인 생성</text>
+
+  <!-- Row label: 측정 능력 -->
+  <text x="10" y="172" font-family="monospace" font-size="9" fill="#9CA3AF">능력</text>
+  <rect x="30" y="150" width="340" height="84" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="200" y="168" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">5가지 측정 능력</text>
+  <text x="50" y="186" font-family="monospace" font-size="9" fill="#374151">① IE — 단일 세션 정보 추출 (Single-session Info Extraction)</text>
+  <text x="50" y="200" font-family="monospace" font-size="9" fill="#374151">② MR — 멀티 세션 추론 (Multi-session Reasoning)</text>
+  <text x="50" y="214" font-family="monospace" font-size="9" fill="#374151">③ TR — 시간 추론 (Temporal Reasoning)</text>
+  <text x="50" y="228" font-family="monospace" font-size="9" fill="#374151">④ KU — 지식 업데이트 (Knowledge Update)</text>
+  <text x="50" y="242" font-family="monospace" font-size="9" fill="#374151">⑤ ABS — 불확실 질문 거절 (Abstention)</text>
+
+  <rect x="430" y="150" width="340" height="84" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="600" y="168" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">3가지 태스크</text>
+  <text x="450" y="186" font-family="monospace" font-size="9" fill="#374151">① QA — 5가지 추론 유형 포함 질의응답</text>
+  <text x="450" y="200" font-family="monospace" font-size="9" fill="#374151">② 이벤트 그래프 요약 (Event Graph Summarization)</text>
+  <text x="450" y="214" font-family="monospace" font-size="9" fill="#374151">③ 멀티모달 대화 생성 (이미지 + 텍스트)</text>
+  <text x="450" y="228" font-family="monospace" font-size="9" fill="#374151">   — 텍스트 전용 벤치마크의 한계 보완</text>
+  <text x="450" y="242" font-family="monospace" font-size="9" fill="#6B7280">   (시각 기억 포함)</text>
+
+  <!-- Row label: 평가 프레임워크 -->
+  <text x="10" y="270" font-family="monospace" font-size="9" fill="#9CA3AF">구조</text>
+  <rect x="30" y="248" width="340" height="54" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="200" y="264" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">3단계 프레임워크</text>
+  <text x="200" y="280" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">인덱싱(Indexing)</text>
+  <text x="200" y="293" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">→ 검색(Retrieval) → 독해(Reading)</text>
+
+  <rect x="430" y="248" width="340" height="54" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="600" y="264" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">하이브리드 생성 파이프라인</text>
+  <text x="600" y="280" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">LLM 생성 + 인간 크라우드소싱</text>
+  <text x="600" y="293" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">다양성 및 현실성 확보</text>
+
+  <!-- Row label: 차별점 -->
+  <rect x="30" y="316" width="340" height="40" rx="4" fill="#EDE9FE" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="200" y="331" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">차별점</text>
+  <text x="200" y="347" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">지식 업데이트·거절 포함 → 실세계 밀착</text>
+
+  <rect x="430" y="316" width="340" height="40" rx="4" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1"/>
+  <text x="600" y="331" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">차별점</text>
+  <text x="600" y="347" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">멀티모달 포함 → 시각 기억까지 커버</text>
+
+  <!-- VS divider -->
+  <line x1="400" y1="44" x2="400" y2="356" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="377" y="190" width="46" height="26" rx="6" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="400" y="207" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">vs</text>
+
+  <!-- Bottom note -->
+  <text x="400" y="394" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">두 벤치마크는 상호 보완적 — LongMemEval은 장기 단일 사용자, LoCoMo는 멀티모달·다회차 세션에 강점</text>
+</svg>

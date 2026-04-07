@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">상용 AI 메모리 기능 비교 — ChatGPT, Claude, Gemini</text>
+
+  <!-- Column Headers -->
+  <rect x="20" y="44" width="236" height="36" rx="8" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="138" y="58" text-anchor="middle" font-family="monospace" font-size="12" fill="#374151" font-weight="bold">ChatGPT</text>
+  <text x="138" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">OpenAI</text>
+
+  <rect x="282" y="44" width="236" height="36" rx="8" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="400" y="58" text-anchor="middle" font-family="monospace" font-size="12" fill="#374151" font-weight="bold">Claude</text>
+  <text x="400" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Anthropic</text>
+
+  <rect x="544" y="44" width="236" height="36" rx="8" fill="#EDE9FE" stroke="#374151" stroke-width="1.5"/>
+  <text x="662" y="58" text-anchor="middle" font-family="monospace" font-size="12" fill="#374151" font-weight="bold">Gemini</text>
+  <text x="662" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Google</text>
+
+  <!-- Row 1: 저장 방식 -->
+  <rect x="20" y="94" width="236" height="56" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="138" y="110" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">저장 방식</text>
+  <text x="138" y="126" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Saved Memories (명시적 저장)</text>
+  <text x="138" y="140" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">+ Chat History (대화 내역)</text>
+
+  <rect x="282" y="94" width="236" height="56" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="400" y="110" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">저장 방식</text>
+  <text x="400" y="126" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">CLAUDE.md 파일 기반</text>
+  <text x="400" y="140" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">(프로젝트/전역 설정 파일)</text>
+
+  <rect x="544" y="94" width="236" height="56" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="662" y="110" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">저장 방식</text>
+  <text x="662" y="126" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Personal Context (자동 수집)</text>
+  <text x="662" y="140" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">+ Saved Info (수동 저장)</text>
+
+  <!-- Row 2: 제어 방식 -->
+  <rect x="20" y="164" width="236" height="56" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="138" y="180" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">사용자 제어</text>
+  <text x="138" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">개별·전체 삭제 가능</text>
+  <text x="138" y="210" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Temporary Chat 모드 지원</text>
+
+  <rect x="282" y="164" width="236" height="56" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="400" y="180" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">사용자 제어</text>
+  <text x="400" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Settings에서 조회·편집·삭제</text>
+  <text x="400" y="210" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Incognito 모드 지원</text>
+
+  <rect x="544" y="164" width="236" height="56" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="662" y="180" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">사용자 제어</text>
+  <text x="662" y="196" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Google 계정 Activity 페이지</text>
+  <text x="662" y="210" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">에서 관리</text>
+
+  <!-- Row 3: 옵트인/아웃 -->
+  <rect x="20" y="234" width="236" height="42" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="138" y="250" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">옵트인/아웃</text>
+  <text x="138" y="266" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">기본 활성화, 설정에서 비활성화</text>
+
+  <rect x="282" y="234" width="236" height="42" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="400" y="250" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">옵트인/아웃</text>
+  <text x="400" y="266" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">옵트인 방식 (명시적 설정 필요)</text>
+
+  <rect x="544" y="234" width="236" height="42" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="662" y="250" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">옵트인/아웃</text>
+  <text x="662" y="266" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">기본 활성화, 앱 설정에서 관리</text>
+
+  <!-- Row 4: 학습 사용 여부 -->
+  <rect x="20" y="290" width="236" height="42" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="138" y="306" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">모델 학습 사용</text>
+  <text x="138" y="322" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">ChatGPT 학습에 미사용</text>
+
+  <rect x="282" y="290" width="236" height="42" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="400" y="306" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">모델 학습 사용</text>
+  <text x="400" y="322" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">기본 미사용, 옵트인 방식</text>
+
+  <rect x="544" y="290" width="236" height="42" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="662" y="306" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">모델 학습 사용</text>
+  <text x="662" y="322" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">정책 별도 고지</text>
+
+  <!-- Row 5: 지역 제한 -->
+  <rect x="20" y="346" width="236" height="34" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="138" y="362" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">지역 제한 없음</text>
+  <text x="138" y="374" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">(GDPR 지역 포함)</text>
+
+  <rect x="282" y="346" width="236" height="34" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="400" y="362" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">지역 제한 없음</text>
+  <text x="400" y="374" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">(GDPR 지역 포함)</text>
+
+  <rect x="544" y="346" width="236" height="34" rx="4" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1"/>
+  <text x="662" y="362" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">EEA(유럽경제지역) 미제공</text>
+  <text x="662" y="374" text-anchor="middle" font-family="monospace" font-size="9" fill="#92400E">선제적 GDPR 대응 추정</text>
+
+  <!-- Column dividers -->
+  <line x1="258" y1="44" x2="258" y2="380" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="520" y1="44" x2="520" y2="380" stroke="#D1D5DB" stroke-width="1" stroke-dasharray="3,3"/>
+</svg>

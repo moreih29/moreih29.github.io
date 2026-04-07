@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 300" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="390" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">저장 구조 유형별 대표 시스템</text>
+
+  <!-- Column 1: Text Summary -->
+  <rect x="20" y="44" width="170" height="34" rx="6" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="105" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">텍스트 요약</text>
+  <text x="105" y="71" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Text Summary</text>
+
+  <!-- Column 2: Vector Embedding -->
+  <rect x="210" y="44" width="170" height="34" rx="6" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="295" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">벡터 임베딩</text>
+  <text x="295" y="71" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Vector Embedding</text>
+
+  <!-- Column 3: Knowledge Graph -->
+  <rect x="400" y="44" width="170" height="34" rx="6" fill="#EDE9FE" stroke="#374151" stroke-width="1.5"/>
+  <text x="485" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">지식 그래프</text>
+  <text x="485" y="71" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Knowledge Graph</text>
+
+  <!-- Column 4: Hybrid -->
+  <rect x="590" y="44" width="170" height="34" rx="6" fill="#FEE2E2" stroke="#374151" stroke-width="1.5"/>
+  <text x="675" y="58" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">하이브리드</text>
+  <text x="675" y="71" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Hybrid</text>
+
+  <!-- System labels -->
+  <rect x="20" y="92" width="170" height="24" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="105" y="108" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">MemoryBank</text>
+
+  <rect x="210" y="92" width="170" height="24" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="295" y="108" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Mem0</text>
+
+  <rect x="400" y="92" width="170" height="24" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="485" y="108" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Zep / Graphiti</text>
+
+  <rect x="590" y="92" width="170" height="24" rx="4" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="675" y="108" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">MemGPT / Letta</text>
+
+  <!-- Row: How it works -->
+  <text x="10" y="145" font-family="monospace" font-size="9" fill="#9CA3AF">구조</text>
+  <rect x="20" y="130" width="170" height="54" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="105" y="147" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">계층적 이벤트 저장</text>
+  <text x="105" y="161" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">에빙하우스 망각 곡선</text>
+  <text x="105" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">시간 기반 강도 감쇠</text>
+
+  <rect x="210" y="130" width="170" height="54" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="295" y="147" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">팩트 추출 → 벡터 DB</text>
+  <text x="295" y="161" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">4-op: ADD / UPDATE</text>
+  <text x="295" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">DELETE / NOOP</text>
+
+  <rect x="400" y="130" width="170" height="54" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="485" y="147" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Bi-temporal KG</text>
+  <text x="485" y="161" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Event Time + Ingestion Time</text>
+  <text x="485" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">코사인+BM25+BFS 검색</text>
+
+  <rect x="590" y="130" width="170" height="54" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="675" y="147" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">4계층: Core / Conv.</text>
+  <text x="675" y="161" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Recall / Archival</text>
+  <text x="675" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">OS 유추, 자율 이동</text>
+
+  <!-- Row: Key properties -->
+  <rect x="20" y="198" width="170" height="44" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="105" y="214" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">장: 자연어 출력</text>
+  <text x="105" y="228" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">단: 세밀한 검색 약함</text>
+  <text x="105" y="242" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">출처: AAAI 2024 T1</text>
+
+  <rect x="210" y="198" width="170" height="44" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="295" y="214" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">장: 의미 유사도 검색</text>
+  <text x="295" y="228" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">단: 구조 관계 약함</text>
+  <text x="295" y="242" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">arXiv:2504.19413</text>
+
+  <rect x="400" y="198" width="170" height="44" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="485" y="214" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">장: 관계 추론 강함</text>
+  <text x="485" y="228" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">단: 구축/유지 비용</text>
+  <text x="485" y="242" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">arXiv:2501.13956</text>
+
+  <rect x="590" y="198" width="170" height="44" rx="4" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="675" y="214" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">장: 유연한 계층 전환</text>
+  <text x="675" y="228" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">단: 런타임 복잡도</text>
+  <text x="675" y="242" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">arXiv:2310.08560</text>
+
+  <!-- Bottom label row -->
+  <text x="105" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#9CA3AF">→ 장기 개인화</text>
+  <text x="295" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#9CA3AF">→ 시맨틱 검색</text>
+  <text x="485" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#9CA3AF">→ 관계 추론</text>
+  <text x="675" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#9CA3AF">→ 범용 에이전트</text>
+</svg>

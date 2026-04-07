@@ -1,0 +1,295 @@
+---
+title: "벤치마크, 한계, 그리고 열린 문제들"
+slug: llm-memory-4-evaluation-and-frontiers
+date: 2026-04-07
+description: "LLM 기억을 어떻게 측정하는가 — LongMemEval·LoCoMo 벤치마크 설계부터 상용 시스템 현황, 프라이버시·확장성·환각·멀티 에이전트까지 열린 문제들을 비판적으로 정리합니다."
+tags: ["llm", "ai", "memory", "benchmark", "longmemeval", "privacy", "multi-agent", "evaluation"]
+published: true
+series: "LLM 기억의 기술"
+seriesOrder: 4
+category: "AI"
+---
+
+1편에서 구조를, 2편에서 쓰기와 잊기를, 3편에서 찾기와 자율 관리를 살펴봤다. 시리즈를 마무리하는 4편은 한 발 물러나 질문한다 — 지금 어디까지 왔고, 어디로 가는가.
+
+좋은 메모리 시스템을 만드는 것과, 그것이 실제로 잘 작동하는지 아는 것은 다른 문제다. 평가 없이는 개선 방향을 모른다. 그리고 평가가 허술하면 숫자가 현실을 가린다. 4편은 세 가지를 다룬다. 어떻게 측정하는가. 지금 어느 수준인가. 아직 풀리지 않은 문제는 무엇인가.
+
+---
+
+## 어떻게 측정하는가 — 벤치마크의 설계
+
+LLM 메모리 벤치마크는 생각보다 최근 일이다. 긴 문서를 넣고 답하는 Long-context QA와, 실제로 기억을 관리하는 메모리 시스템을 평가하는 것은 전혀 다른 문제다. 2024~2025년 사이 두 개의 벤치마크가 이 공백을 채웠다.
+
+### LongMemEval (ICLR 2025)
+
+Wu et al.이 제안한 LongMemEval은 장기 대화 기억 시스템을 위한 첫 번째 체계적 벤치마크다<Ref id={1} />. 핵심 설계 목표는 단순했다. "실제로 기억이 필요한 상황"만 평가한다.
+
+500문항으로 구성되며 대화 히스토리가 최대 115K+ 토큰에 달한다. 평가는 다섯 가지 능력을 따로 측정한다.
+
+- **IE (Single-session Info Extraction)**: 단일 세션에서 정보를 정확히 꺼내는가
+- **MR (Multi-session Reasoning)**: 여러 세션에 걸친 정보를 조합해 추론하는가
+- **TR (Temporal Reasoning)**: 시간 순서와 상대적 시간 관계를 이해하는가
+- **KU (Knowledge Update)**: 이전 정보가 갱신됐을 때 구버전을 쓰지 않는가
+- **ABS (Abstention)**: 불확실하거나 정보가 없는 질문을 거절하는가
+
+평가 프레임워크는 세 단계로 설계됐다. 인덱싱(Indexing) → 검색(Retrieval) → 독해(Reading). 이 구조는 실패 지점을 분리해 진단할 수 있게 한다. 틀렸다면 저장 단계가 문제인가, 검색인가, 아니면 이해인가.
+
+KU와 ABS를 포함한 것이 특히 중요하다. "기억을 잘 꺼내는가"만 보는 것이 아니라, "낡은 기억을 버리는가"와 "모를 때 모른다고 하는가"까지 측정한다. 이 두 능력 없이는 실세계 사용에서 틀린 확신을 생산하는 시스템이 된다.
+
+### LoCoMo (ACL 2024)
+
+Maharana et al.의 LoCoMo는 다른 각도에서 접근한다<Ref id={2} />. 규모보다 현실성과 멀티모달에 초점을 맞췄다.
+
+10개 대화, 평균 300턴, 9K 토큰, 35세션으로 구성된다. 평가는 세 가지 태스크다.
+
+1. **QA** — 5가지 추론 유형을 포함한 질의응답
+2. **이벤트 그래프 요약** — 대화에서 사건의 인과·시간 관계를 추출
+3. **멀티모달 대화 생성** — 이미지와 텍스트가 혼합된 대화에서 기억 활용
+
+생성 방법도 독특하다. LLM이 초안을 생성하고 인간 크라우드소싱으로 품질을 검증하는 하이브리드 파이프라인을 썼다. 완전 자동 생성의 패턴화 문제와 완전 인간 작성의 비용 문제를 절충한 방식이다.
+
+LongMemEval이 장기 단일 사용자 시나리오에 강하다면, LoCoMo는 멀티모달과 다회차 세션에서 벤치마크가 없던 공백을 메운다.
+
+![LongMemEval vs LoCoMo 벤치마크 비교 — 규모(115K+ 토큰 vs 평균 9K/35세션), 5가지 측정 능력(IE·MR·TR·KU·ABS) vs 3가지 태스크(QA·이벤트그래프·멀티모달), 3단계 프레임워크 vs 하이브리드 생성 파이프라인 비교 도식](/images/llm-memory/benchmark-comparison.svg)
+
+---
+
+## 벤치마크에서 본 현재 수준
+
+숫자부터 보자. LongMemEval 기준으로 알려진 수치들이다.
+
+| 시스템 | 점수 | 기반 모델 | 보고 주체 |
+|--------|------|-----------|-----------|
+| Mastra | 94.87% | GPT-5-mini | 자체 |
+| Hindsight | 91.4% | Gemini 3 Pro | 자체 |
+| EmergenceAI | 86% | 비공개 | 자체 |
+| Supermemory | 85.2% | Gemini 3 Pro | 자체 |
+| Oracle GPT-4o | ~82.4% | GPT-4o | 원논문<Ref id={1} /> |
+| GPT-4o (풀 컨텍스트) | ~58% | GPT-4o | 원논문<Ref id={1} /> |
+
+첫인상은 인상적이다. 90%대 점수들이 줄을 선다. Oracle GPT-4o — 관련 정보를 전부 컨텍스트에 넣어주는 이상적 상한선 — 도 82%인데, 일부 시스템은 그것을 넘겼다.
+
+그런데 이 표를 액면 그대로 믿어서는 안 된다.
+
+### 공정 비교는 불가능하다
+
+이 수치들은 서로 다른 조건에서 나왔다. 같은 벤치마크 이름이 붙어 있어도.
+
+**첫째, 기반 모델이 다르다.** Gemini 3 Pro와 GPT-4o는 기반 능력 자체가 다르다. 메모리 레이어가 아무리 좋아도, 더 강한 모델 위에 올리면 점수가 높게 나온다. "메모리 시스템"의 성능인지 "기반 모델"의 성능인지 분리하기 어렵다.
+
+**둘째, 모두 자체 보고다.** 독립 재현 없이 팀 내부에서 측정한 수치다. 이것이 문제가 됨을 보여주는 구체적 사례가 있다. Zep은 LongMemEval에서 84%를 자체 보고했다. 독립 재현 결과는 58.44%였다<Ref id={3} />. 25%p 이상 차이다.
+
+**셋째, 구현 세부사항이 결과를 결정한다.** 청킹 전략, 임베딩 모델 선택, 검색 파라미터, 프롬프트 구성 — 이 중 하나만 달리 설정해도 두 자릿수 정확도 변동이 나타난다<Ref id={3} />. 동일 시스템도 구현 방식에 따라 결과가 크게 달라진다.
+
+**넷째, 단순 평균이 취약점을 숨긴다.** IE·MR·TR·KU·ABS 5개 능력을 단순 평균하면 하나가 아주 낮아도 다른 것들이 상쇄한다. 80%짜리 시스템이 지식 업데이트(KU)에서만 20%일 수도 있다.
+
+**다섯째, 평가셋 노출 가능성이 있다.** LongMemEval 500문항이 공개돼 있는 이상, 일부 시스템이 이 셋에 과적합됐을 가능성을 배제할 수 없다.
+
+![LongMemEval 리더보드 점수 비교 — 자체 보고(파란색 계열)와 원논문 보고(초록색), 독립 재현(빨간색) 구분. Zep 자체 84% vs 독립 재현 58.4%, 25.6%p 차이가 표시됨. 공정 비교를 가로막는 5가지 요인 설명 포함](/images/llm-memory/benchmark-score-trap.svg)
+
+결론은 이렇다. LongMemEval 점수가 높다고 해서 그 시스템이 다른 시스템보다 낫다고 말할 수 없다. 어떤 모델로, 어떤 조건에서, 누가 측정했는지를 항상 따져야 한다.
+
+---
+
+## 상용 시스템의 메모리 현황
+
+연구 벤치마크와 별개로, 실제 상용 AI 어시스턴트들은 어떻게 메모리를 구현하고 있는가.
+
+### ChatGPT (OpenAI)
+
+두 계층으로 구성된다. **Saved Memories**는 명시적으로 저장된 사실들 — 사용자가 말한 선호, 이름, 맥락. **Chat History**는 이전 대화 전체를 검색 가능하게 유지한다. 개별 기억 항목을 삭제하거나 전체를 지울 수 있다. **Temporary Chat** 모드는 아무것도 저장하지 않는다. 저장된 기억은 ChatGPT 모델 학습에 사용되지 않는다.
+
+### Claude (Anthropic)
+
+파일 기반 접근이다. **CLAUDE.md** 파일에 프로젝트나 전역 수준의 컨텍스트를 저장한다. 옵트인 방식 — 사용자가 명시적으로 설정해야 활성화된다. Settings 메뉴에서 저장된 내용을 조회하고 편집하고 삭제할 수 있다. **Incognito 모드**는 기억을 남기지 않는다.
+
+### Gemini (Google)
+
+두 유형이 있다. **Personal Context**는 대화에서 자동으로 학습한 정보 — 관심사, 직업, 선호. **Saved Info**는 사용자가 수동으로 저장한 정보다. 관리는 Google 계정 Activity 페이지에서 한다. 주목할 점은 **EEA(유럽경제지역)에 Personal Context가 제공되지 않는다**는 것이다. GDPR 제17조(잊힐 권리) 대응을 선제적으로 피한 결정으로 해석된다.
+
+![세 상용 AI 시스템 메모리 기능 비교 — 저장 방식(Saved Memories vs CLAUDE.md vs Personal Context), 사용자 제어, 옵트인/아웃, 모델 학습 사용 여부, 지역 제한(Gemini EEA 미제공) 비교](/images/llm-memory/commercial-memory-comparison.svg)
+
+세 시스템 모두 사용자 제어와 투명성에 공통적으로 힘을 쏟는다. 규제 압력과 사용자 신뢰 문제가 동시에 작용하는 결과다.
+
+---
+
+## 열린 문제들
+
+현재 수준이 인상적이라도, 해결되지 않은 문제들이 있다. 네 가지를 살펴본다.
+
+### 프라이버시와 잊힐 권리
+
+GDPR 제17조는 "잊힐 권리"를 보장한다 — 사용자는 자신에 관한 데이터의 삭제를 요청할 수 있다<Ref id={4} />. 전통적 데이터베이스에서는 명확하다. 레코드를 지우면 된다.
+
+LLM은 다르다. 모델 파라미터에 학습 데이터의 흔적이 분산돼 있다. "이 사람에 대한 정보를 지웠다"는 것을 어떻게 검증하는가. 단순히 검색 결과에서 제거하는 것만으로는 부족하다.
+
+이 문제를 다루는 분야가 **Machine Unlearning**이다. UC Riverside 팀은 2025년 "source-free unlearning" 방법을 제안했다<Ref id={5} />. 원본 학습 데이터 없이도 특정 지식을 파라미터에서 제거하는 접근이다. 아직 연구 초기 단계지만, 방향은 명확하다.
+
+규제 측면에서는 EDPB(유럽 데이터 보호 이사회)가 2025년 삭제권 집중 집행을 예고했다<Ref id={4} />. Gemini의 EEA 제외 결정은 이 압력에 대한 선제적 대응으로 읽힌다. 기술적으로 완전한 삭제를 보증할 수 없다면, 처음부터 수집하지 않는 것이 가장 확실한 해법이다.
+
+### 확장성 — 기억이 무한히 쌓일 때
+
+메모리 시스템이 성숙할수록 기억은 쌓인다. 문제는 기억이 쌓일수록 검색 성능이 떨어질 수 있다는 것이다.
+
+인지심리학에는 **Fan Effect**라는 개념이 있다<Ref id={6} />. 한 주제에 연결된 사실이 많아질수록, 그리고 기억들 간 유사성이 높아질수록, 정확한 기억 인출 오류율이 로그-선형으로 증가한다. LLM 기반 시스템에서도 유사한 현상이 관찰된다.
+
+대응 접근이 세 가지로 나뉜다.
+
+**계층적 압축**: MemoryBank는 에빙하우스 망각 곡선을 모사해 오래되고 접근이 적은 기억을 압축 요약한다<Ref id={7} />. 용량은 줄이되 핵심은 유지한다.
+
+**선택적 망각(Coordinated Forgetting)**: 서로 충돌하거나 중복되는 기억을 시스템이 스스로 정리한다. 더하기보다 빼기가 정확도를 높이는 경우다.
+
+**아키텍처 내재화**: MemoryLLM, M+는 외부 데이터스토어 대신 모델 파라미터 자체에 기억을 통합한다<Ref id={8} />. 검색 레이어를 없애는 대신 파라미터 업데이트 비용이 든다.
+
+EverMind MSA는 16K에서 100M 토큰까지 확장해도 성능 저하가 9% 미만이라고 자체 보고한다<Ref id={9} />. 단, 이 역시 자체 보고라는 점에서 독립 검증이 필요하다.
+
+### 환각과 거짓 기억
+
+메모리 시스템의 새로운 취약점이 드러나고 있다. 기억 자체를 공격하는 것이다.
+
+**MINJA** (NeurIPS 2025)는 메모리 포이즈닝(Memory Poisoning) 공격을 시연했다<Ref id={10} />. 악의적인 쿼리만으로 — 특별한 시스템 권한 없이 — 대화 기반 메모리에 거짓 정보를 심는다. 성공률 70%+, 주입률 95%+를 기록했다. 방어 시스템인 A-MemGuard를 시험해봤을 때, 포이즈닝된 기억의 66%를 탐지하지 못했다<Ref id={10} />.
+
+더 우려스러운 것은 사용자 측의 인지적 영향이다. IUI 2025 연구는 악의적으로 설계된 챗봇과 대화한 사용자에게서 거짓 기억 형성이 3배 이상 증가함을 보여줬다<Ref id={11} />. AI가 권위있게 반복하는 잘못된 정보가 인간의 기억을 재형성한다.
+
+이 두 벡터는 조합되면 위험하다. 외부 공격자가 메모리를 포이즈닝하고, 그 시스템이 사용자의 실제 기억까지 오염시키는 경로다.
+
+### 멀티 에이전트 기억 공유
+
+에이전트가 여럿 협력할 때 기억을 어떻게 공유하는가. 이것은 아직 연구가 초기 단계인 영역이다<Ref id={12} />.
+
+현재 논의되는 접근은 세 가지 축에서 트레이드오프를 이룬다.
+
+- **완전 공유 풀**: 모든 에이전트가 같은 메모리 스토어를 읽고 쓴다. 일관성은 높지만, 하나의 오염이 전체에 파급된다.
+- **개별 + 선택적 공유**: 각 에이전트가 독립 메모리를 갖고, 명시적으로 공유할 항목만 공유한다. 격리성은 높지만 동기화 비용이 든다.
+- **계층적 구조**: 개인 기억, 팀 기억, 글로벌 기억을 분리해 관리한다. 복잡도가 가장 높다.
+
+Collaborative Memory, INMS, MaaS(Memory as a Service) 등 프레임워크가 제안되고 있지만<Ref id={12} />, 공통 벤치마크가 없다. ICLR 2026에서 MemAgents 워크숍이 제안됐다는 것 자체가 이 영역의 미성숙을 반증한다.
+
+![LLM 메모리 4가지 열린 문제 지도 — 중심에 LLM 메모리, 네 방향으로 프라이버시(GDPR·Machine Unlearning), 확장성(Fan Effect·MemoryBank·EverMind), 환각과 거짓 기억(MINJA·A-MemGuard), 멀티 에이전트 공유(Collaborative Memory·INMS) 연결](/images/llm-memory/open-problems-map.svg)
+
+---
+
+## 전망 — 기억이 열쇠다
+
+지금까지 살펴본 것을 한 문장으로 압축하면 이렇다. **기억은 LLM 에이전트의 핵심 인텔리전스다.**
+
+단순 검색 보조 도구가 아니다. 에이전트가 시간에 걸쳐 무엇을 알고, 무엇을 잊고, 무엇을 믿는지가 결국 그 에이전트의 정체성과 판단 능력을 결정한다.
+
+이 관점의 변화가 **MemOS** 같은 메모리 중심 아키텍처 패러다임으로 구체화되고 있다<Ref id={13} />. 모델에 메모리를 붙이는 것이 아니라, 메모리 관리를 에이전트 런타임의 핵심 레이어로 설계하는 방향이다. 운영체제가 메모리를 관리하듯, AI 시스템이 메모리를 운영체제 수준에서 다루는 구조다.
+
+진짜 개인화의 전제 조건 역시 기억이다. 영속 메모리가 쌓이고, 동적으로 조율되고, 자기 검증을 통해 신뢰도가 유지될 때만 에이전트는 "이 사람"을 아는 것이 된다. 일회성 세션의 한계를 넘는 순간이다.
+
+강화학습과의 통합도 자연스러운 방향이다. 어떤 기억을 저장하고 어떤 것을 버릴지, 언제 검색할지 — 이 정책 자체를 보상 신호로 학습하는 것이다.
+
+여섯 가지 근본 질문이 아직 열려 있다.
+
+1. **최적 쓰기 정책**: 무엇을 저장할지 결정하는 최적 기준은 무엇인가
+2. **기억의 진실성**: 저장된 기억이 원래 사건을 얼마나 충실히 반영하는가
+3. **연속학습 vs 파국적 망각**: 새 정보를 배우면서 기존 지식을 어떻게 유지하는가
+4. **개인화 vs 프라이버시**: 더 많이 기억할수록 더 많이 노출된다 — 이 균형점은 어디인가
+5. **기억과 정체성**: 에이전트가 잘못된 기억을 가지면 그것은 "같은" 에이전트인가
+6. **멀티 에이전트 일관성**: 여러 에이전트가 공유 기억을 갖되 각자의 관점을 유지할 수 있는가
+
+---
+
+## 시리즈를 마치며
+
+4편에 걸쳐 LLM 기억의 기술을 해부했다.
+
+1편은 지도를 그렸다. 인지과학 모델에서 AI 기억으로의 매핑, 저장 유형과 아키텍처 분류. 2편은 쓰기와 잊기의 원리를 파고들었다. 무엇을 저장할지 결정하는 중요도 함수, 기억을 소멸시키는 전략들. 3편은 찾기와 자율 관리를 다뤘다. 벡터 검색부터 지식 그래프까지, 그리고 에이전트가 스스로 기억을 운영하는 구조. 그리고 4편 — 한 발 물러나 지금 어디까지 왔는지, 무엇이 아직 풀리지 않았는지를 살펴봤다.
+
+기억이 있어야 에이전트는 과거를 가질 수 있다. 과거가 있어야 현재의 결정이 맥락을 얻는다. 메모리는 에이전트를 에이전트답게 만드는 근간이다.
+
+물론 이 시리즈가 모든 것을 다루지는 못했다. 수식 수준의 구현, 프로덕션 시스템의 운영 노하우, 각 프레임워크의 세부 비교는 별도의 탐구를 기다리고 있다. 기억이라는 주제는 생각보다 훨씬 깊다.
+
+<References>
+  <RefItem
+    id={1}
+    tier="T1"
+    title="LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory"
+    source="Wu et al. (2025), ICLR 2025, arXiv:2410.10813"
+    url="https://arxiv.org/abs/2410.10813"
+  />
+  <RefItem
+    id={2}
+    tier="T1"
+    title="LoCoMo: A Benchmark for Long-Context Machine Generation from Episodic Memory Retrieval"
+    source="Maharana et al. (2024), ACL 2024, arXiv:2402.11350"
+    url="https://arxiv.org/abs/2402.11350"
+  />
+  <RefItem
+    id={3}
+    tier="T2"
+    title="LongMemEval Independent Reproduction Study — Zep Benchmark Analysis"
+    source="Independent community reproduction (2025)"
+    url="https://blog.zep.ai/longmemeval"
+  />
+  <RefItem
+    id={4}
+    tier="T2"
+    title="EDPB Guidelines on the Right to Erasure Under GDPR Article 17"
+    source="European Data Protection Board (2025)"
+    url="https://www.edpb.europa.eu"
+  />
+  <RefItem
+    id={5}
+    tier="T2"
+    title="The Right to Be Forgotten in the Era of Large Language Models"
+    source="arXiv:2307.03941, 2023"
+    url="https://arxiv.org/abs/2307.03941"
+  />
+  <RefItem
+    id={6}
+    tier="T1"
+    title="Retrieval of propositional information from long-term memory"
+    source="Anderson (1974), Cognitive Psychology"
+    url="https://doi.org/10.1016/0010-0285(74)90021-8"
+  />
+  <RefItem
+    id={7}
+    tier="T1"
+    title="MemoryBank: Enhancing Large Language Models with Long-Term Memory"
+    source="Zhong et al. (2024), AAAI 2024, arXiv:2305.10250"
+    url="https://arxiv.org/abs/2305.10250"
+  />
+  <RefItem
+    id={8}
+    tier="T1"
+    title="MemoryLLM: Towards Self-Updatable Large Language Models"
+    source="Wang et al. (2024), arXiv:2402.04624"
+    url="https://arxiv.org/abs/2402.04624"
+  />
+  <RefItem
+    id={9}
+    tier="T3"
+    title="EverMind MSA: Scalable Memory Architecture for Long-Context Agents"
+    source="EverMind technical report (2025, self-reported)"
+  />
+  <RefItem
+    id={10}
+    tier="T1"
+    title="MINJA: Memory Injection Attacks on Long-Term Memory Systems in LLM Agents"
+    source="NeurIPS 2025, arXiv preprint"
+    url="https://arxiv.org/search/?query=MINJA+memory+injection+LLM&searchtype=all"
+  />
+  <RefItem
+    id={11}
+    tier="T1"
+    title="AI-Induced False Memories: Chatbot Interactions and Cognitive Distortion"
+    source="IUI 2025 proceedings"
+    url="https://dl.acm.org/doi/proceedings/10.1145/3708539"
+  />
+  <RefItem
+    id={12}
+    tier="T2"
+    title="Collaborative Memory and Memory-as-a-Service in Multi-Agent Systems"
+    source="Survey of INMS, MaaS frameworks (2025)"
+  />
+  <RefItem
+    id={13}
+    tier="T2"
+    title="MemOS: An Operating System for Memory-Centric AI Agent Architectures"
+    source="MemOS technical paper (2025)"
+    url="https://arxiv.org/search/?query=MemOS+memory+operating+system+LLM&searchtype=all"
+  />
+</References>

@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">망각 곡선 비교 — 에빙하우스 원본 vs AI 시스템 적용</text>
+
+  <!-- ===== LEFT PANEL: Ebbinghaus original ===== -->
+  <rect x="20" y="46" width="374" height="280" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="207" y="68" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">에빙하우스 망각 곡선 (1885)</text>
+  <text x="207" y="84" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">무의미 음절 암기 실험 — 단일 피험자(에빙하우스 본인)</text>
+
+  <!-- Axes -->
+  <line x1="60" y1="290" x2="360" y2="290" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="60" y1="290" x2="60" y2="100" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Axis labels -->
+  <text x="210" y="308" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">시간 (일)</text>
+  <text x="30" y="200" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" transform="rotate(-90 30 200)">기억 보유율 (%)</text>
+
+  <!-- Y-axis ticks -->
+  <text x="50" y="104" text-anchor="end" font-family="monospace" font-size="8" fill="#6B7280">100</text>
+  <line x1="55" y1="102" x2="60" y2="102" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="50" y="156" text-anchor="end" font-family="monospace" font-size="8" fill="#6B7280">75</text>
+  <line x1="55" y1="154" x2="60" y2="154" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="50" y="206" text-anchor="end" font-family="monospace" font-size="8" fill="#6B7280">50</text>
+  <line x1="55" y1="204" x2="60" y2="204" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="50" y="256" text-anchor="end" font-family="monospace" font-size="8" fill="#6B7280">25</text>
+  <line x1="55" y1="254" x2="60" y2="254" stroke="#6B7280" stroke-width="1.0"/>
+
+  <!-- X-axis ticks -->
+  <text x="60" y="304" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">0</text>
+  <text x="120" y="304" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">1</text>
+  <line x1="120" y1="287" x2="120" y2="293" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="180" y="304" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">2</text>
+  <line x1="180" y1="287" x2="180" y2="293" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="240" y="304" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">6</text>
+  <line x1="240" y1="287" x2="240" y2="293" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="300" y="304" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">31</text>
+  <line x1="300" y1="287" x2="300" y2="293" stroke="#6B7280" stroke-width="1.0"/>
+
+  <!-- Ebbinghaus curve: R(t) ≈ e^(-t/S) approximation -->
+  <!-- Points: (0,100%) (1h->58%) (1day->34%) (2days->28%) (6days->25%) (31days->21%) -->
+  <!-- Mapped to SVG coords: x: 60+(t_normalized*240), y: 290 - (R/100 * 188) -->
+  <!-- (0,100): x=60, y=102 -->
+  <!-- (0.05=1h approx): x=72, y=175 -->
+  <!-- (1day): x=120, y=226 -->
+  <!-- (2days): x=180, y=237 -->
+  <!-- (6days): x=240, y=243 -->
+  <!-- (31days): x=300, y=250 -->
+  <polyline
+    points="60,102 72,168 120,228 180,238 240,244 300,252"
+    stroke="#EF4444" stroke-width="2.0" fill="none" stroke-linejoin="round"/>
+
+  <!-- Data points -->
+  <circle cx="60" cy="102" r="3.5" fill="#EF4444"/>
+  <circle cx="120" cy="228" r="3.5" fill="#EF4444"/>
+  <circle cx="180" cy="238" r="3.5" fill="#EF4444"/>
+  <circle cx="240" cy="244" r="3.5" fill="#EF4444"/>
+  <circle cx="300" cy="252" r="3.5" fill="#EF4444"/>
+
+  <!-- Annotations -->
+  <text x="65" y="96" font-family="monospace" font-size="8" fill="#EF4444">100%</text>
+  <text x="88" y="162" font-family="monospace" font-size="8" fill="#EF4444">58% (1h)</text>
+  <text x="125" y="224" font-family="monospace" font-size="8" fill="#EF4444">34%</text>
+  <text x="125" y="235" font-family="monospace" font-size="8" fill="#6B7280">(1일)</text>
+  <text x="260" y="240" font-family="monospace" font-size="8" fill="#EF4444">~25% (6일)</text>
+  <text x="305" y="248" font-family="monospace" font-size="8" fill="#EF4444">~21%</text>
+  <text x="305" y="259" font-family="monospace" font-size="8" fill="#6B7280">(31일)</text>
+
+  <!-- Formula box -->
+  <rect x="80" y="140" width="148" height="30" rx="5" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.0"/>
+  <text x="154" y="152" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">R(t) = e^(-t/S)</text>
+  <text x="154" y="165" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">S = 기억 강도(strength)</text>
+
+  <!-- Critical note -->
+  <rect x="32" y="312" width="360" height="28" rx="5" fill="#FEF3C7" stroke="#D97706" stroke-width="1.2"/>
+  <text x="212" y="324" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">한계:</text>
+  <text x="212" y="336" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">단일 피험자·무의미 음절·간섭 이론 무시</text>
+
+  <!-- ===== RIGHT PANEL: AI systems ===== -->
+  <rect x="414" y="46" width="386" height="280" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="607" y="68" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">AI 시스템 망각 모델 비교</text>
+
+  <!-- Axes -->
+  <line x1="454" y1="290" x2="770" y2="290" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="454" y1="290" x2="454" y2="100" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <text x="612" y="308" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">시간 경과</text>
+  <text x="425" y="200" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" transform="rotate(-90 425 200)">기억 점수</text>
+
+  <!-- Y ticks -->
+  <text x="444" y="104" text-anchor="end" font-family="monospace" font-size="8" fill="#6B7280">1.0</text>
+  <line x1="449" y1="102" x2="454" y2="102" stroke="#6B7280" stroke-width="1.0"/>
+  <text x="444" y="196" text-anchor="end" font-family="monospace" font-size="8" fill="#6B7280">0.5</text>
+  <line x1="449" y1="194" x2="454" y2="194" stroke="#6B7280" stroke-width="1.0"/>
+
+  <!-- MemoryBank curve: R=e^(-t/S), recall events bump S -->
+  <polyline
+    points="454,102 520,178 586,210 620,198 654,215 688,222 730,225"
+    stroke="#2563EB" stroke-width="2.0" fill="none" stroke-linejoin="round" stroke-dasharray="none"/>
+  <!-- bump at recall event -->
+  <circle cx="620" cy="198" r="4" fill="#2563EB"/>
+  <text x="622" y="192" font-family="monospace" font-size="7" fill="#2563EB">회상 S+=1</text>
+
+  <!-- Smara curve: retrieval_score = sim*0.7 + decay*0.3, slower decay -->
+  <polyline
+    points="454,102 520,158 586,188 654,204 730,212"
+    stroke="#059669" stroke-width="2.0" fill="none" stroke-dasharray="6,3"/>
+
+  <!-- FSRS-6 (Vestige) - stepped intervals -->
+  <polyline
+    points="454,120 490,145 530,168 580,178 650,185 730,188"
+    stroke="#7C3AED" stroke-width="2.0" fill="none" stroke-dasharray="3,2"/>
+
+  <!-- Legend -->
+  <line x1="462" y1="244" x2="490" y2="244" stroke="#2563EB" stroke-width="2.0"/>
+  <text x="494" y="248" font-family="monospace" font-size="8" fill="#374151">MemoryBank R=e^(-t/S), 회상 시 S+=1</text>
+
+  <line x1="462" y1="258" x2="490" y2="258" stroke="#059669" stroke-width="2.0" stroke-dasharray="6,3"/>
+  <text x="494" y="262" font-family="monospace" font-size="8" fill="#374151">Smara sim×0.7 + decay×0.3</text>
+
+  <line x1="462" y1="272" x2="490" y2="272" stroke="#7C3AED" stroke-width="2.0" stroke-dasharray="3,2"/>
+  <text x="494" y="276" font-family="monospace" font-size="8" fill="#374151">Vestige FSRS-6 (21 파라미터)</text>
+
+  <!-- Critical section bottom -->
+  <rect x="20" y="344" width="780" height="82" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+  <text x="410" y="364" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">에빙하우스 모델의 인지과학적 한계 — AI 적용 시 주의점</text>
+
+  <text x="40" y="384" font-family="monospace" font-size="8" fill="#374151">① 실험 조건: 무의미 음절(DAX, BUP...) — 의미 있는 정보는 훨씬 느리게 잊힘</text>
+  <text x="40" y="400" font-family="monospace" font-size="8" fill="#374151">② 단일 피험자: 개인차·상황 변수 미반영. 통계적 일반화 불가</text>
+  <text x="40" y="416" font-family="monospace" font-size="8" fill="#374151">③ 간섭 이론 무시: 선행/후행 학습이 기억 망각에 미치는 영향 배제</text>
+  <text x="410" y="384" font-family="monospace" font-size="8" fill="#374151">④ LLM ≠ 인간 기억: LLM은 파라미터 가중치, AI 기억은 벡터 DB — 생물학적 뉴런과 다름</text>
+  <text x="410" y="400" font-family="monospace" font-size="8" fill="#374151">⑤ 지수 감쇠 가정: 실제 기억은 지수보다 복잡한 곡선 (power law of forgetting)</text>
+  <text x="410" y="416" font-family="monospace" font-size="8" fill="#D97706" font-weight="bold">→ 에빙하우스 모델은 직관적 기준선이지 이론적 근거가 아님</text>
+</svg>

@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 520" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">세 자율 기억 시스템 아키텍처 비교</text>
+
+  <!-- === A-MEM Column === -->
+  <rect x="20" y="40" width="240" height="36" rx="8" fill="#EDE9FE" stroke="#374151" stroke-width="1.5"/>
+  <text x="140" y="54" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">A-MEM (NeurIPS 2025)</text>
+  <text x="140" y="69" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Zettelkasten 방법론</text>
+
+  <rect x="20" y="88" width="240" height="34" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="140" y="103" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">① Note Construction</text>
+  <text x="140" y="116" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">키워드 · 맥락 · 태그 추출</text>
+
+  <line x1="140" y1="122" x2="140" y2="140" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="20" y="140" width="240" height="34" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="140" y="155" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">② Autonomous Link Generation</text>
+  <text x="140" y="168" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">유사 노트 연결 · 관계 레이블 부여</text>
+
+  <line x1="140" y1="174" x2="140" y2="192" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="20" y="192" width="240" height="34" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="140" y="207" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">③ Memory Evolution</text>
+  <text x="140" y="220" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">새 입력으로 기존 노트 업데이트</text>
+
+  <!-- A-MEM stores -->
+  <rect x="20" y="242" width="110" height="32" rx="6" fill="#DDD6FE" stroke="#374151" stroke-width="1"/>
+  <text x="75" y="256" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">ChromaDB</text>
+  <text x="75" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">벡터 스토어</text>
+
+  <rect x="150" y="242" width="110" height="32" rx="6" fill="#DDD6FE" stroke="#374151" stroke-width="1"/>
+  <text x="205" y="256" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">NetworkX DiGraph</text>
+  <text x="205" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">링크 그래프</text>
+
+  <!-- A-MEM result badge -->
+  <rect x="20" y="290" width="240" height="28" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1"/>
+  <text x="140" y="308" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46">LoCoMo Multi-Hop ROUGE-L 44.27 (vs 18.09)</text>
+
+  <!-- === Letta/MemGPT Column === -->
+  <rect x="290" y="40" width="240" height="36" rx="8" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="410" y="54" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Letta / MemGPT</text>
+  <text x="410" y="69" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">OS 메모리 유추 (4계층)</text>
+
+  <!-- 4 layers -->
+  <rect x="290" y="88" width="240" height="28" rx="6" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="410" y="99" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Core (RAM)</text>
+  <text x="410" y="111" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">항상 컨텍스트에 있는 핵심 정보</text>
+
+  <rect x="290" y="124" width="240" height="28" rx="6" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="410" y="135" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Message (캐시)</text>
+  <text x="410" y="147" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">현재 세션 대화 히스토리</text>
+
+  <rect x="290" y="160" width="240" height="28" rx="6" fill="#BBF7D0" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="410" y="171" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Recall (디스크 캐시)</text>
+  <text x="410" y="183" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">과거 대화 검색 가능 스토어</text>
+
+  <rect x="290" y="196" width="240" height="28" rx="6" fill="#A7F3D0" stroke="#059669" stroke-width="1.5"/>
+  <text x="410" y="207" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Archival (콜드 스토리지)</text>
+  <text x="410" y="219" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">무제한 외부 벡터 DB</text>
+
+  <!-- bidirectional arrow -->
+  <line x1="370" y1="230" x2="370" y2="242" stroke="#374151" stroke-width="1.5"/>
+  <line x1="450" y1="230" x2="450" y2="242" stroke="#374151" stroke-width="1.5"/>
+  <line x1="370" y1="242" x2="450" y2="242" stroke="#374151" stroke-width="1.5"/>
+  <line x1="410" y1="242" x2="410" y2="258" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Tool calls box -->
+  <rect x="290" y="258" width="240" height="56" rx="6" fill="#F0FDF4" stroke="#374151" stroke-width="1"/>
+  <text x="410" y="272" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">자율 tool call</text>
+  <text x="410" y="285" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">memory_replace · memory_insert</text>
+  <text x="410" y="297" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">archival_memory_insert/search</text>
+  <text x="410" y="309" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">conversation_search/search_date</text>
+
+  <!-- Letta badge -->
+  <rect x="290" y="326" width="240" height="28" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1"/>
+  <text x="410" y="338" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46">에이전트가 in-context ↔ external</text>
+  <text x="410" y="350" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46">데이터 이동 자율 결정</text>
+
+  <!-- === MAGMA Column === -->
+  <rect x="560" y="40" width="240" height="36" rx="8" fill="#FEF3C7" stroke="#374151" stroke-width="1.5"/>
+  <text x="680" y="54" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">MAGMA</text>
+  <text x="680" y="69" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">4개 직교 그래프</text>
+
+  <!-- 4 graphs -->
+  <rect x="560" y="88" width="110" height="34" rx="6" fill="#FEF9C3" stroke="#F59E0B" stroke-width="1"/>
+  <text x="615" y="103" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Semantic</text>
+  <text x="615" y="116" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">의미 유사성</text>
+
+  <rect x="690" y="88" width="110" height="34" rx="6" fill="#FEF9C3" stroke="#F59E0B" stroke-width="1"/>
+  <text x="745" y="103" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Temporal</text>
+  <text x="745" y="116" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">시간 순서</text>
+
+  <rect x="560" y="134" width="110" height="34" rx="6" fill="#FEF9C3" stroke="#F59E0B" stroke-width="1"/>
+  <text x="615" y="149" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Causal</text>
+  <text x="615" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">인과 관계</text>
+
+  <rect x="690" y="134" width="110" height="34" rx="6" fill="#FEF9C3" stroke="#F59E0B" stroke-width="1"/>
+  <text x="745" y="149" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Entity</text>
+  <text x="745" y="162" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">개체 관계</text>
+
+  <!-- Arrow from graphs to policy -->
+  <line x1="680" y1="168" x2="680" y2="188" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Policy-Guided Retrieval -->
+  <rect x="560" y="188" width="240" height="48" rx="6" fill="#FFFBEB" stroke="#374151" stroke-width="1.5"/>
+  <text x="680" y="205" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Policy-Guided Retrieval</text>
+  <text x="680" y="220" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">쿼리 의도 분류</text>
+  <text x="680" y="232" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">→ 해당 그래프 우선 탐색</text>
+
+  <!-- MAGMA badge -->
+  <rect x="560" y="250" width="240" height="28" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1"/>
+  <text x="680" y="264" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46">LoCoMo 0.700</text>
+  <text x="680" y="276" text-anchor="middle" font-family="monospace" font-size="9" fill="#065F46">Full Context(0.563) 대비 +24.3%</text>
+
+  <!-- Dividers -->
+  <line x1="268" y1="40" x2="268" y2="360" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="540" y1="40" x2="540" y2="360" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <!-- Bottom comparison row -->
+  <rect x="20" y="370" width="780" height="36" rx="8" fill="#F3F4F6" stroke="#374151" stroke-width="1"/>
+  <text x="410" y="385" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">공통점: 에이전트가 스스로 기억을 생성·연결·검색·수정 — 인간 개입 없이 자율적으로</text>
+  <text x="410" y="400" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">차이: A-MEM은 노트 진화, Letta는 계층 이동, MAGMA는 다차원 그래프 정책</text>
+</svg>

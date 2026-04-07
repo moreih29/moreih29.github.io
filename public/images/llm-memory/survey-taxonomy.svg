@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 370" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="390" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">서베이 3편 분류 체계 비교</text>
+
+  <!-- Column A Header -->
+  <rect x="20" y="40" width="230" height="36" rx="6" fill="#DBEAFE" stroke="#374151" stroke-width="1.5"/>
+  <text x="135" y="55" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">[A] 2512.13564</text>
+  <text x="135" y="68" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Memory in the Age of AI Agents</text>
+
+  <!-- Column B Header -->
+  <rect x="275" y="40" width="230" height="36" rx="6" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="390" y="55" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">[B] 2504.15965</text>
+  <text x="390" y="68" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">From Human Memory to AI Memory</text>
+
+  <!-- Column C Header -->
+  <rect x="530" y="40" width="230" height="36" rx="6" fill="#EDE9FE" stroke="#374151" stroke-width="1.5"/>
+  <text x="645" y="55" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">[C] 2505.00675</text>
+  <text x="645" y="68" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Rethinking Memory in AI</text>
+
+  <!-- Row label: Axis 1 -->
+  <text x="10" y="110" font-family="monospace" font-size="9" fill="#9CA3AF" transform="rotate(-90, 10, 150)">분류</text>
+
+  <!-- A: Forms -->
+  <rect x="20" y="90" width="230" height="64" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="135" y="107" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Forms (형태)</text>
+  <text x="135" y="121" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Token-level: Flat/Planar/Hierarchical</text>
+  <text x="135" y="135" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Parametric: Internal/External</text>
+  <text x="135" y="148" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Latent</text>
+
+  <!-- B: Object × Form × Time -->
+  <rect x="275" y="90" width="230" height="64" rx="6" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="390" y="107" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Object × Form × Time (8 Quadrant)</text>
+  <text x="390" y="121" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Object: Personal / System</text>
+  <text x="390" y="135" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Form: Non-param / Parametric</text>
+  <text x="390" y="148" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Time: Short / Long</text>
+
+  <!-- C: Representation × Operations -->
+  <rect x="530" y="90" width="230" height="64" rx="6" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="645" y="107" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Representation × Operations</text>
+  <text x="645" y="121" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Repr: Parametric / Contextual</text>
+  <text x="645" y="135" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Ops(6): Consolidation, Indexing,</text>
+  <text x="645" y="148" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Updating, Forgetting, Retrieval, Compression</text>
+
+  <!-- A: Functions -->
+  <rect x="20" y="168" width="230" height="54" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="135" y="185" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Functions (기능)</text>
+  <text x="135" y="199" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Factual / Experiential (Case/Strategy/Skill)</text>
+  <text x="135" y="213" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">/ Working</text>
+
+  <!-- B: Cognitive science basis -->
+  <rect x="275" y="168" width="230" height="54" rx="6" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="390" y="185" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">인지과학 직접 매핑</text>
+  <text x="390" y="199" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Tulving (Episodic/Semantic)</text>
+  <text x="390" y="213" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Squire (Declarative/Procedural) 계보</text>
+
+  <!-- C: Research Topics -->
+  <rect x="530" y="168" width="230" height="54" rx="6" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="645" y="185" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">4 Research Topics</text>
+  <text x="645" y="199" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Long-Term Memory / Long-Context</text>
+  <text x="645" y="213" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Parametric Modification / Multi-Source</text>
+
+  <!-- A: Dynamics -->
+  <rect x="20" y="236" width="230" height="44" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="135" y="253" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Dynamics (동역학)</text>
+  <text x="135" y="267" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Formation → Evolution → Retrieval</text>
+  <text x="135" y="281" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">(Consolidation / Updating / Forgetting)</text>
+
+  <!-- B: Perspective -->
+  <rect x="275" y="236" width="230" height="44" rx="6" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="390" y="253" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">에이전트 경계 + 시간 축</text>
+  <text x="390" y="267" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">에이전트 vs 시스템 관점</text>
+  <text x="390" y="281" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Short/Long-term 이분 포함</text>
+
+  <!-- C: Focus -->
+  <rect x="530" y="236" width="230" height="44" rx="6" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="645" y="253" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">원자적 연산 중심</text>
+  <text x="645" y="267" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">인지과학 참조 없이</text>
+  <text x="645" y="281" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">AI 시스템 내부 연산에 집중</text>
+
+  <!-- Convergence box -->
+  <rect x="20" y="296" width="740" height="36" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="390" y="311" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">수렴 지점: 세 논문 모두 Parametric vs. Contextual 이분법 채택 · 단기/장기 구분 포함</text>
+  <text x="390" y="325" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">차이: [A] 에이전트 경계 · [B] 인지과학 계보 · [C] 원자적 연산 — 단순 이분법 부족 인식 공유</text>
+</svg>

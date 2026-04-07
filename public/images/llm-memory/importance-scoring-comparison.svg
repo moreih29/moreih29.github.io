@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 480" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#7C3AED"/>
+    </marker>
+    <marker id="arr-green" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#059669"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563EB"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="28" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">중요도 평가 메커니즘 비교 — Generative Agents / Selective Memory / A-MAC</text>
+
+  <!-- ===== Column 1: Generative Agents ===== -->
+  <rect x="20" y="48" width="248" height="40" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="144" y="64" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Generative Agents</text>
+  <text x="144" y="80" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Park et al., 2023</text>
+
+  <!-- Input block -->
+  <rect x="60" y="112" width="168" height="36" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="144" y="127" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">새 기억 후보</text>
+  <text x="144" y="141" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">memory candidate</text>
+
+  <!-- Arrow down -->
+  <line x1="144" y1="148" x2="144" y2="168" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- Score boxes -->
+  <rect x="36" y="170" width="72" height="44" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="72" y="189" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Recency</text>
+  <text x="72" y="204" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">α = 1.0</text>
+
+  <rect x="116" y="170" width="56" height="44" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="144" y="189" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Import.</text>
+  <text x="144" y="204" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">α = 1.0</text>
+
+  <rect x="180" y="170" width="72" height="44" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="216" y="189" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Relevance</text>
+  <text x="216" y="204" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">α = 1.0</text>
+
+  <!-- Combine arrow -->
+  <line x1="72" y1="214" x2="144" y2="238" stroke="#7C3AED" stroke-width="1.2" marker-end="url(#arr-purple)"/>
+  <line x1="144" y1="214" x2="144" y2="238" stroke="#7C3AED" stroke-width="1.2" marker-end="url(#arr-purple)"/>
+  <line x1="216" y1="214" x2="144" y2="238" stroke="#7C3AED" stroke-width="1.2" marker-end="url(#arr-purple)"/>
+
+  <!-- Score formula -->
+  <rect x="60" y="240" width="168" height="44" rx="6" fill="#DDD6FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="144" y="259" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">score = αR + αI + αV</text>
+  <text x="144" y="277" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">가중치 모두 동일(1.0)</text>
+
+  <!-- Arrow to threshold -->
+  <line x1="144" y1="284" x2="144" y2="304" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- Threshold -->
+  <rect x="60" y="306" width="168" height="36" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="144" y="322" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">LLM 0-10 점수 평가</text>
+  <text x="144" y="337" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">임계값 미만 → 폐기</text>
+
+  <!-- ===== Column 2: Selective Memory ===== -->
+  <rect x="286" y="48" width="248" height="40" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="410" y="64" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Selective Memory</text>
+  <text x="410" y="80" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Composite Salience Score</text>
+
+  <rect x="326" y="112" width="168" height="36" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
+  <text x="410" y="127" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">새 기억 후보</text>
+  <text x="410" y="141" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">memory candidate</text>
+
+  <line x1="410" y1="148" x2="410" y2="168" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+  <rect x="302" y="170" width="74" height="44" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text x="339" y="189" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Source</text>
+  <text x="339" y="204" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">reputation</text>
+
+  <rect x="384" y="170" width="52" height="44" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text x="410" y="189" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Novelty</text>
+  <text x="410" y="204" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">신규성</text>
+
+  <rect x="444" y="170" width="74" height="44" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text x="481" y="189" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">Reliability</text>
+  <text x="481" y="204" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">신뢰도</text>
+
+  <line x1="339" y1="214" x2="410" y2="238" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+  <line x1="410" y1="214" x2="410" y2="238" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+  <line x1="481" y1="214" x2="410" y2="238" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+
+  <rect x="326" y="240" width="168" height="44" rx="6" fill="#A7F3D0" stroke="#059669" stroke-width="1.5"/>
+  <text x="410" y="259" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Salience = Σ wᵢ · sᵢ</text>
+  <text x="410" y="277" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">가중 합산</text>
+
+  <line x1="410" y1="284" x2="410" y2="304" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+  <rect x="326" y="306" width="168" height="36" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
+  <text x="410" y="322" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">게이팅 임계값 적용</text>
+  <text x="410" y="337" text-anchor="middle" font-family="monospace" font-size="9" fill="#059669">100% vs 13% (비교군)</text>
+
+  <!-- ===== Column 3: A-MAC ===== -->
+  <rect x="552" y="48" width="248" height="40" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="676" y="64" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">A-MAC</text>
+  <text x="676" y="80" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">5차원 분해 점수</text>
+
+  <rect x="592" y="112" width="168" height="36" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="676" y="127" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">새 기억 후보</text>
+  <text x="676" y="141" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">memory candidate</text>
+
+  <line x1="676" y1="148" x2="676" y2="168" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- 5 dimension boxes - smaller, stacked -->
+  <rect x="556" y="170" width="86" height="34" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="599" y="184" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">Future Utility</text>
+  <text x="599" y="197" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">w=0.10</text>
+
+  <rect x="650" y="170" width="92" height="34" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="696" y="184" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">Factual Conf.</text>
+  <text x="696" y="197" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">w=0.10</text>
+
+  <rect x="556" y="212" width="86" height="34" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="599" y="226" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">Sem. Novelty</text>
+  <text x="599" y="239" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">w=0.10</text>
+
+  <rect x="650" y="212" width="92" height="34" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.2"/>
+  <text x="696" y="226" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">Temp. Recency</text>
+  <text x="696" y="239" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">w=0.10</text>
+
+  <!-- Content Type Prior - highlighted -->
+  <rect x="594" y="254" width="164" height="34" rx="5" fill="#BFDBFE" stroke="#2563EB" stroke-width="1.8"/>
+  <text x="676" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">Content Type Prior</text>
+  <text x="676" y="282" text-anchor="middle" font-family="monospace" font-size="8" fill="#2563EB">w=0.60 ← 지배적</text>
+
+  <!-- Lines from dim boxes to formula -->
+  <line x1="599" y1="204" x2="676" y2="298" stroke="#2563EB" stroke-width="1.0"/>
+  <line x1="696" y1="204" x2="676" y2="298" stroke="#2563EB" stroke-width="1.0"/>
+  <line x1="599" y1="246" x2="676" y2="298" stroke="#2563EB" stroke-width="1.0"/>
+  <line x1="696" y1="246" x2="676" y2="298" stroke="#2563EB" stroke-width="1.0"/>
+  <line x1="676" y1="288" x2="676" y2="298" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <rect x="592" y="300" width="168" height="44" rx="6" fill="#93C5FD" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="676" y="319" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">S(m) = Σ wᵢ · fᵢ(m)</text>
+  <text x="676" y="337" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">θ* = 0.55 → F1 최대</text>
+
+  <!-- ===== Performance comparison bar at bottom ===== -->
+  <rect x="20" y="378" width="780" height="86" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.2"/>
+  <text x="410" y="398" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">Selective Memory 성과 — 8:1 방해자 환경</text>
+
+  <!-- Bar: No gating -->
+  <rect x="60" y="410" width="180" height="18" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.0"/>
+  <rect x="60" y="410" width="23" height="18" rx="3" fill="#EF4444"/>
+  <text x="250" y="424" font-family="monospace" font-size="9" fill="#374151"> 비게이팅: 13%</text>
+
+  <!-- Bar: Self-RAG -->
+  <rect x="60" y="434" width="180" height="18" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.0"/>
+  <rect x="60" y="434" width="0" height="18" rx="3" fill="#EF4444"/>
+  <text x="250" y="448" font-family="monospace" font-size="9" fill="#374151"> Self-RAG: 0% (붕괴)</text>
+
+  <!-- Bar: Selective Memory -->
+  <rect x="400" y="410" width="180" height="18" rx="3" fill="#D1FAE5" stroke="#059669" stroke-width="1.0"/>
+  <rect x="400" y="410" width="180" height="18" rx="3" fill="#059669"/>
+  <text x="590" y="424" font-family="monospace" font-size="9" fill="#374151"> Selective Memory: 100%</text>
+
+  <text x="410" y="462" text-anchor="middle" font-family="monospace" font-size="8" fill="#9CA3AF">방해자 8개 : 정답 1개 환경에서 정확도 비교</text>
+</svg>

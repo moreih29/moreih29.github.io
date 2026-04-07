@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 460" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr-red" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#DC2626"/>
+    </marker>
+    <marker id="arr-green" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#059669"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#7C3AED"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="410" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">충돌 해결 전략 비교 — Zep/Graphiti / Mem0 / Kumiho</text>
+
+  <!-- ===== Column 1: Zep / Graphiti ===== -->
+  <rect x="20" y="46" width="246" height="36" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="143" y="60" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Zep / Graphiti</text>
+  <text x="143" y="76" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">Bi-temporal Knowledge Graph</text>
+
+  <!-- Existing fact -->
+  <rect x="36" y="100" width="214" height="40" rx="6" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.2"/>
+  <text x="143" y="116" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">기존 사실 (엣지)</text>
+  <text x="143" y="132" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">t_valid, t_invalid = NULL</text>
+
+  <line x1="143" y1="140" x2="143" y2="158" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+
+  <!-- New contradicting fact -->
+  <rect x="36" y="160" width="214" height="40" rx="6" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.2"/>
+  <text x="143" y="176" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">신규 충돌 사실 도착</text>
+  <text x="143" y="192" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">t_valid = now (새 엣지)</text>
+
+  <line x1="143" y1="200" x2="143" y2="218" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+
+  <!-- Invalidation -->
+  <rect x="36" y="220" width="214" height="50" rx="6" fill="#FECACA" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="143" y="240" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">기존 엣지 무효화</text>
+  <text x="143" y="256" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">t_invalid = now 설정</text>
+  <text x="143" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">원본 삭제 없음 — 이력 보존</text>
+
+  <line x1="143" y1="270" x2="143" y2="290" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+
+  <!-- Result -->
+  <rect x="36" y="292" width="214" height="50" rx="6" fill="#FCA5A5" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="143" y="312" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">타임라인 쿼리 가능</text>
+  <text x="143" y="328" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">"2024-01 당시 사실" 조회</text>
+  <text x="143" y="342" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">bi-temporal 이력 완전 보존</text>
+
+  <!-- ===== Column 2: Mem0 ===== -->
+  <rect x="287" y="46" width="246" height="36" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="410" y="60" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Mem0</text>
+  <text x="410" y="76" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">4-op LLM Tool Call 모델</text>
+
+  <!-- Existing -->
+  <rect x="303" y="100" width="214" height="40" rx="6" fill="#ECFDF5" stroke="#059669" stroke-width="1.2"/>
+  <text x="410" y="116" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">기존 기억 + 새 정보</text>
+  <text x="410" y="132" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">LLM이 충돌 판단</text>
+
+  <line x1="410" y1="140" x2="410" y2="158" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+  <!-- 4 ops -->
+  <rect x="303" y="160" width="214" height="50" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text x="410" y="178" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">연산 결정 (Tool Call)</text>
+  <text x="410" y="196" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">ADD / UPDATE / DELETE / NOOP</text>
+
+  <!-- 4 op branches -->
+  <line x1="340" y1="210" x2="320" y2="240" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+  <line x1="370" y1="210" x2="370" y2="240" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+  <line x1="440" y1="210" x2="440" y2="240" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+  <line x1="480" y1="210" x2="500" y2="240" stroke="#059669" stroke-width="1.2" marker-end="url(#arr-green)"/>
+
+  <rect x="300" y="242" width="48" height="30" rx="4" fill="#A7F3D0" stroke="#059669" stroke-width="1.0"/>
+  <text x="324" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">ADD</text>
+  <text x="324" y="270" text-anchor="middle" font-family="monospace" font-size="7" fill="#6B7280">신규</text>
+
+  <rect x="350" y="242" width="56" height="30" rx="4" fill="#A7F3D0" stroke="#059669" stroke-width="1.0"/>
+  <text x="378" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">UPDATE</text>
+  <text x="378" y="270" text-anchor="middle" font-family="monospace" font-size="7" fill="#6B7280">덮어쓰기</text>
+
+  <rect x="414" y="242" width="56" height="30" rx="4" fill="#FCA5A5" stroke="#059669" stroke-width="1.0"/>
+  <text x="442" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">DELETE</text>
+  <text x="442" y="270" text-anchor="middle" font-family="monospace" font-size="7" fill="#6B7280">제거</text>
+
+  <rect x="476" y="242" width="44" height="30" rx="4" fill="#D1FAE5" stroke="#059669" stroke-width="1.0"/>
+  <text x="498" y="259" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">NOOP</text>
+  <text x="498" y="270" text-anchor="middle" font-family="monospace" font-size="7" fill="#6B7280">유지</text>
+
+  <line x1="410" y1="272" x2="410" y2="292" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+  <!-- Result -->
+  <rect x="303" y="294" width="214" height="48" rx="6" fill="#6EE7B7" stroke="#059669" stroke-width="1.5"/>
+  <text x="410" y="314" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">최신 상태 유지</text>
+  <text x="410" y="330" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">LLM 판단 기반 자동 충돌 해결</text>
+  <text x="410" y="342" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">이력 미보존 (현재 상태 우선)</text>
+
+  <!-- ===== Column 3: Kumiho ===== -->
+  <rect x="554" y="46" width="246" height="36" rx="8" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="677" y="60" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">Kumiho</text>
+  <text x="677" y="76" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">AGM Belief Revision 공리</text>
+
+  <!-- Belief base -->
+  <rect x="570" y="100" width="214" height="40" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="677" y="116" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">현재 믿음 집합 K</text>
+  <text x="677" y="132" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">버전 체인으로 관리</text>
+
+  <line x1="677" y1="140" x2="677" y2="158" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- New info -->
+  <rect x="570" y="160" width="214" height="40" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="677" y="176" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151" font-weight="bold">신규 명제 φ 도착</text>
+  <text x="677" y="192" text-anchor="middle" font-family="monospace" font-size="8" fill="#7C3AED">AGM 공리 적용: 최소 변화</text>
+
+  <line x1="677" y1="200" x2="677" y2="218" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- AGM ops -->
+  <rect x="570" y="220" width="214" height="50" rx="6" fill="#DDD6FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="677" y="240" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">믿음 개정 연산</text>
+  <text x="677" y="256" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">Contraction / Expansion / Revision</text>
+  <text x="677" y="268" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">불변 버전 체인 생성</text>
+
+  <line x1="677" y1="270" x2="677" y2="290" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+
+  <!-- Result -->
+  <rect x="570" y="292" width="214" height="50" rx="6" fill="#C4B5FD" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="677" y="312" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">형식 논리 보장</text>
+  <text x="677" y="328" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">LoCoMo F1: 0.447</text>
+  <text x="677" y="342" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">일관성 공리 수학적 보장</text>
+
+  <!-- ===== Comparison Table ===== -->
+  <rect x="20" y="362" width="780" height="82" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.2"/>
+  <text x="410" y="382" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">전략 비교</text>
+
+  <!-- Headers -->
+  <text x="90" y="400" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">시스템</text>
+  <text x="230" y="400" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">이력 보존</text>
+  <text x="370" y="400" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">충돌 해결 방식</text>
+  <text x="540" y="400" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">강점</text>
+  <text x="710" y="400" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151" font-weight="bold">약점</text>
+
+  <line x1="30" y1="404" x2="790" y2="404" stroke="#E5E7EB" stroke-width="0.8"/>
+
+  <text x="90" y="418" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">Zep/Graphiti</text>
+  <text x="230" y="418" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">완전 (bi-temporal)</text>
+  <text x="370" y="418" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">무효화 타임스탬프</text>
+  <text x="540" y="418" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">시간여행 쿼리</text>
+  <text x="710" y="418" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">그래프 복잡도↑</text>
+
+  <text x="90" y="432" text-anchor="middle" font-family="monospace" font-size="8" fill="#059669">Mem0</text>
+  <text x="230" y="432" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">미보존 (현재 상태)</text>
+  <text x="370" y="432" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">LLM 4-op 판단</text>
+  <text x="540" y="432" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">간단·유연</text>
+  <text x="710" y="432" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">LLM 비용·오판 위험</text>
+
+  <text x="90" y="446" text-anchor="middle" font-family="monospace" font-size="8" fill="#7C3AED">Kumiho</text>
+  <text x="230" y="446" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">버전 체인</text>
+  <text x="370" y="446" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">AGM 공리 기반</text>
+  <text x="540" y="446" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">논리 일관성 보장</text>
+  <text x="710" y="446" text-anchor="middle" font-family="monospace" font-size="8" fill="#374151">구현 복잡도↑</text>
+</svg>

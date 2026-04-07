@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr-red" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#DC2626"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">벤치마크 점수의 함정 — 왜 공정 비교가 불가능한가</text>
+
+  <!-- Bar chart area -->
+  <!-- Y axis -->
+  <line x1="80" y1="50" x2="80" y2="250" stroke="#374151" stroke-width="1.5"/>
+  <line x1="80" y1="250" x2="700" y2="250" stroke="#374151" stroke-width="1.5"/>
+
+  <!-- Y axis labels -->
+  <text x="70" y="254" text-anchor="end" font-family="monospace" font-size="9" fill="#374151">0%</text>
+  <text x="70" y="204" text-anchor="end" font-family="monospace" font-size="9" fill="#374151">50%</text>
+  <text x="70" y="154" text-anchor="end" font-family="monospace" font-size="9" fill="#374151">75%</text>
+  <text x="70" y="104" text-anchor="end" font-family="monospace" font-size="9" fill="#374151">90%</text>
+  <text x="70" y="74" text-anchor="end" font-family="monospace" font-size="9" fill="#374151">100%</text>
+
+  <!-- Grid lines -->
+  <line x1="80" y1="204" x2="700" y2="204" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="80" y1="154" x2="700" y2="154" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="80" y1="104" x2="700" y2="104" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Bar 1: Mastra 94.87% (self-reported, GPT-5-mini) -->
+  <!-- height: 94.87/100 * 200 = 189.74, top: 250 - 189.74 = 60.26 -->
+  <rect x="100" y="60" width="70" height="190" rx="3" fill="#BFDBFE" stroke="#374151" stroke-width="1"/>
+  <text x="135" y="56" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">94.87%</text>
+  <text x="135" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Mastra</text>
+  <text x="135" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">GPT-5-mini</text>
+  <text x="135" y="291" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">자체 보고</text>
+
+  <!-- Bar 2: Hindsight 91.4% (self-reported, Gemini 3 Pro) -->
+  <!-- 91.4/100 * 200 = 182.8, top: 67.2 -->
+  <rect x="190" y="68" width="70" height="182" rx="3" fill="#BFDBFE" stroke="#374151" stroke-width="1"/>
+  <text x="225" y="64" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">91.4%</text>
+  <text x="225" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Hindsight</text>
+  <text x="225" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">Gemini 3 Pro</text>
+  <text x="225" y="291" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">자체 보고</text>
+
+  <!-- Bar 3: EmergenceAI 86% (self-reported, 비공개) -->
+  <!-- 86/100 * 200 = 172, top: 78 -->
+  <rect x="280" y="78" width="70" height="172" rx="3" fill="#BFDBFE" stroke="#374151" stroke-width="1"/>
+  <text x="315" y="74" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">86%</text>
+  <text x="315" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">EmergenceAI</text>
+  <text x="315" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">비공개 모델</text>
+  <text x="315" y="291" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">자체 보고</text>
+
+  <!-- Bar 4: Supermemory 85.2% (self-reported, Gemini-3-Pro) -->
+  <!-- 85.2/100 * 200 = 170.4, top: 79.6 -->
+  <rect x="370" y="80" width="70" height="170" rx="3" fill="#BFDBFE" stroke="#374151" stroke-width="1"/>
+  <text x="405" y="76" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">85.2%</text>
+  <text x="405" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Supermemory</text>
+  <text x="405" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">Gemini 3 Pro</text>
+  <text x="405" y="291" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">자체 보고</text>
+
+  <!-- Bar 5: Oracle GPT-4o ~82.4% (논문 기준) -->
+  <!-- 82.4/100 * 200 = 164.8, top: 85.2 -->
+  <rect x="460" y="86" width="70" height="164" rx="3" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="495" y="82" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151" font-weight="bold">~82.4%</text>
+  <text x="495" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Oracle GPT-4o</text>
+  <text x="495" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">GPT-4o</text>
+  <text x="495" y="291" text-anchor="middle" font-family="monospace" font-size="8" fill="#15803D">원논문 보고</text>
+
+  <!-- Bar 6: Zep self-reported 84% vs independent 58.44% -->
+  <!-- Zep self: 84/100*200=168, top: 82 -->
+  <rect x="550" y="82" width="30" height="168" rx="3" fill="#BFDBFE" stroke="#374151" stroke-width="1"/>
+  <text x="565" y="78" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">84%</text>
+  <!-- Zep independent: 58.44/100*200=116.88, top: 133.12 -->
+  <rect x="582" y="133" width="30" height="117" rx="3" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="597" y="129" text-anchor="middle" font-family="monospace" font-size="9" fill="#DC2626">58.4%</text>
+  <text x="579" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Zep</text>
+  <text x="565" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">자체</text>
+  <text x="597" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#DC2626">독립검증</text>
+
+  <!-- Gap arrow for Zep -->
+  <line x1="612" y1="100" x2="632" y2="100" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <text x="634" y="104" font-family="monospace" font-size="9" fill="#DC2626">−25.6%p</text>
+  <text x="634" y="116" font-family="monospace" font-size="9" fill="#DC2626">독립 재현 시</text>
+
+  <!-- GPT-4o full context bar -->
+  <rect x="670" y="134" width="70" height="116" rx="3" fill="#FEF3C7" stroke="#374151" stroke-width="1"/>
+  <text x="705" y="130" text-anchor="middle" font-family="monospace" font-size="10" fill="#374151">~58%</text>
+  <text x="705" y="268" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">GPT-4o</text>
+  <text x="705" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">풀 컨텍스트</text>
+  <text x="705" y="291" text-anchor="middle" font-family="monospace" font-size="8" fill="#15803D">원논문</text>
+
+  <!-- Legend -->
+  <rect x="80" y="308" width="14" height="14" rx="2" fill="#BFDBFE" stroke="#374151" stroke-width="1"/>
+  <text x="100" y="320" font-family="monospace" font-size="9" fill="#374151">자체 보고 (독립 검증 없음)</text>
+  <rect x="270" y="308" width="14" height="14" rx="2" fill="#D1FAE5" stroke="#374151" stroke-width="1.5"/>
+  <text x="290" y="320" font-family="monospace" font-size="9" fill="#374151">원논문 보고</text>
+  <rect x="400" y="308" width="14" height="14" rx="2" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="420" y="320" font-family="monospace" font-size="9" fill="#374151">독립 재현 결과</text>
+  <rect x="540" y="308" width="14" height="14" rx="2" fill="#FEF3C7" stroke="#374151" stroke-width="1"/>
+  <text x="560" y="320" font-family="monospace" font-size="9" fill="#374151">풀 컨텍스트 베이스라인</text>
+
+  <!-- Warning box -->
+  <rect x="80" y="336" width="640" height="100" rx="8" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="400" y="355" text-anchor="middle" font-family="monospace" font-size="11" fill="#DC2626" font-weight="bold">공정 비교를 가로막는 5가지 요인</text>
+  <text x="96" y="373" font-family="monospace" font-size="9" fill="#374151">① 기반 모델 차이 — Gemini 3 Pro, GPT-5-mini, GPT-4o는 동일 조건이 아님</text>
+  <text x="96" y="388" font-family="monospace" font-size="9" fill="#374151">② 자체 보고 편향 — 리더보드 대부분이 독립 재현 없음 (Zep: 84% → 58.44% 재현 사례)</text>
+  <text x="96" y="403" font-family="monospace" font-size="9" fill="#374151">③ 구현 세부사항 — 청킹 전략·임베딩·파라미터 차이가 두 자릿수 정확도 변동 초래</text>
+  <text x="96" y="418" font-family="monospace" font-size="9" fill="#374151">④ 능력별 단순 평균 왜곡 — IE·MR·TR·KU·ABS 5개 능력을 단순 평균하면 취약점 숨겨짐</text>
+  <text x="96" y="433" font-family="monospace" font-size="9" fill="#374151">⑤ 평가 셋 미공개 — 일부 시스템이 LongMemEval 테스트셋에 과적합 가능성 배제 불가</text>
+</svg>

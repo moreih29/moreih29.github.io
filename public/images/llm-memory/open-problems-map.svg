@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arr-soft" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#9CA3AF"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="26" text-anchor="middle" font-family="monospace" font-size="13" fill="#374151" font-weight="bold">LLM 메모리의 열린 문제들</text>
+
+  <!-- Center node -->
+  <rect x="300" y="196" width="200" height="56" rx="12" fill="#374151" stroke="#374151" stroke-width="1.5"/>
+  <text x="400" y="219" text-anchor="middle" font-family="monospace" font-size="12" fill="#FFFFFF" font-weight="bold">LLM 메모리</text>
+  <text x="400" y="237" text-anchor="middle" font-family="monospace" font-size="10" fill="#D1D5DB">열린 문제들</text>
+
+  <!-- Node 1: 프라이버시와 잊힐 권리 (top left) -->
+  <rect x="30" y="60" width="200" height="76" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="130" y="79" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">프라이버시</text>
+  <text x="130" y="94" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">GDPR Art.17 vs 파라미터 지식</text>
+  <text x="130" y="108" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Machine Unlearning</text>
+  <text x="130" y="122" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">EDPB 2025 집중 집행</text>
+
+  <!-- Node 2: 확장성 (top right) -->
+  <rect x="570" y="60" width="200" height="76" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="670" y="79" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">확장성</text>
+  <text x="670" y="94" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Fan Effect — 기억 ↑ → 오류율 ↑</text>
+  <text x="670" y="108" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">계층적 압축, 선택적 망각</text>
+  <text x="670" y="122" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">MemoryBank, MemoryLLM, M+</text>
+
+  <!-- Node 3: 환각과 거짓 기억 (bottom left) -->
+  <rect x="30" y="350" width="200" height="76" rx="8" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="130" y="369" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">환각과 거짓 기억</text>
+  <text x="130" y="384" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">MINJA: 메모리 포이즈닝 70%+</text>
+  <text x="130" y="398" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">A-MemGuard: 방어 66% 실패</text>
+  <text x="130" y="412" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">악의적 챗봇 거짓기억 3배+ ↑</text>
+
+  <!-- Node 4: 멀티 에이전트 공유 (bottom right) -->
+  <rect x="570" y="350" width="200" height="76" rx="8" fill="#D1FAE5" stroke="#059669" stroke-width="1.5"/>
+  <text x="670" y="369" text-anchor="middle" font-family="monospace" font-size="11" fill="#374151" font-weight="bold">멀티 에이전트 공유</text>
+  <text x="670" y="384" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Collaborative Memory, INMS</text>
+  <text x="670" y="398" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">공유 풀 vs 개별+선택적 공유</text>
+  <text x="670" y="412" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">체계적 벤치마크 미존재</text>
+
+  <!-- Arrows from center to nodes -->
+  <!-- Center to Node 1 (top-left) -->
+  <line x1="305" y1="210" x2="232" y2="136" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-soft)"/>
+  <!-- Center to Node 2 (top-right) -->
+  <line x1="495" y1="210" x2="570" y2="136" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-soft)"/>
+  <!-- Center to Node 3 (bottom-left) -->
+  <line x1="305" y1="240" x2="232" y2="350" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-soft)"/>
+  <!-- Center to Node 4 (bottom-right) -->
+  <line x1="495" y1="240" x2="570" y2="350" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-soft)"/>
+
+  <!-- Sub-boxes: 미래 방향 -->
+  <!-- Under Node 1 -->
+  <rect x="44" y="154" width="172" height="30" rx="4" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="130" y="168" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">Source-free Unlearning</text>
+  <text x="130" y="179" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">UC Riverside 2025</text>
+
+  <!-- Under Node 2 -->
+  <rect x="584" y="154" width="172" height="30" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="670" y="168" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">EverMind MSA</text>
+  <text x="670" y="179" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">16K→100M 토큰, 성능 저하 9% 미만</text>
+
+  <!-- Above Node 3 -->
+  <rect x="44" y="314" width="172" height="30" rx="4" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="130" y="328" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">NeurIPS 2025 MINJA</text>
+  <text x="130" y="339" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">쿼리만으로 주입률 95%+</text>
+
+  <!-- Above Node 4 -->
+  <rect x="584" y="314" width="172" height="30" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="670" y="328" text-anchor="middle" font-family="monospace" font-size="9" fill="#374151">ICLR 2026 MemAgents 워크숍</text>
+  <text x="670" y="339" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B7280">벤치마크 표준화 시도</text>
+
+  <!-- Bottom note -->
+  <text x="400" y="464" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">각 문제는 상호 연결되어 있다 — 확장성 해법이 프라이버시 문제를 심화시킬 수 있고,</text>
+  <text x="400" y="478" text-anchor="middle" font-family="monospace" font-size="9" fill="#6B7280">멀티 에이전트 공유는 포이즈닝 공격 표면을 넓힌다</text>
+</svg>
