@@ -1558,6 +1558,221 @@
           "created_at": "2026-04-07T02:22:12.533Z"
         }
       ]
+    },
+    {
+      "completed_at": "2026-04-07T08:03:36.413Z",
+      "branch": "main",
+      "plan": {
+        "id": 3,
+        "topic": "LLM/AI 에이전트 장기기억 시스템 — 시리즈 블로그 포스트 조사 및 작성",
+        "issues": [
+          {
+            "id": 1,
+            "title": "시리즈 구성 — 편 수, 스토리라인, 각 편 범위",
+            "status": "decided",
+            "decision": "4편 시리즈 구성 확정. 스토리 아크: \"기억의 구조와 분류\" → \"쓰기와 망각\" → \"검색과 자율 관리\" → \"평가와 전망\". 사용자 키워드 6개를 독자 흐름 기준으로 재배치. 1편(분류체계)이 선행 필수, 2·3편 병렬 조사 가능, 4편 마지막."
+          },
+          {
+            "id": 2,
+            "title": "시리즈 네이밍 및 기존 시리즈와의 연계",
+            "status": "decided",
+            "decision": "시리즈 slug: llm-memory, 시리즈명: \"LLM 기억의 기술\". 기존 llm- 접두사 패턴 유지. llm-eng-2 메모리 섹션에서 새 시리즈로 안내하는 브릿지는 별도 작업으로 분리(이번 스코프 외)."
+          },
+          {
+            "id": 3,
+            "title": "조사-작성 파이프라인 — 실행 전략",
+            "status": "decided",
+            "decision": "1편부터 순차 실행: 리서처 조사 → 라이터 작성 → 리뷰어 검증. 단, 1편 조사 완료 후 2·3편 리서처를 병렬 투입 가능. 이번 실행에서는 우선 1편만 완성하고, 2-4편은 후속 세션에서 진행."
+          },
+          {
+            "id": 4,
+            "title": "1편 범위: 기억의 구조와 분류",
+            "status": "decided",
+            "decision": "1편 \"기억이 없으면 에이전트가 아니다 — 기억의 구조와 분류\" (llm-memory-1-architecture). 커버리지: (1) LLM에 기억이 필요한 이유, (2) 인지과학 기억 체계→AI 메모리 설계 영향, (3) AI 메모리 아키텍처 분류(Read/Write/Reflect, 저장구조별), (4) Generative Agents 아키텍처 케이스 스터디. 핵심 조사: 서베이 3편 분류 체계 비교, Generative Agents 메모리 구조, 인지과학-AI 대응 관계."
+          },
+          {
+            "id": 5,
+            "title": "2편 범위: 쓰기, 충돌, 망각",
+            "status": "decided",
+            "decision": "2편 \"기억을 쓰는 순간 — 중요도 평가, 충돌 해결, 망각\" (llm-memory-2-write-and-forget). 커버리지: (1) Write-Time Gating/Importance Scoring, (2) Memory Consolidation(에피소드→의미), (3) Conflict Resolution, (4) Forgetting 메커니즘. 핵심 논문: Selective Memory, A-MAC, EverMemOS, Sleep-Inspired Consolidation, Zep/Graphiti, Mem0, MemoryBank, FOREVER."
+          },
+          {
+            "id": 6,
+            "title": "3편 범위: 검색, 반성, 자율 관리",
+            "status": "decided",
+            "decision": "3편 \"기억을 찾는 기술 — 검색, 반성, 자율 관리\" (llm-memory-3-retrieval-and-autonomy). 커버리지: (1) Multi-Strategy Retrieval, (2) Reflection/Self-Assessment, (3) Agentic Memory(A-MEM, MemGPT, MAGMA), (4) 그래프 기반 메모리, (5) RAG와 메모리의 경계. 핵심 논문: Hindsight, A-MEM, Letta/MemGPT, MAGMA, Zep/Graphiti, Kumiho, MemoryOS."
+          },
+          {
+            "id": 7,
+            "title": "4편 범위: 벤치마크, 한계, 전망",
+            "status": "decided",
+            "decision": "4편 \"벤치마크, 한계, 그리고 열린 문제들\" (llm-memory-4-evaluation-and-frontiers). 커버리지: (1) LongMemEval/LoCoMo 벤치마크 설계와 한계, (2) 주요 시스템 성능 비교, (3) 프라이버시/확장성/환각/멀티에이전트 열린 문제, (4) 상용 시스템(Claude/ChatGPT/Gemini) 메모리 현황, (5) 전망."
+          }
+        ],
+        "research_summary": "포닥 연구 방향 설계 완료. 핵심 발견: (1) 기존 llm-eng-2에서 메모리를 컨텍스트 엔지니어링의 하위 요소로 다뤘으나, 이 시리즈는 메모리를 중심 주제로 격상하여 인지과학적 프레임에서 구체 메커니즘까지 심층 탐구. (2) 사용자 제공 키워드 6개를 독자 흐름에 맞게 4편 구조로 재배치: 구조/분류 → 쓰기/잊기 → 찾기/관리 → 평가/전망. (3) 서베이 논문 3편(arXiv:2512.13564, 2504.15965, 2505.00675)의 분류 체계 비교가 1편의 뼈대. (4) 조사 의존관계: 1편 선행 필수 → 2편/3편 병렬 가능 → 4편 마지막. (5) llm-memory 시리즈명 제안, 기존 llm- 접두사 패턴 유지.",
+        "created_at": "2026-04-07T07:07:07.071Z"
+      },
+      "tasks": [
+        {
+          "id": 1,
+          "title": "1편 리서치 — 서베이 논문 분류 체계 비교 및 핵심 자료 조사",
+          "context": "서베이 논문 3편(arXiv:2512.13564, 2504.15965, 2505.00675)의 메모리 분류 체계를 비교 분석하고, Generative Agents 메모리 아키텍처, 인지과학-AI 대응 관계, 저장 구조 유형별 대표 시스템을 조사한다.",
+          "approach": "웹 검색으로 서베이 논문 3편의 핵심 내용을 수집하고, Generative Agents(Park et al. 2023)의 메모리 구조를 조사. 인지과학의 기억 분류(Tulving, Squire)와 AI 메모리 간 대응 관계를 정리. 저장 구조(텍스트/벡터/그래프/하이브리드)별 대표 시스템 1-2개 식별.",
+          "acceptance": "1. 서베이 3편의 분류 축 비교표 작성\\n2. Generative Agents 메모리 아키텍처 상세 기술\\n3. 인지과학-AI 대응 관계 정리\\n4. 저장 구조 유형별 대표 시스템 목록",
+          "risk": "arXiv 프리프린트 중심이라 peer-review 여부 확인 필요. 서베이 논문 접근 가능성에 따라 깊이 조절.",
+          "status": "pending",
+          "deps": [],
+          "plan_issue": 4,
+          "owner": "researcher",
+          "created_at": "2026-04-07T07:08:17.865Z"
+        },
+        {
+          "id": 2,
+          "title": "1편 작성 — \"기억이 없으면 에이전트가 아니다\" 포스트 집필",
+          "context": "리서치 결과를 바탕으로 llm-memory-1-architecture.mdx 작성. 시리즈 \"LLM 기억의 기술\" 1편.",
+          "approach": "리서처 조사 결과를 기반으로 content/posts/llm-memory-1-architecture.mdx 작성. 기존 블로그 포스트 톤·포맷 준수. SVG 다이어그램 포함. 구조: 도입(왜 기억이 필요한가) → 인지과학 프레임 → AI 메모리 분류 체계 → Generative Agents 케이스 → 다음 편 예고.",
+          "acceptance": "1. frontmatter 완비(title, slug, date, description, tags, series, seriesOrder, category)\\n2. 본문 3000자 이상\\n3. SVG 다이어그램 1개 이상\\n4. 인지과학-AI 대응 관계 시각화\\n5. 기존 llm-eng-2 메모리 섹션과 차별화된 깊이",
+          "risk": "리서치 깊이에 따라 본문 밀도 변동. 인지과학 비유의 정확성 검증 필요.",
+          "status": "pending",
+          "deps": [
+            1
+          ],
+          "plan_issue": 4,
+          "owner": "writer",
+          "created_at": "2026-04-07T07:08:30.094Z"
+        },
+        {
+          "id": 3,
+          "title": "1편 리뷰 — 콘텐츠 검증 및 품질 확인",
+          "context": "라이터가 작성한 1편 포스트의 사실 정확성, 소스 일관성, 문법/포맷을 검증한다.",
+          "approach": "포스트 전문을 읽고 (1) 논문 인용의 정확성, (2) 인지과학 개념의 타당성, (3) 기존 포스트와의 중복/일관성, (4) 문법·표현·포맷 검증.",
+          "acceptance": "1. 사실 오류 0건\\n2. 인용 출처 검증 완료\\n3. 기존 시리즈와의 일관성 확인\\n4. 문법/포맷 이슈 수정 완료",
+          "risk": "리서처 조사 범위 밖의 사실 검증이 필요할 수 있음.",
+          "status": "pending",
+          "deps": [
+            2
+          ],
+          "plan_issue": 4,
+          "owner": "reviewer",
+          "created_at": "2026-04-07T07:08:38.431Z"
+        },
+        {
+          "id": 4,
+          "title": "MDX 빌드 검증",
+          "context": "작성된 MDX 파일이 velite build를 통과하는지 확인한다.",
+          "approach": "velite build 실행하여 MDX 파싱 에러 확인. 에러 발생 시 수정.",
+          "acceptance": "velite build 성공",
+          "risk": "MDX 문법 오류 가능성",
+          "status": "pending",
+          "deps": [
+            3
+          ],
+          "plan_issue": 4,
+          "owner": "lead",
+          "created_at": "2026-04-07T07:08:42.821Z"
+        },
+        {
+          "id": 5,
+          "title": "2편 리서치 — 중요도 평가, 충돌 해결, 망각 메커니즘 조사",
+          "context": "Selective Memory, A-MAC, EverMemOS, Sleep-Inspired Consolidation, Zep/Graphiti, Mem0, MemoryBank, FOREVER 등 핵심 논문/시스템의 Write-Time Gating, Memory Consolidation, Conflict Resolution, Forgetting 메커니즘을 조사.",
+          "approach": "웹 검색으로 각 논문의 핵심 메커니즘을 수집. 중요도 평가 기준 비교, 통합 메커니즘 비교, 충돌 해결 전략 비교, 망각 메커니즘 비교표 작성.",
+          "acceptance": "1. 중요도 평가 메커니즘 비교표\\n2. Memory Consolidation 구현 비교\\n3. Conflict Resolution 전략 비교\\n4. Forgetting 메커니즘 비교\\n5. 각 시스템의 수식/알고리즘 수준 상세",
+          "risk": "논문 접근 가능성에 따라 깊이 조절 필요",
+          "status": "pending",
+          "deps": [],
+          "plan_issue": 5,
+          "owner": "researcher",
+          "created_at": "2026-04-07T07:14:11.484Z"
+        },
+        {
+          "id": 6,
+          "title": "3편 리서치 — 검색 전략, 자율 기억 관리 시스템 조사",
+          "context": "A-MEM, Letta/MemGPT, MAGMA, Zep/Graphiti, Kumiho, Hindsight, MemoryOS 등의 Multi-Strategy Retrieval, Agentic Memory, 그래프 기반 메모리, RAG와 메모리의 경계를 조사.",
+          "approach": "각 시스템의 검색 전략, 자율 관리 메커니즘, 그래프 구조를 상세 조사. RAG와 메모리 검색의 차이를 명시적으로 분석.",
+          "acceptance": "1. A-MEM/MemGPT/MAGMA 자율 관리 메커니즘 비교\\n2. Hindsight TEMPR 검색 전략 상세\\n3. 그래프 기반 vs 벡터 기반 메모리 비교\\n4. RAG와 메모리 시스템의 경계 분석\\n5. MemoryOS 아키텍처 상세",
+          "risk": "시스템 간 직접 비교가 어려울 수 있음 (벤치마크 조건 상이)",
+          "status": "pending",
+          "deps": [],
+          "plan_issue": 6,
+          "owner": "researcher",
+          "created_at": "2026-04-07T07:14:22.477Z"
+        },
+        {
+          "id": 7,
+          "title": "4편 리서치 — 벤치마크, 상용 시스템, 열린 문제 조사",
+          "context": "LongMemEval, LoCoMo 벤치마크 설계/한계, Claude/ChatGPT/Gemini 메모리 기능 현황, 프라이버시/확장성/환각/멀티에이전트 열린 문제를 조사.",
+          "approach": "벤치마크 논문 상세 분석, 상용 시스템 공식 문서 기반 메모리 기능 비교, 프라이버시/GDPR 교차점 조사, 멀티에이전트 기억 공유 연구 탐색.",
+          "acceptance": "1. LongMemEval/LoCoMo 벤치마크 설계 비교\\n2. 주요 시스템 벤치마크 성능 수치 수집\\n3. 상용 LLM 메모리 기능 비교표\\n4. 프라이버시/잊힐 권리 관련 분석\\n5. 멀티에이전트 기억 공유 연구 현황",
+          "risk": "상용 시스템 내부 구현은 비공개, 공식 문서 기반으로만 가능",
+          "status": "pending",
+          "deps": [],
+          "plan_issue": 7,
+          "owner": "researcher",
+          "created_at": "2026-04-07T07:14:33.500Z"
+        },
+        {
+          "id": 8,
+          "title": "2편 작성 — \"기억을 쓰는 순간\" 포스트 집필",
+          "context": "리서치 결과 기반 llm-memory-2-write-and-forget.mdx 작성",
+          "approach": "리서처 조사 결과 기반으로 작성. 기존 블로그 톤/포맷 준수. SVG 다이어그램 충분 활용.",
+          "acceptance": "frontmatter 완비, 본문 3000자 이상, SVG 다이어그램 2개 이상, 수식/알고리즘 수준 기술적 깊이",
+          "risk": "리서치 깊이에 따라 변동",
+          "status": "pending",
+          "deps": [
+            5
+          ],
+          "plan_issue": 5,
+          "owner": "writer",
+          "created_at": "2026-04-07T07:14:43.495Z"
+        },
+        {
+          "id": 9,
+          "title": "3편 작성 — \"기억을 찾는 기술\" 포스트 집필",
+          "context": "리서치 결과 기반 llm-memory-3-retrieval-and-autonomy.mdx 작성",
+          "approach": "리서처 조사 결과 기반으로 작성. SVG 다이어그램 충분 활용.",
+          "acceptance": "frontmatter 완비, 본문 3000자 이상, SVG 다이어그램 2개 이상, 기술적 깊이",
+          "risk": "리서치 깊이에 따라 변동",
+          "status": "pending",
+          "deps": [
+            6
+          ],
+          "plan_issue": 6,
+          "owner": "writer",
+          "created_at": "2026-04-07T07:14:50.614Z"
+        },
+        {
+          "id": 10,
+          "title": "4편 작성 — \"벤치마크, 한계, 열린 문제들\" 포스트 집필",
+          "context": "리서치 결과 기반 llm-memory-4-evaluation-and-frontiers.mdx 작성",
+          "approach": "리서처 조사 결과 기반으로 작성. SVG 다이어그램 충분 활용.",
+          "acceptance": "frontmatter 완비, 본문 3000자 이상, SVG 다이어그램 2개 이상, 기술적 깊이",
+          "risk": "리서치 깊이에 따라 변동",
+          "status": "pending",
+          "deps": [
+            7
+          ],
+          "plan_issue": 7,
+          "owner": "writer",
+          "created_at": "2026-04-07T07:14:55.147Z"
+        },
+        {
+          "id": 11,
+          "title": "2-4편 리뷰 — 콘텐츠 검증 (병렬)",
+          "context": "2-4편 각각의 사실 정확성, 인용 출처, 시리즈 일관성, 문법/포맷 검증",
+          "approach": "각 편 완성 시 리뷰어를 병렬 투입. 사실 오류, 인용 출처, 시리즈 일관성, 문법/포맷 검증.",
+          "acceptance": "사실 오류 0건, 인용 출처 검증, 시리즈 일관성 확인, 문법/포맷 이슈 수정",
+          "risk": "편 간 교차 참조 일관성 검증 필요",
+          "status": "pending",
+          "deps": [
+            8,
+            9,
+            10
+          ],
+          "plan_issue": 5,
+          "owner": "reviewer",
+          "created_at": "2026-04-07T07:15:04.336Z"
+        }
+      ]
     }
   ]
 }
